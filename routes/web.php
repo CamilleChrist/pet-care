@@ -33,3 +33,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/forgot-password', 'forgotPassword')->name('password.email');
     Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->name('dashboard')->middleware('auth');
