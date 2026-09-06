@@ -11,7 +11,7 @@ test('a user can register', function () {
         'password_confirmation' => 'password',
     ]);
 
-    $response->assertRedirect(route('welcome'));
+    $response->assertRedirect(route('dashboard'));
     $this->assertAuthenticated();
     $this->assertDatabaseHas('users', ['email' => 'camille@example.com']);
 });
@@ -53,7 +53,7 @@ test('a user can login with correct credentials', function () {
         'password' => 'password',
     ]);
 
-    $response->assertRedirect(route('welcome'));
+    $response->assertRedirect(route('dashboard'));
     $this->assertAuthenticated();
 });
 
@@ -108,7 +108,7 @@ test('a user can reset their password with a valid link', function () {
     $this->post('/login', [
         'email' => 'camille@example.com',
         'password' => 'new-password',
-    ])->assertRedirect(route('welcome'));
+    ])->assertRedirect(route('dashboard'));
     $this->assertAuthenticated();
 });
 
