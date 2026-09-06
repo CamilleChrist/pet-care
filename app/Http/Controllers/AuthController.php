@@ -31,7 +31,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('welcome')->with('success', 'Succès ! Compte créé');
+        return redirect()->route('dashboard')->with('success', 'Succès ! Compte créé');
     }
 
     public function login(Request $request)
@@ -44,7 +44,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->route('welcome')->with('success', 'Succès ! Vous êtes maintenant connecté');
+            return redirect()->route('dashboard')->with('success', 'Succès ! Vous êtes maintenant connecté');
         }
 
         return back()->withErrors([
