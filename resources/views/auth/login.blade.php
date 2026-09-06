@@ -25,4 +25,6 @@
             @endforeach
         </ul>
     @endif
+
+    <a href="{{ route('password.request') }}">Mot de passe oublié ?</a>
 @endsection
