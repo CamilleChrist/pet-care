@@ -2,9 +2,9 @@
 
 @section('content')
 
-    <h1>Create Pet</h1>
+    <h1 class="text-xl font-bold mb-4">Create Pet</h1>
 
-    <p>Ajout d'un animal</p>
+    <p class="mb-4">Ajout d'un animal</p>
 
     @include('pets._partials.form', [
       'action' => route('pets.store'),

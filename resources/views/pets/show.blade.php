@@ -1,9 +1,9 @@
 @extends('layouts.base')
 
 @section('content')
-    <h1>Détail d'un pet</h1>
+    <h1 class="text-xl font-bold mb-4">Détail d'un pet</h1>
 
-    <ul>
+    <ul class="flex flex-col gap-1 mb-4">
         <li>Nom : {{ $pet->name }}</li>
         <li>Genre : {{ $pet->gender->label() }}</li>
         <li>Race : {{ $pet->breed->name }}</li>
@@ -17,10 +17,10 @@
         @endif
     </ul>
 
-    <a href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
+    <a class="inline-block mb-4 text-blue-600 hover:underline" href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
 
     <form method="post" action="{{ route('pets.destroy', [$pet->id]) }}">
         @csrf
-        <button type="submit">Supprimer</button>
+        <button type="submit" class="text-red-600">Supprimer</button>
     </form>
 @endsection

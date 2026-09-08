@@ -2,14 +2,14 @@
 
 @section('content')
 
-    <h1>Mes Pet</h1>
+    <h1 class="text-xl font-bold mb-4">Mes Pet</h1>
 
-    <p>Liste des mes animaux</p>
+    <p class="mb-4">Liste des mes animaux</p>
 
-    <ul>
+    <ul class="flex flex-col gap-2">
         @foreach($pets as $pet)
             <li>
-                <a href="{{ route('pets.show', [$pet->id]) }}">Voir la fiche {{ $pet->name }}</a>
+                <a class="text-blue-600 hover:underline" href="{{ route('pets.show', [$pet->id]) }}">Voir la fiche {{ $pet->name }}</a>
             </li>
         @endforeach
     </ul>

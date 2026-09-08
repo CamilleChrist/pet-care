@@ -1,14 +1,14 @@
-<form method="post" action="{{ $action }}">
+<form method="post" action="{{ $action }}" class="flex flex-col gap-4">
     @csrf
 
-    <label>
+    <label class="flex flex-col gap-1">
         Nom :*
-        <input name="name" type="text" required value="{{ old('name', $pet?->name) }}">
+        <input name="name" type="text" required value="{{ old('name', $pet?->name) }}" class="border p-2">
     </label>
 
-    <label>
+    <label class="flex flex-col gap-1">
         Genre :*
-        <select name="gender" required>
+        <select name="gender" required class="border p-2">
             <option value="" disabled>Choisir une option</option>
 
             @foreach ($genders as $gender)
@@ -19,9 +19,9 @@
         </select>
     </label>
 
-    <label>
+    <label class="flex flex-col gap-1">
         Espèce :*
-        <select name="species" id="species" required>
+        <select name="species" id="species" required class="border p-2">
             <option value="" disabled @selected(!old('species', $pet?->breed?->species))>
                 Choisir une option
             </option>
@@ -36,9 +36,9 @@
         </select>
     </label>
 
-    <label>
+    <label class="flex flex-col gap-1">
         Race :*
-        <select name="breed_id" id="breed_id" required>
+        <select name="breed_id" id="breed_id" required class="border p-2">
             <option value="" disabled @selected(!old('breed_id', $pet?->breed_id))>
                 Choisir une option
             </option>
@@ -55,44 +55,46 @@
         </select>
     </label>
 
-    <label>
+    <label class="flex flex-col gap-1">
         Date de naissance :*
         <input
             name="birth_date"
             type="date"
             required
             value="{{ old('birth_date', $pet?->birth_date) }}"
+            class="border p-2"
         >
     </label>
 
-    <label>
+    <label class="flex flex-col gap-1">
         Photo
         <input name="photo" type="file">
     </label>
 
     @if(!str_contains($action, 'store'))
-        <label>
+        <label class="flex flex-col gap-1">
             Notes
-            <textarea name="health_notes">{{ old('name', $pet?->health_notes) }}</textarea>
+            <textarea name="health_notes" class="border p-2">{{ old('name', $pet?->health_notes) }}</textarea>
         </label>
 
-        <label>
+        <label class="flex flex-col gap-1">
             Dernière visite vétérinaire
             <input
                 name="last_vet_visit_at"
                 type="date"
                 value="{{ old('last_vet_visit_at', $pet?->last_vet_visit_at) }}"
+                class="border p-2"
             >
         </label>
     @endif
 
-    <button type="submit">
+    <button type="submit" class="bg-blue-600 text-white p-2 self-start">
         {{ $submitLabel }}
     </button>
 </form>
 
 @if ($errors->any())
-    <ul>
+    <ul class="mt-4 flex flex-col gap-1">
         @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
         @endforeach

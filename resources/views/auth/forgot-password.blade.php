@@ -2,20 +2,20 @@
 
 @section('content')
 
-    <h1>Mot de passe oublié</h1>
+    <h1 class="text-xl font-bold mb-4">Mot de passe oublié</h1>
 
-    <form method="post" action="{{ route('password.email') }}">
+    <form method="post" action="{{ route('password.email') }}" class="flex flex-col gap-4">
         @csrf
-        <label>
+        <label class="flex flex-col gap-1">
             Email :
-            <input name="email" type="email" value="{{ old('email') }}">
+            <input name="email" type="email" value="{{ old('email') }}" class="border p-2">
         </label>
 
-        <button type="submit">Envoyer le lien de réinitialisation</button>
+        <button type="submit" class="bg-blue-600 text-white p-2 self-start">Envoyer le lien de réinitialisation</button>
     </form>
 
     @if ($errors->any())
-        <ul>
+        <ul class="mt-4 flex flex-col gap-1">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
