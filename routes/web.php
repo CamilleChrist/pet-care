@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PetController;
 use Illuminate\Support\Facades\Route;
 
+// ****  HOME  **** //
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+// ****  AUTH  **** //
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -34,6 +37,18 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
 
+// ****  DASHBOARD  **** //
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard')->middleware('auth');
+
+// ****  PETS  **** //
+Route::prefix('/pets')->controller(PetController::class)->group(function () {
+    Route::get('/', 'index')->name('pets.index');
+    Route::get('/create', 'create')->name('pets.create');
+    Route::post('/store', 'store')->name('pets.store');
+    Route::get('/{pet}', 'show')->name('pets.show');
+    Route::get('/{pet}/edit', 'edit')->name('pets.edit');
+    Route::match(['put', 'post'], '/{pet}/update', 'update')->name('pets.update');
+    Route::match(['delete', 'post'], '/{pet}/delete', 'destroy')->name('pets.destroy');
+})->middleware(['auth']);
