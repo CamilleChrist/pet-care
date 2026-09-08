@@ -8,6 +8,7 @@
       'method' => 'PUT',
       'pet' => $pet,
       'breeds' => $breeds,
+      'genders' => $genders,
       'submitLabel' => 'Enregistrer',
     ])
 

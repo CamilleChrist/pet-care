@@ -11,6 +11,7 @@
       'method' => 'POST',
       'pet' => null,
       'breeds' => $breeds,
+      'genders' => $genders,
       'submitLabel' => 'Créer un pet',
     ]);
 

@@ -9,15 +9,13 @@
     <label>
         Genre :*
         <select name="gender" required>
-            <option value="" disabled @selected(!old('gender', $pet?->gender))>Choisir une option</option>
+            <option value="" disabled>Choisir une option</option>
 
-            <option value="male" @selected(old('gender', $pet?->gender) === 'male')>
-                Mâle
-            </option>
-
-            <option value="female"@selected(old('gender', $pet?->gender) === 'female')>
-                Femelle
-            </option>
+            @foreach ($genders as $gender)
+                <option value="{{ $gender->value }}" @selected(old('gender', $pet?->gender?->value) === $gender->value)>
+                    {{ $gender->label() }}
+                </option>
+            @endforeach
         </select>
     </label>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PetGender;
 use App\Http\Requests\StorePetRequest;
 use App\Http\Requests\UpdatePetRequest;
 use App\Models\Breed;
@@ -26,8 +27,9 @@ class PetController extends Controller
     public function create()
     {
         $breeds = Breed::all();
+        $genders = PetGender::cases();
 
-        return view('pets.create', compact('breeds'));
+        return view('pets.create', compact('breeds', 'genders'));
     }
 
     /**
@@ -54,8 +56,9 @@ class PetController extends Controller
     public function edit(Pet $pet, Breed $breed)
     {
         $breeds = Breed::all();
+        $genders = PetGender::cases();
 
-        return view('pets.edit', compact('pet', 'breeds'));
+        return view('pets.edit', compact('pet', 'breeds', 'genders'));
     }
 
     /**

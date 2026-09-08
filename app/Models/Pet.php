@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PetGender;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,6 +17,11 @@ class Pet extends Model
         'last_pet_visit_at',
         'health_notes',
     ];
+
+    protected function casts(): array
+    {
+        return ['gender' => PetGender::class];
+    }
 
     public function breed(): BelongsTo
     {

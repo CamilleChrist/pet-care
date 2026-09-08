@@ -5,7 +5,7 @@
 
     <ul>
         <li>Nom : {{ $pet->name }}</li>
-        <li>Genre : {{ $pet->gender }}</li>
+        <li>Genre : {{ $pet->gender->label() }}</li>
         <li>Race : {{ $pet->breed->name }}</li>
         <li>Date de naissance : {{ $pet->birth_date }}</li>
         @if( $pet->health_notes )
