@@ -10,22 +10,40 @@
     @fonts
 
     <!-- Styles / Scripts -->
-{{--    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))--}}
-{{--        @vite(['resources/css/app.css', 'resources/js/app.js'])--}}
-{{--    @endif--}}
+    {{--    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))--}}
+    {{--        @vite(['resources/css/app.css', 'resources/js/app.js'])--}}
+    {{--    @endif--}}
 </head>
 
 <body>
 
-    @if (session('success'))
-        <p>{{ session('success') }}</p>
+<header>
+    @if( auth()->user() )
+        <nav>
+            <ul>
+                <li>
+                    <form method="post" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit">Se déconnecter</button>
+                    </form>
+                </li>
+                <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ route('pets.create') }}">Ajouter un pet</a></li>
+                <li><a href="{{ route('pets.index') }}">Liste des pet</a></li>
+            </ul>
+        </nav>
     @endif
+</header>
 
-    @if (session('status'))
-        <p>{{ session('status') }}</p>
-    @endif
+@if (session('success'))
+    <p>{{ session('success') }}</p>
+@endif
 
-    @yield('content')
+@if (session('status'))
+    <p>{{ session('status') }}</p>
+@endif
+
+@yield('content')
 
 </body>
 </html>
