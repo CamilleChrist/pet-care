@@ -43,12 +43,12 @@ Route::get('/dashboard', function () {
 })->name('dashboard')->middleware('auth');
 
 // ****  PETS  **** //
-Route::prefix('/pets')->controller(PetController::class)->group(function () {
+Route::prefix('/pets')->controller(PetController::class)->middleware('auth')->group(function () {
     Route::get('/', 'index')->name('pets.index');
     Route::get('/create', 'create')->name('pets.create');
     Route::post('/store', 'store')->name('pets.store');
-    Route::get('/{pet}', 'show')->name('pets.show');
-    Route::get('/{pet}/edit', 'edit')->name('pets.edit');
-    Route::match(['put', 'post'], '/{pet}/update', 'update')->name('pets.update');
-    Route::match(['delete', 'post'], '/{pet}/delete', 'destroy')->name('pets.destroy');
-})->middleware(['auth']);
+    Route::get('/{pet}', 'show')->name('pets.show')->can('view', 'pet');
+    Route::get('/{pet}/edit', 'edit')->name('pets.edit')->can('update', 'pet');
+    Route::match(['put', 'post'], '/{pet}/update', 'update')->name('pets.update')->can('update', 'pet');
+    Route::match(['delete', 'post'], '/{pet}/delete', 'destroy')->name('pets.destroy')->can('delete', 'pet');
+});
