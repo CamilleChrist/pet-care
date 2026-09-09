@@ -4,6 +4,12 @@
     <h1 class="text-xl font-bold mb-4">Détail d'un pet</h1>
 
     <ul class="flex flex-col gap-1 mb-4">
+        @if($pet->photo_path)
+            <li>
+                <img src="{{ $pet->photoUrl() }}">
+            </li>
+        @endif
+
         <li>Nom : {{ $pet->name }}</li>
         <li>Genre : {{ $pet->gender->label() }}</li>
         <li>Race : {{ $pet->breed->name }}</li>

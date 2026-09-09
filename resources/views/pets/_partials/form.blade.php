@@ -1,4 +1,4 @@
-<form method="post" action="{{ $action }}" class="flex flex-col gap-4">
+<form method="post" action="{{ $action }}" enctype="multipart/form-data" class="flex flex-col gap-4">
     @csrf
     @method($method)
 
@@ -67,12 +67,17 @@
         >
     </label>
 
-    <label class="flex flex-col gap-1">
-        Photo
-        <input name="photo" type="file">
-    </label>
+    {{-- Don't display his fields in the create form / only in the update form --}}
+    @if($method === 'PUT' | $method === 'PATCH')
+        <label class="flex flex-col gap-1">
+            Photo
+            <input name="photo" type="file">
+        </label>
 
-    @if(!str_contains($action, 'store'))
+        @if($pet->photo_path)
+            <img src="{{ $pet->photoUrl() }}" style="max-width: 200px">
+        @endif
+
         <label class="flex flex-col gap-1">
             Notes
             <textarea name="health_notes" class="border p-2">{{ old('name', $pet?->health_notes) }}</textarea>

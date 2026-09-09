@@ -34,7 +34,7 @@ class UpdatePetRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'gender' => ['required', Rule::enum(PetGender::class)],
             'birth_date' => ['required', 'date'],
-            'photo_path' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:255'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'health_notes' => ['nullable', 'string'],
             'last_vet_visit_at' => ['nullable', 'date'],
         ];
@@ -45,5 +45,18 @@ class UpdatePetRequest extends FormRequest
         $this->merge([
             'user_id' => auth()->user()->id,
         ]);
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'photo.uploaded' => 'La photo est trop volumineuse pour être envoyée (2 Mo maximum).',
+            'photo.max' => 'La photo ne doit pas dépasser 2 Mo.',
+        ];
     }
 }

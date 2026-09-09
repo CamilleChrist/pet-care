@@ -3,6 +3,8 @@
 use App\Models\Breed;
 use App\Models\Pet;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('guests cannot access pets', function () {
     $pet = Pet::factory()->create();
@@ -108,6 +110,54 @@ test('a user can update a pet', function () {
     ]);
 });
 
+test('a user can upload a pet photo and see it', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+
+    $this->actingAs($user)->patch(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => 'Choupette',
+        'gender' => 'male',
+        'birth_date' => '2021-01-02',
+        'photo' => UploadedFile::fake()->image('choupette.jpg'),
+    ]);
+
+    $path = $pet->fresh()->photo_path;
+
+    Storage::disk('public')->assertExists($path);
+
+    $this->actingAs($user)
+        ->get(route('pets.show', $pet))
+        ->assertSee('/storage/'.$path, escape: false);
+});
+
+test('updating a pet shows an explicit message when the photo is too large to upload', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+
+    $photo = new UploadedFile(
+        UploadedFile::fake()->image('choupette.jpg')->getPathname(),
+        'choupette.jpg',
+        'image/jpeg',
+        UPLOAD_ERR_INI_SIZE,
+        true
+    );
+
+    $response = $this->actingAs($user)->patch(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => $pet->name,
+        'gender' => $pet->gender->value,
+        'birth_date' => $pet->birth_date,
+        'photo' => $photo,
+    ]);
+
+    $response->assertSessionHasErrors([
+        'photo' => 'La photo est trop volumineuse pour être envoyée (2 Mo maximum).',
+    ]);
+});
+
 test('updating a pet fails with invalid data', function () {
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
@@ -131,6 +181,27 @@ test('a user can delete a pet', function () {
 
     $response->assertRedirect(route('dashboard'));
     $this->assertDatabaseMissing('pets', ['id' => $pet->id]);
+});
+
+test('deleting a pet removes its photo from storage', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($user)->patch(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => $pet->name,
+        'gender' => $pet->gender->value,
+        'birth_date' => $pet->birth_date,
+        'photo' => UploadedFile::fake()->image('choupette.jpg'),
+    ]);
+
+    $path = $pet->fresh()->photo_path;
+
+    $this->actingAs($user)->delete(route('pets.destroy', $pet));
+
+    Storage::disk('public')->assertMissing($path);
 });
 
 test('a user cannot see another user pet', function () {

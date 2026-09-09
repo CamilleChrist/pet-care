@@ -7,6 +7,8 @@ use App\Http\Requests\StorePetRequest;
 use App\Http\Requests\UpdatePetRequest;
 use App\Models\Breed;
 use App\Models\Pet;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PetController extends Controller
 {
@@ -65,7 +67,17 @@ class PetController extends Controller
      */
     public function update(UpdatePetRequest $request, Pet $pet)
     {
-        $pet->update($request->validated());
+        $data = $request->validated();
+
+        if ($image = $request->file('photo')) {
+            $year = now()->year;
+            $month = now()->month;
+            $filename = $pet->id.'_'.Str::slug($pet->name).'.'.$image->extension();
+
+            $data['photo_path'] = $image->storeAs("pets/{$year}/{$month}", $filename, 'public');
+        }
+
+        $pet->update($data);
 
         return redirect()->route('pets.show', [$pet->id])->with('success', $pet->name.' a été mis à jour !');
     }
@@ -77,6 +89,10 @@ class PetController extends Controller
     {
         $name = $pet->name;
         $pet->delete();
+
+        if ($pet->photo_path) {
+            Storage::disk('public')->delete($pet->photo_path);
+        }
 
         return redirect()->route('dashboard')->with('success', $name.' a été supprimé !');
     }
