@@ -13,7 +13,7 @@
       'breeds' => $breeds,
       'genders' => $genders,
       'submitLabel' => 'Créer un pet',
-    ]);
+    ])
 
 @endsection
 

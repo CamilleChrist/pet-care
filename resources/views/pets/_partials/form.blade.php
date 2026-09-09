@@ -1,5 +1,6 @@
 <form method="post" action="{{ $action }}" class="flex flex-col gap-4">
     @csrf
+    @method($method)
 
     <label class="flex flex-col gap-1">
         Nom :*

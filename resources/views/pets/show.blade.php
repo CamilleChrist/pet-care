@@ -21,6 +21,8 @@
 
     <form method="post" action="{{ route('pets.destroy', [$pet->id]) }}">
         @csrf
+        @method('DELETE')
+
         <button type="submit" class="text-red-600">Supprimer</button>
     </form>
 @endsection

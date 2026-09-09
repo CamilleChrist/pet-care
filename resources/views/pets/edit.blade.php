@@ -5,7 +5,7 @@
 
     @include('pets._partials.form', [
       'action' => route('pets.update', $pet),
-      'method' => 'PUT',
+      'method' => 'PATCH',
       'pet' => $pet,
       'breeds' => $breeds,
       'genders' => $genders,
