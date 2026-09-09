@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\PetGender;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePetRequest extends FormRequest
 {
@@ -29,7 +31,7 @@ class UpdatePetRequest extends FormRequest
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'breed_id' => ['required', 'exists:breeds,id'],
             'name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'in:male,female'],
+            'gender' => ['required', Rule::enum(PetGender::class)],
             'birth_date' => ['required', 'date'],
             'photo_path' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:255'],
             'health_notes' => ['nullable', 'string'],
