@@ -12,7 +12,7 @@ test('guests cannot access pets', function () {
     $this->post(route('pets.store'))->assertRedirect(route('login'));
     $this->get(route('pets.show', $pet))->assertRedirect(route('login'));
     $this->get(route('pets.edit', $pet))->assertRedirect(route('login'));
-    $this->put(route('pets.update', $pet))->assertRedirect(route('login'));
+    $this->patch(route('pets.update', $pet))->assertRedirect(route('login'));
     $this->delete(route('pets.destroy', $pet))->assertRedirect(route('login'));
 });
 
@@ -87,7 +87,7 @@ test('a user can update a pet', function () {
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
 
-    $response = $this->actingAs($user)->put(route('pets.update', $pet), [
+    $response = $this->actingAs($user)->patch(route('pets.update', $pet), [
         'breed_id' => $pet->breed_id,
         'name' => 'Choupinette',
         'gender' => 'male',
@@ -112,7 +112,7 @@ test('updating a pet fails with invalid data', function () {
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
 
-    $response = $this->actingAs($user)->put(route('pets.update', $pet), [
+    $response = $this->actingAs($user)->patch(route('pets.update', $pet), [
         'breed_id' => $pet->breed_id,
         'name' => '',
         'gender' => 'alien',
@@ -145,7 +145,7 @@ test('a user cannot update another user pet', function () {
     $pet = Pet::factory()->create(['name' => 'Choupette']);
 
     $this->actingAs(User::factory()->create())
-        ->put(route('pets.update', $pet), [
+        ->patch(route('pets.update', $pet), [
             'breed_id' => $pet->breed_id,
             'name' => 'Vole',
             'gender' => 'male',
