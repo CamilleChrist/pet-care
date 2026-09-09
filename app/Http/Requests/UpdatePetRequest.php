@@ -37,6 +37,7 @@ class UpdatePetRequest extends FormRequest
             'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'health_notes' => ['nullable', 'string'],
             'last_vet_visit_at' => ['nullable', 'date'],
+            'remove_photo' => ['nullable', 'boolean'],
         ];
     }
 

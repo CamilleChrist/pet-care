@@ -133,6 +133,65 @@ test('a user can upload a pet photo and see it', function () {
         ->assertSee('/storage/'.$path, escape: false);
 });
 
+test('a user can remove a pet photo', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($user)->patch(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => $pet->name,
+        'gender' => $pet->gender->value,
+        'birth_date' => $pet->birth_date,
+        'photo' => UploadedFile::fake()->image('choupette.jpg'),
+    ]);
+
+    $path = $pet->fresh()->photo_path;
+
+    $this->actingAs($user)->patch(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => $pet->name,
+        'gender' => $pet->gender->value,
+        'birth_date' => $pet->birth_date,
+        'remove_photo' => 1,
+    ]);
+
+    Storage::disk('public')->assertMissing($path);
+    expect($pet->fresh()->photo_path)->toBeNull();
+});
+
+test('replacing a pet photo removes the previous file', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($user)->patch(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => $pet->name,
+        'gender' => $pet->gender->value,
+        'birth_date' => $pet->birth_date,
+        'photo' => UploadedFile::fake()->image('choupette.jpg'),
+    ]);
+
+    $oldPath = $pet->fresh()->photo_path;
+
+    $this->actingAs($user)->patch(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => $pet->name,
+        'gender' => $pet->gender->value,
+        'birth_date' => $pet->birth_date,
+        'photo' => UploadedFile::fake()->image('choupette.png'),
+    ]);
+
+    $newPath = $pet->fresh()->photo_path;
+
+    expect($newPath)->not->toBe($oldPath);
+    Storage::disk('public')->assertMissing($oldPath);
+    Storage::disk('public')->assertExists($newPath);
+});
+
 test('updating a pet shows an explicit message when the photo is too large to upload', function () {
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id]);

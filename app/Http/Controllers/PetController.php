@@ -67,9 +67,16 @@ class PetController extends Controller
      */
     public function update(UpdatePetRequest $request, Pet $pet)
     {
-        $data = $request->validated();
+        $data = $request->safe()->except('remove_photo');
+
+        if ($request->boolean('remove_photo')) {
+            $this->deletePhoto($pet);
+            $data['photo_path'] = null;
+        }
 
         if ($image = $request->file('photo')) {
+            $this->deletePhoto($pet);
+
             $year = now()->year;
             $month = now()->month;
             $filename = $pet->id.'_'.Str::slug($pet->name).'.'.$image->extension();
@@ -89,11 +96,15 @@ class PetController extends Controller
     {
         $name = $pet->name;
         $pet->delete();
+        $this->deletePhoto($pet);
 
+        return redirect()->route('dashboard')->with('success', $name.' a été supprimé !');
+    }
+
+    private function deletePhoto(Pet $pet): void
+    {
         if ($pet->photo_path) {
             Storage::disk('public')->delete($pet->photo_path);
         }
-
-        return redirect()->route('dashboard')->with('success', $name.' a été supprimé !');
     }
 }
