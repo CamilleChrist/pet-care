@@ -1,0 +1,21 @@
+@extends('layouts.base')
+
+@section('content')
+
+    <h1 class="text-xl font-bold mb-4">Create Pet</h1>
+
+    <p class="mb-4">Ajout d'un animal</p>
+
+    @include('pets._partials.form', [
+      'action' => route('pets.store'),
+      'method' => 'POST',
+      'pet' => null,
+      'breeds' => $breeds,
+      'genders' => $genders,
+      'submitLabel' => 'Créer un pet',
+    ])
+
+@endsection
+
+
+@vite('resources/js/pet-form.js')
