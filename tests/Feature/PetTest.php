@@ -1,0 +1,175 @@
+<?php
+
+use App\Models\Breed;
+use App\Models\Pet;
+use App\Models\User;
+
+test('guests cannot access pets', function () {
+    $pet = Pet::factory()->create();
+
+    $this->get(route('pets.index'))->assertRedirect(route('login'));
+    $this->get(route('pets.create'))->assertRedirect(route('login'));
+    $this->post(route('pets.store'))->assertRedirect(route('login'));
+    $this->get(route('pets.show', $pet))->assertRedirect(route('login'));
+    $this->get(route('pets.edit', $pet))->assertRedirect(route('login'));
+    $this->put(route('pets.update', $pet))->assertRedirect(route('login'));
+    $this->delete(route('pets.destroy', $pet))->assertRedirect(route('login'));
+});
+
+test('a user sees their pets in the list', function () {
+    $user = User::factory()->create();
+    Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+
+    $this->actingAs($user)
+        ->get(route('pets.index'))
+        ->assertOk()
+        ->assertSee('Choupette');
+});
+
+test('a user can create a pet', function () {
+    $user = User::factory()->create();
+    $breed = Breed::factory()->create();
+
+    $response = $this->actingAs($user)->post(route('pets.store'), [
+        'breed_id' => $breed->id,
+        'name' => 'Choupette',
+        'gender' => 'female',
+        'birth_date' => '2020-05-12',
+    ]);
+
+    $response->assertRedirect(route('dashboard'));
+    $response->assertSessionHas('success');
+
+    $this->assertDatabaseHas('pets', [
+        'user_id' => $user->id,
+        'breed_id' => $breed->id,
+        'name' => 'Choupette',
+        'gender' => 'female',
+        'birth_date' => '2020-05-12',
+    ]);
+});
+
+test('creating a pet fails with invalid data', function () {
+    $response = $this->actingAs(User::factory()->create())->post(route('pets.store'), [
+        'breed_id' => 999,
+        'name' => '',
+        'gender' => 'alien',
+        'birth_date' => 'not-a-date',
+    ]);
+
+    $response->assertSessionHasErrors(['breed_id', 'name', 'gender', 'birth_date']);
+    $this->assertDatabaseEmpty('pets');
+});
+
+test('a user can see a pet', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+
+    $this->actingAs($user)
+        ->get(route('pets.show', $pet))
+        ->assertOk()
+        ->assertSee('Choupette')
+        ->assertSee($pet->breed->name)
+        ->assertSee($pet->gender->label());
+});
+
+test('a user can open the edit form of a pet', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+
+    $this->actingAs($user)
+        ->get(route('pets.edit', $pet))
+        ->assertOk()
+        ->assertSee('Choupette');
+});
+
+test('a user can update a pet', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+
+    $response = $this->actingAs($user)->put(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => 'Choupinette',
+        'gender' => 'male',
+        'birth_date' => '2021-01-02',
+        'health_notes' => 'Vaccinee',
+        'last_vet_visit_at' => '2026-01-15',
+    ]);
+
+    $response->assertRedirect(route('pets.show', $pet->id));
+
+    $this->assertDatabaseHas('pets', [
+        'id' => $pet->id,
+        'name' => 'Choupinette',
+        'gender' => 'male',
+        'birth_date' => '2021-01-02',
+        'health_notes' => 'Vaccinee',
+        'last_vet_visit_at' => '2026-01-15',
+    ]);
+});
+
+test('updating a pet fails with invalid data', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+
+    $response = $this->actingAs($user)->put(route('pets.update', $pet), [
+        'breed_id' => $pet->breed_id,
+        'name' => '',
+        'gender' => 'alien',
+        'birth_date' => 'not-a-date',
+    ]);
+
+    $response->assertSessionHasErrors(['name', 'gender', 'birth_date']);
+    $this->assertDatabaseHas('pets', ['id' => $pet->id, 'name' => 'Choupette']);
+});
+
+test('a user can delete a pet', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)->delete(route('pets.destroy', $pet));
+
+    $response->assertRedirect(route('dashboard'));
+    $this->assertDatabaseMissing('pets', ['id' => $pet->id]);
+});
+
+test('a user cannot see another user pet', function () {
+    $pet = Pet::factory()->create();
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('pets.show', $pet))
+        ->assertForbidden();
+});
+
+test('a user cannot update another user pet', function () {
+    $pet = Pet::factory()->create(['name' => 'Choupette']);
+
+    $this->actingAs(User::factory()->create())
+        ->put(route('pets.update', $pet), [
+            'breed_id' => $pet->breed_id,
+            'name' => 'Vole',
+            'gender' => 'male',
+            'birth_date' => '2021-01-02',
+        ])
+        ->assertForbidden();
+
+    $this->assertDatabaseHas('pets', ['id' => $pet->id, 'name' => 'Choupette']);
+});
+
+test('a user cannot delete another user pet', function () {
+    $pet = Pet::factory()->create();
+
+    $this->actingAs(User::factory()->create())
+        ->delete(route('pets.destroy', $pet))
+        ->assertForbidden();
+
+    $this->assertDatabaseHas('pets', ['id' => $pet->id]);
+});
+
+test('a user cannot open the edit form of another user pet', function () {
+    $pet = Pet::factory()->create();
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('pets.edit', $pet))
+        ->assertForbidden();
+});
