@@ -7,7 +7,6 @@ use App\Http\Requests\StorePetRequest;
 use App\Http\Requests\UpdatePetRequest;
 use App\Models\Breed;
 use App\Models\Pet;
-use Illuminate\Http\Request;
 
 class PetController extends Controller
 {
@@ -53,7 +52,7 @@ class PetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Pet $pet, Breed $breed)
+    public function edit(Pet $pet)
     {
         $breeds = Breed::all();
         $genders = PetGender::cases();
@@ -68,7 +67,7 @@ class PetController extends Controller
     {
         $pet->update($request->validated());
 
-        return redirect()->route('pets.show', [$pet->id])->with('success', $pet->name . ' a été mis à jour !');
+        return redirect()->route('pets.show', [$pet->id])->with('success', $pet->name.' a été mis à jour !');
     }
 
     /**
@@ -79,6 +78,6 @@ class PetController extends Controller
         $name = $pet->name;
         $pet->delete();
 
-        return redirect()->route('dashboard')->with('success', $name . ' a été supprimé !')    ;
+        return redirect()->route('dashboard')->with('success', $name.' a été supprimé !');
     }
 }

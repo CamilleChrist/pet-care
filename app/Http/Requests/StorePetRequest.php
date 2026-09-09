@@ -17,6 +17,7 @@ class StorePetRequest extends FormRequest
         if (auth()->check()) {
             return true;
         }
+
         return false;
     }
 
@@ -39,7 +40,8 @@ class StorePetRequest extends FormRequest
         ];
     }
 
-    public function prepareForValidation(): void {
+    public function prepareForValidation(): void
+    {
         $this->merge([
             'user_id' => auth()->user()->id,
         ]);
