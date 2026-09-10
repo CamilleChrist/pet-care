@@ -6,6 +6,7 @@ use App\Enums\PetGender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Pet extends Model
@@ -36,5 +37,10 @@ class Pet extends Model
     public function photoUrl(): string
     {
         return Storage::url($this->photo_path);
+    }
+
+    public function weightRecords(): HasMany
+    {
+        return $this->hasMany(WeightRecord::class)->orderBy('recorded_at', 'desc');
     }
 }

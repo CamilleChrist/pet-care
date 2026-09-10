@@ -23,8 +23,15 @@
         @endif
     </ul>
 
-    <a class="inline-block mb-4 text-blue-600 hover:underline" href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
-
+    <ul>
+        <li>
+            <a class="inline-block mb-4 text-blue-600 hover:underline"
+               href="{{ route('weightrecords.index', [$pet->id]) }}">Voir la courbe de poids
+            </a>
+        <li>
+            <a class="inline-block mb-4 text-blue-600 hover:underline" href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
+        </li>
+    </ul>
     <form method="post" action="{{ route('pets.destroy', [$pet->id]) }}">
         @csrf
         @method('DELETE')
