@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\WeightRecordController;
+use App\Models\WeightRecord;
 use Illuminate\Support\Facades\Route;
 
 // ****  HOME  **** //
@@ -51,4 +53,11 @@ Route::prefix('/pets')->controller(PetController::class)->middleware('auth')->gr
     Route::get('/{pet}/edit', 'edit')->name('pets.edit')->can('update', 'pet');
     Route::patch('/{pet}', 'update')->name('pets.update')->can('update', 'pet');
     Route::delete('/{pet}', 'destroy')->name('pets.destroy')->can('delete', 'pet');
+});
+
+Route::prefix('/weightrecords')->controller(WeightRecordController::class)->middleware('auth')->group(function () {
+    Route::get('/pet/{pet}', 'index')->name('weightrecords.index')->can('viewAny', [WeightRecord::class, 'pet']);
+    Route::get('/pet/{pet}/create', 'create')->name('weightrecords.create')->can('create', [WeightRecord::class, 'pet']);
+    Route::post('/', 'store')->name('weightrecords.store');
+    Route::delete('/{weightRecord}', 'destroy')->name('weightrecords.destroy')->can('delete', 'weightRecord');
 });
