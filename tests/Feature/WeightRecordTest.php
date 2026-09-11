@@ -8,10 +8,10 @@ test('guests cannot access weight records', function () {
     $pet = Pet::factory()->create();
     $weightRecord = WeightRecord::factory()->for($pet)->create();
 
-    $this->get(route('weightrecords.index', $pet))->assertRedirect(route('login'));
-    $this->get(route('weightrecords.create', $pet))->assertRedirect(route('login'));
-    $this->post(route('weightrecords.store'))->assertRedirect(route('login'));
-    $this->delete(route('weightrecords.destroy', $weightRecord))->assertRedirect(route('login'));
+    $this->get(route('pets.weight-records.index', $pet))->assertRedirect(route('login'));
+    $this->get(route('pets.weight-records.create', $pet))->assertRedirect(route('login'));
+    $this->post(route('pets.weight-records.store', $pet))->assertRedirect(route('login'));
+    $this->delete(route('weight-records.destroy', $weightRecord))->assertRedirect(route('login'));
 });
 
 test('a user sees their pet weight records in the list', function () {
@@ -20,7 +20,7 @@ test('a user sees their pet weight records in the list', function () {
     WeightRecord::factory()->for($pet)->create(['weight' => 12.5]);
 
     $this->actingAs($user)
-        ->get(route('weightrecords.index', $pet))
+        ->get(route('pets.weight-records.index', $pet))
         ->assertOk()
         ->assertSee('12.5');
 });
@@ -30,7 +30,7 @@ test('a user can open the form to add a weight record', function () {
     $pet = Pet::factory()->create(['user_id' => $user->id]);
 
     $this->actingAs($user)
-        ->get(route('weightrecords.create', $pet))
+        ->get(route('pets.weight-records.create', $pet))
         ->assertOk();
 });
 
@@ -38,13 +38,12 @@ test('a user can add a weight record to their pet', function () {
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id]);
 
-    $response = $this->actingAs($user)->post(route('weightrecords.store'), [
-        'pet_id' => $pet->id,
+    $response = $this->actingAs($user)->post(route('pets.weight-records.store', $pet), [
         'weight' => 12.5,
         'recorded_at' => '2026-01-15T10:00',
     ]);
 
-    $response->assertRedirect(route('weightrecords.index', $pet));
+    $response->assertRedirect(route('pets.weight-records.index', $pet));
     $response->assertSessionHas('success');
 
     $this->assertDatabaseHas('weight_records', [
@@ -56,10 +55,11 @@ test('a user can add a weight record to their pet', function () {
 
 test('adding a weight record fails with an empty payload', function () {
     $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
 
-    $response = $this->actingAs($user)->post(route('weightrecords.store'), []);
+    $response = $this->actingAs($user)->post(route('pets.weight-records.store', $pet), []);
 
-    $response->assertSessionHasErrors(['pet_id', 'weight', 'recorded_at']);
+    $response->assertSessionHasErrors(['weight', 'recorded_at']);
     $this->assertDatabaseEmpty('weight_records');
 });
 
@@ -67,8 +67,7 @@ test('adding a weight record fails when the weight is out of range', function (f
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id]);
 
-    $response = $this->actingAs($user)->post(route('weightrecords.store'), [
-        'pet_id' => $pet->id,
+    $response = $this->actingAs($user)->post(route('pets.weight-records.store', $pet), [
         'weight' => $weight,
         'recorded_at' => '2026-01-15T10:00',
     ]);
@@ -86,8 +85,7 @@ test('adding a weight record fails when the date is in the future', function () 
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id]);
 
-    $response = $this->actingAs($user)->post(route('weightrecords.store'), [
-        'pet_id' => $pet->id,
+    $response = $this->actingAs($user)->post(route('pets.weight-records.store', $pet), [
         'weight' => 12.5,
         'recorded_at' => now()->addDay()->format('Y-m-d\TH:i'),
     ]);
@@ -102,8 +100,7 @@ test('adding a weight record fails when the date has the wrong format', function
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id]);
 
-    $response = $this->actingAs($user)->post(route('weightrecords.store'), [
-        'pet_id' => $pet->id,
+    $response = $this->actingAs($user)->post(route('pets.weight-records.store', $pet), [
         'weight' => 12.5,
         'recorded_at' => '2026-01-15 10:00:00',
     ]);
@@ -117,8 +114,7 @@ test('adding a weight record fails when the date has the wrong format', function
 test('a user cannot add a weight record to another user pet', function () {
     $pet = Pet::factory()->create();
 
-    $response = $this->actingAs(User::factory()->create())->post(route('weightrecords.store'), [
-        'pet_id' => $pet->id,
+    $response = $this->actingAs(User::factory()->create())->post(route('pets.weight-records.store', $pet), [
         'weight' => 12.5,
         'recorded_at' => '2026-01-15T10:00',
     ]);
@@ -131,7 +127,7 @@ test('a user cannot see another user pet weight records', function () {
     $pet = Pet::factory()->create();
 
     $this->actingAs(User::factory()->create())
-        ->get(route('weightrecords.index', $pet))
+        ->get(route('pets.weight-records.index', $pet))
         ->assertForbidden();
 });
 
@@ -139,7 +135,7 @@ test('a user cannot open the form to add a weight record to another user pet', f
     $pet = Pet::factory()->create();
 
     $this->actingAs(User::factory()->create())
-        ->get(route('weightrecords.create', $pet))
+        ->get(route('pets.weight-records.create', $pet))
         ->assertForbidden();
 });
 
@@ -148,9 +144,9 @@ test('a user can delete a weight record from their pet', function () {
     $pet = Pet::factory()->create(['user_id' => $user->id]);
     $weightRecord = WeightRecord::factory()->for($pet)->create();
 
-    $response = $this->actingAs($user)->delete(route('weightrecords.destroy', $weightRecord));
+    $response = $this->actingAs($user)->delete(route('weight-records.destroy', $weightRecord));
 
-    $response->assertRedirect(route('weightrecords.index', $pet));
+    $response->assertRedirect(route('pets.weight-records.index', $pet));
     $response->assertSessionHas('success');
     $this->assertDatabaseMissing('weight_records', ['id' => $weightRecord->id]);
 });
@@ -160,7 +156,7 @@ test('a user cannot delete a weight record from another user pet', function () {
     $weightRecord = WeightRecord::factory()->for($pet)->create();
 
     $response = $this->actingAs(User::factory()->create())
-        ->delete(route('weightrecords.destroy', $weightRecord));
+        ->delete(route('weight-records.destroy', $weightRecord));
 
     $response->assertForbidden();
     $this->assertDatabaseHas('weight_records', ['id' => $weightRecord->id]);

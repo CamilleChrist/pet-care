@@ -55,9 +55,13 @@ Route::prefix('/pets')->controller(PetController::class)->middleware('auth')->gr
     Route::delete('/{pet}', 'destroy')->name('pets.destroy')->can('delete', 'pet');
 });
 
-Route::prefix('/weightrecords')->controller(WeightRecordController::class)->middleware('auth')->group(function () {
-    Route::get('/pet/{pet}', 'index')->name('weightrecords.index')->can('viewAny', [WeightRecord::class, 'pet']);
-    Route::get('/pet/{pet}/create', 'create')->name('weightrecords.create')->can('create', [WeightRecord::class, 'pet']);
-    Route::post('/', 'store')->name('weightrecords.store');
-    Route::delete('/{weightRecord}', 'destroy')->name('weightrecords.destroy')->can('delete', 'weightRecord');
+Route::prefix('/pets/{pet}/weight-records')->controller(WeightRecordController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('pets.weight-records.index')->can('viewAny', [WeightRecord::class, 'pet']);
+    Route::get('/create', 'create')->name('pets.weight-records.create')->can('create', [WeightRecord::class, 'pet']);
+    Route::post('/', 'store')->name('pets.weight-records.store')->can('create', [WeightRecord::class, 'pet']);
 });
+
+Route::delete('/weight-records/{weightRecord}', [WeightRecordController::class, 'destroy'])
+    ->name('weight-records.destroy')
+    ->middleware('auth')
+    ->can('delete', 'weightRecord');

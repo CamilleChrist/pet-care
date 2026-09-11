@@ -7,7 +7,7 @@
     <p class="mb-4">Ajout d'un poids</p>
 
     @include('weight-records._partials.form', [
-      'action' => route('weightrecords.store'),
+      'action' => route('pets.weight-records.store', $pet),
       'method' => 'POST',
       'weightRecord' => null,
       'pet' => $pet,

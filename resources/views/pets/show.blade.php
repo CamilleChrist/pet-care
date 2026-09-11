@@ -26,7 +26,7 @@
     <ul>
         <li>
             <a class="inline-block mb-4 text-blue-600 hover:underline"
-               href="{{ route('weightrecords.index', [$pet->id]) }}">Voir la courbe de poids
+               href="{{ route('pets.weight-records.index', [$pet->id]) }}">Voir la courbe de poids
             </a>
         <li>
             <a class="inline-block mb-4 text-blue-600 hover:underline" href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
