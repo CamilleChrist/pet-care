@@ -27,13 +27,13 @@ class WeightRecordController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreWeightRecordRequest $request)
+    public function store(StoreWeightRecordRequest $request, Pet $pet)
     {
-        $weightRecord = WeightRecord::create($request->validated());
+        $pet->weightRecords()->create($request->validated());
 
         return redirect()
-            ->route('weightrecords.index', $weightRecord->pet_id)
-            ->with('success', 'Poids ajouté pour '.$weightRecord->pet->name);
+            ->route('pets.weight-records.index', $pet)
+            ->with('success', 'Poids ajouté pour '.$pet->name);
     }
 
     /**
@@ -44,7 +44,7 @@ class WeightRecordController extends Controller
         $weightRecord->delete();
 
         return redirect()
-            ->route('weightrecords.index', $weightRecord->pet_id)
+            ->route('pets.weight-records.index', $weightRecord->pet_id)
             ->with('success', 'Un record a été supprimé');
     }
 }

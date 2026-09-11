@@ -2,7 +2,6 @@
     @csrf
     @method($method)
 
-    <input type="hidden" name="pet_id" value="{{ $pet->id }}">
     <label class="flex flex-col gap-1">
         Poids :*
         <input

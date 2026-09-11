@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Pet;
 use App\Models\WeightRecord;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,9 +13,7 @@ class StoreWeightRecordRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $pet = Pet::find($this->input('pet_id'));
-
-        return $pet === null || $this->user()->can('create', [WeightRecord::class, $pet]);
+        return $this->user()->can('create', [WeightRecord::class, $this->route('pet')]);
     }
 
     /**
@@ -27,7 +24,6 @@ class StoreWeightRecordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pet_id' => 'required|exists:pets,id',
             'weight' => 'required|numeric|between:0,150',
             'recorded_at' => 'required|date_format:Y-m-d\TH:i|before_or_equal:now',
         ];
