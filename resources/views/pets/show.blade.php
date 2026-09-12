@@ -28,6 +28,12 @@
             <a class="inline-block mb-4 text-blue-600 hover:underline"
                href="{{ route('pets.weight-records.index', [$pet->id]) }}">Voir la courbe de poids
             </a>
+        </li>
+        <li>
+            <a class="inline-block mb-4 text-blue-600 hover:underline"
+               href="{{ route('pets.vaccination-records.index', [$pet->id]) }}">Voir les vaccins
+            </a>
+        </li>
         <li>
             <a class="inline-block mb-4 text-blue-600 hover:underline" href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
         </li>
