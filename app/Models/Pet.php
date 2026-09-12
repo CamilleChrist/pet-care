@@ -43,4 +43,9 @@ class Pet extends Model
     {
         return $this->hasMany(WeightRecord::class)->orderBy('recorded_at', 'desc');
     }
+
+    public function vaccinationRecords(): HasMany
+    {
+        return $this->hasMany(VaccinationRecord::class);
+    }
 }
