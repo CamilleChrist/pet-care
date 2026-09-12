@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\VaccinationRecordController;
 use App\Http\Controllers\WeightRecordController;
+use App\Models\VaccinationRecord;
 use App\Models\WeightRecord;
 use Illuminate\Support\Facades\Route;
 
@@ -65,3 +67,25 @@ Route::delete('/weight-records/{weightRecord}', [WeightRecordController::class, 
     ->name('weight-records.destroy')
     ->middleware('auth')
     ->can('delete', 'weightRecord');
+
+// ****  PETS - Vaccination Records  **** //
+Route::prefix('/pets/{pet}/vaccination-records')->controller(VaccinationRecordController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'index')->name('pets.vaccination-records.index')->can('viewAny', [VaccinationRecord::class, 'pet']);
+    Route::get('/create', 'create')->name('pets.vaccination-records.create')->can('create', [VaccinationRecord::class, 'pet']);
+    Route::post('/', 'store')->name('pets.vaccination-records.store')->can('create', [VaccinationRecord::class, 'pet']);
+});
+
+Route::get('/vaccination-records/{vaccinationRecord}', [VaccinationRecordController::class, 'edit'])
+    ->name('vaccination-records.edit')
+    ->can('update', 'vaccinationRecord')
+    ->middleware('auth');
+
+Route::patch('/vaccination-records/{vaccinationRecord}', [VaccinationRecordController::class, 'update'])
+    ->name('vaccination-records.update')
+    ->can('update', 'vaccinationRecord')
+    ->middleware('auth');
+
+Route::delete('/vaccination-records/{vaccinationRecord}', [VaccinationRecordController::class, 'destroy'])
+    ->name('vaccination-records.destroy')
+    ->middleware('auth')
+    ->can('delete', 'vaccinationRecord');
