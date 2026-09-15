@@ -1,0 +1,70 @@
+@use "../_partials/mixins" as *;
+
+.features {
+    padding: 80px 0;
+
+    @include breakpoint-down($breakpoint-md) {
+        padding: 48px 0;
+    }
+
+    &__subtitle {
+        margin: 0 0 var(--space-4);
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--color-neutral-600);
+    }
+
+    &__title {
+        @include font-title();
+        margin: 0 0 var(--space-4);
+    }
+
+    &__text {
+        margin: 0 0 var(--space-10);
+    }
+
+    &__list {
+        @include flex(row, flex-start, stretch);
+        flex-wrap: wrap;
+        gap: var(--space-6);
+    }
+}
+
+.feature {
+    @include flex(column, flex-start, flex-start);
+    flex: 1 1 260px;
+    gap: var(--space-4);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    box-shadow: var(--shadow);
+
+    &__icon {
+        @include flex(row, center, center);
+        width: 48px;
+        height: 48px;
+        margin: 0;
+        border-radius: var(--radius-md);
+        background: var(--surface-accent-soft);
+        color: var(--color-primary);
+        font-weight: 700;
+
+        svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 2;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+    }
+
+    &__description {
+        margin: 0;
+    }
+}

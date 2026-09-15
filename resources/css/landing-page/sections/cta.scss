@@ -1,0 +1,95 @@
+@use "../_partials/mixins" as *;
+
+.cta {
+    position: relative;
+    background: var(--color-neutral-100);
+    padding: 80px 0;
+
+    @include breakpoint-down($breakpoint-md) {
+        padding: 48px 0;
+    }
+
+    &__watermark {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        color: var(--color-sand-300);
+        pointer-events: none;
+    }
+
+    &__paw {
+        position: absolute;
+        display: block;
+
+        &--top {
+            top: -40px;
+            left: 4%;
+            width: 260px;
+            height: 260px;
+            opacity: 0.55;
+            transform: rotate(-18deg);
+        }
+
+        &--bottom {
+            bottom: 0;
+            right: 6%;
+            width: 340px;
+            height: 340px;
+            opacity: 0.5;
+            transform: rotate(14deg);
+        }
+    }
+}
+
+.panel {
+    @include flex(row, space-between, center, var(--space-10), var(--space-10));
+    width: 100%;
+    max-width: var(--container-xl);
+    background: var(--color-secondary);
+    border-radius: var(--radius-md);
+    padding: var(--space-10);
+    z-index: 1;
+    position: relative;
+
+    @include breakpoint-down($breakpoint-md) {
+        flex-direction: column-reverse;
+    }
+
+    &__content {
+        @include flex(column, center, flex-start);
+        flex: 1 1 420px;
+
+        @include breakpoint-down($breakpoint-md) {
+            flex: auto;
+        }
+    }
+
+    &__subtitle {
+        margin: 0 0 var(--space-4);
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--color-neutral-700);
+    }
+
+    &__title {
+        @include font-title(32px, 48px);
+        margin: 0 0 var(--space-4);
+    }
+
+    &__description {
+        margin: 0 0 var(--space-6);
+    }
+
+    &__image {
+        flex: 1 1 320px;
+        max-width: 420px;
+        width: 100%;
+        border-radius: var(--radius-md);
+
+        @include breakpoint-down($breakpoint-md) {
+            max-width: none;
+            flex: auto;
+        }
+    }
+}

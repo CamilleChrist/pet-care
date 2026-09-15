@@ -1,0 +1,56 @@
+@use "../_partials/mixins" as *;
+
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+}
+
+body {
+    margin: 0;
+    background: var(--color-neutral-100);
+    color: var(--color-text);
+    font: 400 var(--font-size-base)/1.5 var(--font-body);
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+
+    &:hover {
+        color: var(--link-hover);
+        text-decoration: underline;
+    }
+}
+
+.container {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding-left: 32px;
+    padding-right: 32px;
+
+    @include breakpoint-down($breakpoint-md) {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color-neutral-900);
+}
+
+.hidden-md-down {
+    @include breakpoint-down($breakpoint-md) {
+        display: none;
+    }
+}
+
+.hidden-md-up {
+    @include breakpoint-up($breakpoint-md) {
+        display: none;
+    }
+}

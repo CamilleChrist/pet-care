@@ -1,0 +1,13 @@
+@use "landing-page/_partials/reset" as *;
+@use "landing-page/_partials/mixins" as *;
+@use "landing-page/_partials/variables" as *;
+@use "landing-page/_partials/buttons" as *;
+@use "landing-page/_partials/global" as *;
+
+@use "landing-page/header" as *;
+@use "landing-page/footer" as *;
+
+@use "landing-page/sections/hero" as *;
+@use "landing-page/sections/how-it-works" as *;
+@use "landing-page/sections/features" as *;
+@use "landing-page/sections/cta" as *;
