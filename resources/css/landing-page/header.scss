@@ -1,0 +1,137 @@
+@use "_partials/mixins" as *;
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--color-neutral-100);
+    border-bottom: 1px solid var(--card-border);
+
+    > .container {
+        @include flex(row, flex-start, center);
+        gap: var(--space-6);
+        padding: var(--space-2) var(--space-6);
+
+        @include breakpoint-down($breakpoint-md) {
+            gap: var(--space-4);
+            padding: var(--space-4);
+        }
+    }
+
+    &__logo {
+        margin: 0;
+        flex: 0 0 auto;
+
+        @include breakpoint-down($breakpoint-md) {
+            order: 1;
+        }
+
+        a {
+            @include flex(row, center, center, 8px);
+            font: 800 var(--font-size-lg)/1 var(--font-title);
+            color: var(--color-neutral-900);
+
+            span {
+                @include flex(row, center, center);
+                width: 36px;
+                height: 36px;
+                border-radius: var(--radius-pill);
+                background: var(--color-secondary);
+                font: 800 var(--font-size-lg)/1 var(--font-title);
+            }
+        }
+    }
+
+    &__burger {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+
+        @include breakpoint-down($breakpoint-md) {
+            display: flex;
+            order: 3;
+        }
+
+        span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: var(--color-text);
+            transition: transform .18s ease, opacity .18s ease;
+        }
+
+        &--open {
+            span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+
+            span:nth-child(2) {
+                opacity: 0;
+            }
+
+            span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+        }
+    }
+
+    &-nav {
+        margin-left: auto;
+
+        @include breakpoint-down($breakpoint-md) {
+            order: 4;
+            flex-basis: 100%;
+            margin-left: 0;
+            width: 100%;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .2s ease;
+
+            &--open {
+                max-height: 200px;
+            }
+        }
+
+        &-list {
+            @include flex(row, flex-start, center);
+            gap: var(--space-6);
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font: 500 var(--font-size-base)/1 var(--font-body);
+
+            @include breakpoint-down($breakpoint-md) {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-4);
+                padding: var(--space-4) 0;
+            }
+
+            &__item {
+                a {
+                    color: var(--color-text);
+
+                    &:hover {
+                        color: var(--link-hover);
+                    }
+                }
+            }
+        }
+    }
+
+    > .container > .btn--primary {
+        @include breakpoint-down($breakpoint-md) {
+            order: 2;
+            margin-left: auto;
+            padding: var(--space-2) var(--space-4);
+            font-size: var(--font-size-xs);
+        }
+    }
+}

@@ -1,0 +1,62 @@
+@use "../_partials/mixins" as *;
+
+.how-it-works {
+    background: var(--color-primary);
+    color: var(--color-text-light);
+    padding: 80px 0;
+
+    @include breakpoint-down($breakpoint-md) {
+        padding: 48px 0;
+    }
+
+    &__subtitle {
+        margin: 0 0 var(--space-4);
+        font-size: var(--font-size-xs);
+        color: var(--color-primary-soft);
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    &__title {
+        @include font-title();
+        margin: 0 0 var(--space-10);
+        color: var(--color-text-light);
+    }
+
+    &__steps {
+        @include flex(row, flex-start, stretch);
+        flex-wrap: wrap;
+        gap: var(--space-6);
+    }
+}
+
+.step {
+    flex: 1 1 260px;
+    background: var(--color-primary-dark);
+    border: 1px solid var(--color-primary-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+
+    &__number {
+        @include flex(row, center, center);
+        width: 40px;
+        height: 40px;
+        margin: 0 0 var(--space-4);
+        border-radius: var(--radius-md);
+        background: var(--color-secondary);
+        color: var(--color-text);
+        font: 800 19px/1 var(--font-title);
+    }
+
+    &__title {
+        margin: 0 0 var(--space-2);
+        font-size: var(--font-size-xl);
+        font-weight: 700;
+        color: var(--color-text-light);
+    }
+
+    &__description {
+        margin: 0;
+        color: var(--color-primary-soft);
+    }
+}

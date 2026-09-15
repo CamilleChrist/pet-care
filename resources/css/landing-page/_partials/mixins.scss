@@ -1,0 +1,32 @@
+// Points de rupture (Sass, pas des custom properties : les media queries ne lisent pas var())
+$breakpoint-sm: 480px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+
+@mixin breakpoint-up($width) {
+    @media (min-width: $width) {
+        @content;
+    }
+}
+
+@mixin breakpoint-down($width) {
+    @media (max-width: $width - 1px) {
+        @content;
+    }
+}
+
+@mixin flex($direction: row, $justify: flex-start, $align: stretch, $column-gap: 0, $row-gap: 0) {
+    display: flex;
+    flex-direction: $direction;
+    justify-content: $justify;
+    align-items: $align;
+    flex-wrap: wrap;
+    row-gap: $row-gap;
+    column-gap: $column-gap;
+}
+
+@mixin font-title($font-size-min: 28px, $font-size-max: 36px, $font-weight: 800) {
+    font-family: var(--font-title);
+    font-weight: $font-weight;
+    font-size: clamp($font-size-min, 4.6vw, $font-size-max);
+}
