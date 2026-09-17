@@ -1,3 +1,43 @@
+# AGENTS.md
+
+This file provides guidance to AI coding agents when working with code in this repository.
+
+## Project
+
+Pet Care: a Laravel 13 app for tracking pet health (weight, vaccinations, vet visits). French-language UI and validation messages. v1 is in progress — only auth and pet/weight/vaccination-record CRUD exist so far (see README.md for the full feature/data-model target). UI design is also still in progress.
+
+Stack: PHP 8.3+, Blade views, Sass (compiled by Vite; app views are migrating off Tailwind CSS 4 to Sass/BEM — see Architecture), SQLite locally, Pest for tests, Pint for style. `.ai/rules/general.md` defines the git workflow (GitHub Flow, Conventional Commits branch names/messages) — read it before starting work on a branch or PR.
+
+## Commands
+
+```bash
+composer setup   # install PHP/JS deps, create .env, migrate, build assets (first-time setup)
+composer dev      # run php artisan dev (server + queue worker + logs + Vite) at http://localhost:8000
+composer test     # clear config cache, then php artisan test
+php artisan test --compact                 # full suite
+php artisan test path/to/FileTest.php      # single file
+php artisan test --filter=testName         # single test
+vendor/bin/pest path/to/FileTest.php       # pest directly, same path/--filter args
+vendor/bin/pint --dirty --format agent     # format only changed PHP files (run after editing PHP)
+npm run dev       # Vite dev server
+npm run build     # production asset build
+```
+
+## Architecture
+
+- **Species lives on `Breed`, not `Pet`.** `breeds` has a `species` enum column (`dog`/`cat`) with a `(name, species)` unique constraint; `Pet` only has `breed_id` (nullable). To filter or display a pet's species, go through `$pet->breed->species`.
+- **`Breed` and `Vaccine` are reference/lookup data**, not user-generated: both are `#[WithoutTimestamps]` and seeded from static PHP arrays in `database/data/breeds.php` and `database/data/vaccines.php` via `database/seeders/BreedSeeder.php` / `VaccineSeeder.php`.
+- **A pet's current weight is never stored on `Pet`.** It's always the most recent row in `weight_records` (`Pet::weightRecords()` is pre-ordered `recorded_at desc`); same pattern applies to vaccination history via `vaccination_records`.
+- **`VaccinationRecord` supports vaccines outside the seeded list**: `vaccine_id` is nullable with a `custom_name` fallback; use the `display_name` accessor (`vaccine?->name ?? custom_name`) rather than reading either column directly.
+- **Authorization is policy-based per owner.** `PetPolicy`, `WeightRecordPolicy`, `VaccinationRecordPolicy` all gate on `$user->id === $pet->user_id` (weight/vaccination records check ownership through their parent pet). Routes enforce this with `->can(...)` in `routes/web.php` rather than in-controller checks — follow that convention for new nested resources.
+- **Routes are grouped by resource with `Route::controller(...)->group(...)`** in the single `routes/web.php` (no route files per domain yet). Nested resources (`/pets/{pet}/weight-records`, `/pets/{pet}/vaccination-records`) use `->can('viewAny'|'create', [Model::class, 'pet'])` for the pet-scoped ability checks.
+- **Views are migrating from `@include` partials to Blade components.** New reusable UI (icons, forms, buttons, cards, etc.) should be dedicated `<x-*>` components, not `@include` partials. The existing icon dispatcher (`<x-icon name="...">` + `@include`d icon fragments) and form partials (`_partials/form.blade.php`) still work as-is until migrated — don't mix the two approaches within one view.
+- **CSS is migrating off Tailwind to Sass + BEM.** New/updated app-view styling follows the landing page's structure (`resources/css/landing-page/**`: BEM naming — `.block`, `.block__element`, `.block__element--modifier` — one file per section under `sections/`, shared reset/variables/mixins/buttons in `_partials/`), not Tailwind. Existing app views still use Tailwind utility classes (`resources/css/app.css`) until migrated — don't mix Tailwind and Sass/BEM within the same view.
+
+## Documentation maintenance
+
+Whenever a change makes existing documentation wrong or incomplete, update it as part of the same change — don't leave it for later. This covers `README.md`, `CLAUDE.md`, `AGENTS.md`, and anything under `.claude/` (skills, rules). Examples: a new/changed command or script → update the Commands section here and in `README.md`; a changed model, route, or architectural pattern → update the Architecture section; a new house convention worth enforcing → record it via `record-rule` (`.ai/rules`) rather than editing `.claude/skills/**` by hand.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
