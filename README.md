@@ -6,9 +6,12 @@ Chaque utilisateur crée un compte, y enregistre ses animaux (chien ou chat) et 
 dans le temps leur poids, leurs vaccins, leurs notes de santé et leurs visites
 chez le vétérinaire.
 
-> **État du projet :** v1 en cours de développement. Seule l'authentification est
-> implémentée pour le moment (inscription, connexion, déconnexion, réinitialisation
-> du mot de passe).
+> **État du projet :** v1 en cours de développement. L'authentification, la gestion
+> des fiches animaux, le suivi du poids et le suivi des vaccins sont fonctionnels.
+> Restent les finitions : tableau de bord récapitulatif, mise en avant des rappels
+> de vaccin à venir/dépassés, poids le plus récent affiché sur la fiche animal,
+> traduction complète en français et données de démonstration. Le design de
+> l'interface est également en cours.
 
 ## Fonctionnalités de la v1
 
@@ -97,14 +100,19 @@ composer test
 
 ```
 app/
-  Http/Controllers/   Contrôleurs (AuthController, …)
-  Models/             Modèles Eloquent (User, …)
+  Enums/              Enums (PetGender, …)
+  Http/Controllers/   Contrôleurs (AuthController, PetController, WeightRecordController, VaccinationRecordController)
+  Http/Requests/      Form Requests de validation
+  Models/             Modèles Eloquent (User, Pet, Breed, WeightRecord, Vaccine, VaccinationRecord)
+  Policies/           Policies d'autorisation (une par ressource appartenant à un pet)
 database/
+  data/               Données de référence statiques (races, vaccins)
   migrations/         Migrations de la base
   factories/          Factories pour les tests
+  seeders/            Seeders (races et vaccins de référence)
 resources/
-  views/              Vues Blade (auth/, layouts/)
-  css/ js/            Assets compilés par Vite
+  views/              Vues Blade (auth/, pets/, weight-records/, vaccination-records/, layouts/)
+  css/ js/            Assets compilés par Vite (Tailwind pour l'app, Sass pour la landing page)
 routes/
   web.php             Routes web
 tests/                Tests Pest
@@ -122,30 +130,30 @@ La v1 avance par étapes, chacune apportant quelque chose d'utilisable.
 
 ### 2. Espace personnel
 
-- [ ] Arriver sur son espace privé après connexion
-- [ ] Naviguer entre les pages de l'application
-- [ ] Réserver l'accès aux personnes connectées
+- [x] Arriver sur son espace privé après connexion
+- [x] Naviguer entre les pages de l'application
+- [x] Réserver l'accès aux personnes connectées
 
 ### 3. Fiches animaux
 
-- [ ] Ajouter un animal : nom, espèce, race, date de naissance, sexe
-- [ ] Ajouter une photo à la fiche
-- [ ] Renseigner les notes de santé et la date de la dernière visite chez le vétérinaire
-- [ ] Consulter la fiche d'un animal
-- [ ] Modifier et supprimer un animal
-- [ ] Ne voir que ses propres animaux
+- [x] Ajouter un animal : nom, espèce, race, date de naissance, sexe
+- [x] Ajouter une photo à la fiche
+- [x] Renseigner les notes de santé et la date de la dernière visite chez le vétérinaire
+- [x] Consulter la fiche d'un animal
+- [x] Modifier et supprimer un animal
+- [x] Ne voir que ses propres animaux
 
 ### 4. Suivi du poids
 
-- [ ] Enregistrer une pesée
-- [ ] Consulter l'historique du poids d'un animal
+- [x] Enregistrer une pesée
+- [x] Consulter l'historique du poids d'un animal
 - [ ] Voir sur la fiche le poids le plus récent
 
 ### 5. Suivi des vaccins
 
-- [ ] Enregistrer un vaccin avec sa date d'administration
-- [ ] Indiquer la date du prochain rappel
-- [ ] Consulter l'historique des vaccins d'un animal
+- [x] Enregistrer un vaccin avec sa date d'administration
+- [x] Indiquer la date du prochain rappel
+- [x] Consulter l'historique des vaccins d'un animal
 - [ ] Repérer les rappels à venir et ceux dépassés
 
 ### 6. Finitions
