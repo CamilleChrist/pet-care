@@ -1,0 +1,88 @@
+@use "../abstracts/mixins" as *;
+
+// Écran scindé : bandeau brand (soleil) + carte formulaire.
+// Mobile : en colonne, la carte remonte sur le bandeau. ≥ md : deux colonnes.
+.auth {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    @include breakpoint-up($breakpoint-md) {
+        flex-direction: row;
+    }
+
+    &__brand {
+        @include flex(column, flex-start, stretch, 0, var(--space-4));
+        padding: var(--space-8) var(--space-4) var(--space-10);
+        background: var(--color-secondary);
+        color: var(--color-neutral-900);
+
+        @include breakpoint-up($breakpoint-md) {
+            flex: 0 0 560px;
+            padding: var(--space-10);
+            row-gap: var(--space-6);
+        }
+    }
+
+    &__brand-header {
+        @include flex(column, flex-start, flex-start, 0, var(--space-2));
+
+        @include breakpoint-up($breakpoint-md) {
+            @include flex(row, space-between, center, var(--space-4), var(--space-2));
+        }
+    }
+
+    &__tagline {
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+
+        @include breakpoint-up($breakpoint-md) {
+            padding: 6px 14px;
+            border: 1px solid rgba(0, 0, 0, .25);
+            border-radius: var(--radius-pill);
+        }
+    }
+
+    &__headline {
+        @include font-title(32px, 40px);
+        line-height: 1.05;
+        max-width: 600px;
+        text-wrap: pretty;
+    }
+
+    &__description {
+        max-width: 600px;
+    }
+
+    &__panel {
+        @include flex(column, center, center, 0, var(--space-6));
+        flex: 1;
+        margin-top: calc(-1 * var(--radius-md));
+        padding: var(--space-6) var(--space-4);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        background: var(--color-neutral-100);
+
+        @include breakpoint-up($breakpoint-md) {
+            margin-top: 0;
+            padding: var(--space-10);
+            border-radius: 0;
+        }
+    }
+
+    &__card {
+        width: 100%;
+        max-width: 480px;
+
+        @include breakpoint-up($breakpoint-md) {
+            padding: var(--space-8);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+        }
+    }
+
+    &__status {
+        margin-bottom: var(--space-4);
+    }
+}

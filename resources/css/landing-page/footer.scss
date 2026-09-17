@@ -1,4 +1,4 @@
-@use "_partials/mixins" as *;
+@use "../abstracts/mixins" as *;
 
 .footer {
     background: var(--color-neutral-800);
@@ -29,20 +29,7 @@
     }
 
     &__logo {
-        @include flex(row, flex-start, center, 8px);
-        font: 800 var(--font-size-lg)/1 var(--font-title);
-        color: var(--color-text-light);
-        margin: 0 0 var(--space-4);
-
-        span {
-            @include flex(row, center, center);
-            @include font-title(2px, 22px, 800);
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-pill);
-            background: var(--color-secondary);
-            color: var(--color-text);
-        }
+        margin-bottom: var(--space-4);
     }
 
     &__description {

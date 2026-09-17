@@ -1,6 +1,4 @@
-@extends('layouts.base')
-
-@section('content')
+<x-layouts.auth title="Se connecter">
 
     <h1 class="text-xl font-bold mb-4">Se connecter !</h1>
     <form method="post" class="flex flex-col gap-4">
@@ -27,4 +25,4 @@
     @endif
 
     <a class="mt-4 inline-block text-blue-600 hover:underline" href="{{ route('password.request') }}">Mot de passe oublié ?</a>
-@endsection
+</x-layouts.auth>

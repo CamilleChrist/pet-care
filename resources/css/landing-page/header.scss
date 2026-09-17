@@ -1,4 +1,4 @@
-@use "_partials/mixins" as *;
+@use "../abstracts/mixins" as *;
 
 .header {
     position: sticky;
@@ -19,26 +19,10 @@
     }
 
     &__logo {
-        margin: 0;
         flex: 0 0 auto;
 
         @include breakpoint-down($breakpoint-md) {
             order: 1;
-        }
-
-        a {
-            @include flex(row, center, center, 8px);
-            font: 800 var(--font-size-lg)/1 var(--font-title);
-            color: var(--color-neutral-900);
-
-            span {
-                @include flex(row, center, center);
-                width: 36px;
-                height: 36px;
-                border-radius: var(--radius-pill);
-                background: var(--color-secondary);
-                font: 800 var(--font-size-lg)/1 var(--font-title);
-            }
         }
     }
 

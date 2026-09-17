@@ -1,0 +1,37 @@
+@use "../abstracts/mixins" as *;
+
+// Wordmark « P PetCare » : <a|p class="logo"><span>P</span> PetCare</…>
+.logo {
+    @include flex(row, flex-start, center, var(--space-2));
+    font: 800 var(--font-size-lg)/1 var(--font-title);
+    color: var(--color-neutral-900);
+
+    &:hover {
+        color: var(--color-neutral-900);
+        text-decoration: none;
+    }
+
+    span {
+        @include flex(row, center, center);
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-pill);
+        background: var(--color-secondary);
+        color: var(--color-text);
+    }
+
+    // Sur fond sombre (footer)
+    &--inverse {
+        color: var(--color-text-light);
+
+        &:hover {
+            color: var(--color-text-light);
+        }
+    }
+
+    // Sur fond soleil (bandeau auth)
+    &--on-brand span {
+        background: var(--color-neutral-900);
+        color: var(--color-secondary);
+    }
+}

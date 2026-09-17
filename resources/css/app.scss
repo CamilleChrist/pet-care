@@ -1,0 +1,14 @@
+// Ordre ITCSS : base (reset, tokens, éléments) → composants partagés → layouts de l'app → utilitaires.
+@use "base/reset";
+@use "base/variables";
+@use "base/global";
+
+@use "components/buttons";
+@use "components/logo";
+
+@use "app/app";
+@use "app/nav/sidebar";
+@use "app/nav/bottom-nav";
+@use "app/auth";
+
+@use "utilities/helpers";

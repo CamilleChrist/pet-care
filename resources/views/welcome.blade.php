@@ -7,11 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>PetCare - Application suivi de santé pour chiens et chats</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap"
-        rel="stylesheet">
+    @fonts
 
     @vite(['resources/css/landing.scss', 'resources/js/app.js'])
 </head>
@@ -20,7 +16,7 @@
 <!-- Header -->
 <header class="header">
     <div class="container">
-        <h1 class="header__logo"><a href="{{ route('welcome') }}"><span>P</span> PetCare</a></h1>
+        <h1 class="header__logo"><a class="logo" href="{{ route('welcome') }}"><span>P</span> PetCare</a></h1>
 
         <button type="button" class="header__burger" aria-expanded="false" aria-controls="header-nav"
                 aria-label="Ouvrir le menu">
@@ -192,7 +188,7 @@
     <div class="container">
         <div class="footer__row">
             <div class="footer__col">
-                <p class="footer__logo"><span>P</span> PetCare</p>
+                <p class="logo logo--inverse footer__logo"><span>P</span> PetCare</p>
                 <p class="footer__description">Le suivi de santé de tes chiens et chats : vaccins, poids, notes, visites véto.</p>
             </div>
 

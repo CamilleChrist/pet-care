@@ -1,0 +1,21 @@
+@use "../abstracts/mixins" as *;
+
+// Coquille connectée : bottom-nav en mobile, sidebar + contenu côte à côte dès md.
+.app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    @include breakpoint-up($breakpoint-md) {
+        flex-direction: row;
+    }
+
+    &__main {
+        flex: 1;
+        padding: var(--space-4);
+
+        @include breakpoint-up($breakpoint-md) {
+            padding: var(--space-10);
+        }
+    }
+}

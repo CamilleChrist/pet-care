@@ -1,0 +1,27 @@
+@use "../../abstracts/mixins" as *;
+
+.sidebar {
+    display: none;
+
+    @include breakpoint-up($breakpoint-md) {
+        @include flex(column, space-between, stretch);
+        flex: none;
+        width: 264px;
+    }
+
+    &__nav {
+        @include flex(column, flex-start, stretch, 0, var(--space-2));
+        list-style: none;
+        padding: var(--space-6) var(--space-4);
+    }
+
+    &__nav-link {
+        display: block;
+        padding: var(--space-3) var(--space-4);
+        border-radius: var(--radius-sm);
+    }
+
+    &__footer {
+        padding: var(--space-4);
+    }
+}

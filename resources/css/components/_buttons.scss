@@ -1,4 +1,4 @@
-@use "mixins" as *;
+@use "../abstracts/mixins" as *;
 
 .btn {
     @include flex(row, center, center);
