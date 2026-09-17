@@ -1,0 +1,18 @@
+@use "../../abstracts/mixins" as *;
+
+.bottom-nav {
+    @include flex(row, space-around, center);
+    position: sticky;
+    bottom: 0;
+    flex: none;
+    height: 72px;
+
+    @include breakpoint-up($breakpoint-md) {
+        display: none;
+    }
+
+    &__item {
+        @include flex(column, flex-start, center, 0, var(--space-1));
+        font-size: var(--font-size-xs);
+    }
+}

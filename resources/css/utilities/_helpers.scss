@@ -1,0 +1,26 @@
+@use "../abstracts/mixins" as *;
+
+.container {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+
+    @include breakpoint-down($breakpoint-md) {
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
+    }
+}
+
+.hidden-md-down {
+    @include breakpoint-down($breakpoint-md) {
+        display: none;
+    }
+}
+
+.hidden-md-up {
+    @include breakpoint-up($breakpoint-md) {
+        display: none;
+    }
+}

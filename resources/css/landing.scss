@@ -1,13 +1,16 @@
-@use "landing-page/_partials/reset" as *;
-@use "landing-page/_partials/mixins" as *;
-@use "landing-page/_partials/variables" as *;
-@use "landing-page/_partials/buttons" as *;
-@use "landing-page/_partials/global" as *;
+// Ordre ITCSS : base (reset, tokens, éléments) → composants partagés → sections de la landing → utilitaires.
+@use "base/reset";
+@use "base/variables";
+@use "base/global";
 
-@use "landing-page/header" as *;
-@use "landing-page/footer" as *;
+@use "components/buttons";
+@use "components/logo";
 
-@use "landing-page/sections/hero" as *;
-@use "landing-page/sections/how-it-works" as *;
-@use "landing-page/sections/features" as *;
-@use "landing-page/sections/cta" as *;
+@use "landing-page/header";
+@use "landing-page/footer";
+@use "landing-page/sections/hero";
+@use "landing-page/sections/how-it-works";
+@use "landing-page/sections/features";
+@use "landing-page/sections/cta";
+
+@use "utilities/helpers";

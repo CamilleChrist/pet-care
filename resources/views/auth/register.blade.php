@@ -1,6 +1,4 @@
-@extends('layouts.base')
-
-@section('content')
+<x-layouts.auth title="Créer un compte">
 
     <h1 class="text-xl font-bold mb-4">Créer un compte</h1>
 
@@ -36,4 +34,4 @@
             @endforeach
         </ul>
     @endif
-@endsection
+</x-layouts.auth>

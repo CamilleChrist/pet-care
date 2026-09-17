@@ -1,6 +1,4 @@
-@extends('layouts.base')
-
-@section('content')
+<x-layouts.auth title="Nouveau mot de passe" headline="Reprenez la main sur votre compte." description="Le lien reçu par e-mail est valable 60 minutes. Les fiches de vos animaux restent intactes.">
 
     <h1 class="text-xl font-bold mb-4">Réinitialiser le mot de passe</h1>
 
@@ -33,4 +31,4 @@
             @endforeach
         </ul>
     @endif
-@endsection
+</x-layouts.auth>
