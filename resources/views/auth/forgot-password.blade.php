@@ -1,4 +1,9 @@
-<x-layouts.auth title="Mot de passe oublié" headline="Reprenez la main sur votre compte." description="Le lien reçu par e-mail est valable 60 minutes. Les fiches de vos animaux restent intactes.">
+<x-layouts.auth
+    :step="1"
+    title="Mot de passe oublié"
+    headline="Reprenez la main sur votre compte."
+    description="Le lien reçu par e-mail est valable 60 minutes. Les fiches de vos animaux restent intactes."
+>
 
     <h1 class="text-xl font-bold mb-4">Mot de passe oublié</h1>
 
@@ -19,4 +24,5 @@
             @endforeach
         </ul>
     @endif
+
 </x-layouts.auth>
