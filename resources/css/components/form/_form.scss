@@ -1,0 +1,43 @@
+@use "../../abstracts/mixins" as *;
+
+// Formulaire : une colonne de champs, .form__row met deux champs côte à côte dès md
+.form {
+    @include flex(column, flex-start, stretch, 0, var(--space-4));
+
+    &__row {
+        display: grid;
+        gap: var(--space-4);
+
+        @include breakpoint-up($breakpoint-md) {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .field {
+        @include flex(column, flex-start, stretch, 0, var(--space-2));
+
+        &__label {
+            font-size: var(--font-size-sm);
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        &__required {
+            color: var(--color-danger);
+        }
+
+        &__hint,
+        &__error {
+            font-size: var(--font-size-xs);
+        }
+
+        &__hint {
+            color: var(--color-neutral-600);
+        }
+
+        &__error {
+            font-weight: 600;
+            color: var(--color-danger);
+        }
+    }
+}
