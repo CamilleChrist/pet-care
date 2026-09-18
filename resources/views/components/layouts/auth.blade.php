@@ -56,13 +56,7 @@
     </aside>
 
     <main>
-        <div class="auth__card">
-            @if (session('status'))
-                <p class="auth__status">{{ session('status') }}</p>
-            @endif
-
-            {{ $slot }}
-        </div>
+        {{ $slot }}
     </main>
 
 </x-layouts.base>

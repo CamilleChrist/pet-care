@@ -26,10 +26,11 @@
         flex: 1;
         padding: var(--space-6) var(--space-4);
         border-radius: var(--radius-md) var(--radius-md) 0 0;
-        background: var(--color-neutral-100);
+        background: var(--color-neutral-50);
 
         @include breakpoint-up($breakpoint-md) {
             padding: var(--space-10);
+            background: var(--color-neutral-100);
         }
     }
 
@@ -154,20 +155,37 @@
         max-width: 600px;
     }
 
-    &__card {
+    // En mobile le formulaire est à plat sur le fond, la card n'apparaît qu'à partir de la tablette
+    main > .card {
         width: 100%;
         max-width: 480px;
 
-        @include breakpoint-up($breakpoint-md) {
-            padding: var(--space-8);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius-md);
-            background: var(--card-bg);
-            box-shadow: var(--shadow);
+        @include breakpoint-down($breakpoint-md) {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
         }
     }
 
-    &__status {
-        margin-bottom: var(--space-4);
+    // Séparateur « ou » entre connexion et création de compte
+    &__divider {
+        @include flex(row, center, center, var(--space-4));
+        font-size: var(--font-size-xs);
+        color: var(--color-neutral-600);
+
+        &::before,
+        &::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--color-sand-300);
+        }
+    }
+
+    // Lien secondaire centré sous le formulaire (« Mot de passe oublié ? », « Déjà un compte ? »)
+    &__link {
+        align-self: center;
+        font-size: var(--font-size-sm);
+        font-weight: 600;
     }
 }

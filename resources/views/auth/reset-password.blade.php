@@ -5,35 +5,26 @@
     description="Le lien reçu par e-mail est valable 60 minutes. Les fiches de vos animaux restent intactes."
 >
 
-    <h1 class="text-xl font-bold mb-4">Réinitialiser le mot de passe</h1>
+    <x-card tagTitle="h1" title="Nouveau mot de passe" :description="$email ? 'Pour '.$email.'.' : null">
 
-    <form method="post" action="{{ route('password.update') }}" class="flex flex-col gap-4">
-        @csrf
-        <input name="token" type="hidden" value="{{ $token }}">
+        {{-- Le jeton et l'e-mail viennent du lien reçu : leurs erreurs (lien expiré, e-mail inconnu) n'ont pas de champ visible --}}
+        @error('email')
+            <x-alert tone="danger">{{ $message }}</x-alert>
+        @enderror
 
-        <label class="flex flex-col gap-1">
-            Email :
-            <input name="email" type="email" value="{{ old('email', $email) }}" class="border p-2">
-        </label>
+        <form method="post" action="{{ route('password.update') }}" class="form">
+            @csrf
+            <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" name="email" value="{{ old('email', $email) }}">
 
-        <label class="flex flex-col gap-1">
-            Mot de passe
-            <input name="password" type="password" class="border p-2">
-        </label>
+            <x-form.input name="password" label="Mot de passe" type="password" icon="lock" hint="6 caractères minimum." required />
+            <x-form.input name="password_confirmation" label="Confirmer le mot de passe" type="password" icon="lock" hint="Saisissez-le une seconde fois." required />
 
-        <label class="flex flex-col gap-1">
-            Confirmer le mot de passe
-            <input name="password_confirmation" type="password" class="border p-2">
-        </label>
+            <button type="submit" class="btn--primary btn--block">Réinitialiser le mot de passe</button>
+        </form>
 
-        <button type="submit" class="bg-blue-600 text-white p-2 self-start">Réinitialiser le mot de passe</button>
-    </form>
+        <a class="auth__link" href="{{ route('login') }}">Revenir à la connexion</a>
 
-    @if ($errors->any())
-        <ul class="mt-4 flex flex-col gap-1">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
+    </x-card>
+
 </x-layouts.auth>
