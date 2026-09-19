@@ -1,0 +1,32 @@
+@use "../abstracts/mixins" as *;
+
+// En-tête de page : titre + description sous le fil d'Ariane.
+.page-header {
+    @include flex(row, space-between, flex-end, var(--space-6), var(--space-4));
+    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+
+    &__heading {
+        @include flex(column, flex-start, stretch, 0, var(--space-2));
+        min-width: 0;
+    }
+
+    &__actions {
+        display: none;
+        flex: none;
+        flex-wrap: wrap;
+
+        @include breakpoint-up($breakpoint-md) {
+            @include flex(row, flex-start, center, var(--space-2), var(--space-2));
+        }
+    }
+
+    &__title {
+        font: 700 var(--font-size-2xl)/1.25 var(--font-title);
+        letter-spacing: -0.03em;
+    }
+
+    &__description {
+        color: var(--color-neutral-600);
+    }
+}

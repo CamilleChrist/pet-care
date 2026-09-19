@@ -1,6 +1,11 @@
-<x-layouts.app title="Dashboard">
+<x-layouts.app title="Dashboard" :description="$description">
 
-    <h1 class="text-xl font-bold mb-4">Dashboard</h1>
+    <x-slot:actions>
+        <a href="{{ route('pets.create') }}" class="btn btn--primary">
+            <x-icon name="plus" class="btn__icon" />
+            Ajouter un animal
+        </a>
+    </x-slot>
 
     <p>Bienvenue {{ auth()->user()->name }}</p>
 

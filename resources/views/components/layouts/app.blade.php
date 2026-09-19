@@ -1,4 +1,7 @@
-@props(['title' => ''])
+@props([
+    'title' => '',
+    'description' => ''
+])
 
 @php
     $pets = auth()->user()->pets;
@@ -25,6 +28,18 @@
 
     <main>
         <x-breadcrumb />
+
+        <header class="page-header">
+            <div class="page-header__heading">
+                <h1 class="page-header__title">{{ $title }}</h1>
+                @if ($description)
+                    <p class="page-header__description">{{ $description }}</p>
+                @endif
+            </div>
+            @isset($actions)
+                <div class="page-header__actions">{{ $actions }}</div>
+            @endisset
+        </header>
 
         @if (session('success'))
             <p class="mb-4">{{ session('success') }}</p>
