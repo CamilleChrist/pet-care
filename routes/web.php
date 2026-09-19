@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\VaccinationRecordController;
 use App\Http\Controllers\WeightRecordController;
@@ -34,9 +35,7 @@ Route::controller(AuthController::class)->middleware('guest')->group(function ()
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // ****  DASHBOARD  **** //
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+Route::get('/dashboard', DashboardController::class)->name('dashboard')->middleware('auth');
 
 // ****  PETS  **** //
 Route::prefix('/pets')->controller(PetController::class)->middleware('auth')->group(function () {
