@@ -50,6 +50,28 @@
         }
     }
 
+    &--ghost {
+        @extend .btn;
+        background: transparent;
+        color: var(--color-neutral-600);
+
+        &:hover {
+            background: var(--color-neutral-200);
+            color: var(--color-neutral-900);
+        }
+    }
+
+    &--danger {
+        @extend .btn;
+        background: var(--color-danger);
+        color: var(--color-text-light);
+
+        &:hover {
+            background: var(--color-danger-dark);
+            color: var(--color-text-light);
+        }
+    }
+
     &--block {
         width: 100%;
     }
