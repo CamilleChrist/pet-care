@@ -14,32 +14,24 @@ Route::get('/', function () {
 })->name('welcome');
 
 // ****  AUTH  **** //
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::controller(AuthController::class)->middleware('guest')->group(function () {
+    Route::view('/login', 'auth.login')->name('login');
+    Route::view('/register', 'auth.register')->name('register');
+    Route::view('/forgot-password', 'auth.forgot-password')->name('password.request');
+    Route::get('/reset-password/{token}', function (string $token) {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => request('email'),
+        ]);
+    })->name('password.reset');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('password.request');
-
-Route::get('/reset-password/{token}', function (string $token) {
-    return view('auth.reset-password', [
-        'token' => $token,
-        'email' => request('email'),
-    ]);
-})->name('password.reset');
-
-Route::controller(AuthController::class)->group(function () {
     Route::post('/login', 'login')->name('login.attempt');
     Route::post('/register', 'register')->name('register.store');
-    Route::post('/logout', 'logout')->name('logout');
     Route::post('/forgot-password', 'forgotPassword')->name('password.email');
     Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // ****  DASHBOARD  **** //
 Route::get('/dashboard', function () {
