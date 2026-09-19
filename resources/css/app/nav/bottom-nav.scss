@@ -1,18 +1,57 @@
 @use "../../abstracts/mixins" as *;
 
+// Barre d'onglets mobile, collée en bas ; remplacée par la sidebar dès md.
 .bottom-nav {
-    @include flex(row, space-around, center);
+    @include flex(row, flex-start, stretch);
     position: sticky;
     bottom: 0;
     flex: none;
-    height: 72px;
+    padding: var(--space-2) var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom, 0px));
+    background: var(--card-bg);
+    border-top: 1px solid var(--card-border);
+    box-shadow: var(--shadow);
 
     @include breakpoint-up($breakpoint-md) {
         display: none;
     }
 
     &__item {
-        @include flex(column, flex-start, center, 0, var(--space-1));
+        @include flex(column, center, center, 0, var(--space-1));
+        flex: 1;
+        min-height: 48px;
+        border-radius: var(--radius-md);
         font-size: var(--font-size-xs);
+        font-weight: 500;
+        color: var(--color-neutral-600);
+        transition: var(--transition);
+
+        &:hover {
+            background: var(--color-neutral-100);
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        &[aria-current="page"] {
+            color: var(--color-primary-dark);
+            font-weight: 700;
+
+            .bottom-nav__icon {
+                background: var(--color-primary-soft);
+                color: var(--color-primary);
+            }
+        }
+    }
+
+    &__icon {
+        @include flex(row, center, center);
+        width: 40px;
+        height: 28px;
+        border-radius: var(--radius-pill);
+        transition: var(--transition);
+
+        svg {
+            width: 22px;
+            height: 22px;
+        }
     }
 }

@@ -1,27 +1,173 @@
 @use "../../abstracts/mixins" as *;
 
+// Sidebar de l'app : cachée sous md, rail icônes (80px) de md à lg, pleine largeur (264px) dès lg.
+// Le bouton .sidebar__toggle (sidebar-toggle.js) force l'un ou l'autre via .sidebar--collapsed / .sidebar--expanded.
+
+// Étendue : libellés, intitulé de groupe, items alignés à gauche, bouton replier en absolu à droite du logo.
+@mixin sidebar-expanded {
+    width: 264px;
+    padding: var(--space-6) var(--space-4);
+    align-items: stretch;
+
+    .sidebar__brand {
+        padding: 0 var(--space-2);
+        font-size: var(--font-size-lg);
+    }
+
+    .sidebar__toggle {
+        position: absolute;
+        top: var(--space-6);
+        right: var(--space-2);
+    }
+
+    .sidebar__group-label {
+        display: block;
+    }
+
+    .sidebar__item {
+        justify-content: flex-start;
+        padding: 0 var(--space-2);
+    }
+
+    .sidebar__label,
+    .sidebar__count {
+        display: inline;
+    }
+}
+
 .sidebar {
     display: none;
+    position: relative;
+    flex: none;
+    width: 80px;
+    padding: var(--space-6) var(--space-2);
+    background: var(--card-bg);
+    border-right: 1px solid var(--card-border);
+    transition: width .18s ease;
 
     @include breakpoint-up($breakpoint-md) {
-        @include flex(column, space-between, stretch);
-        flex: none;
-        width: 264px;
+        @include flex(column, flex-start, center, 0, var(--space-6));
+        flex-wrap: nowrap;
     }
 
-    &__nav {
-        @include flex(column, flex-start, stretch, 0, var(--space-2));
-        list-style: none;
-        padding: var(--space-6) var(--space-4);
+    &--expanded {
+        @include sidebar-expanded;
     }
 
-    &__nav-link {
-        display: block;
-        padding: var(--space-3) var(--space-4);
+    @include breakpoint-up($breakpoint-lg) {
+        &:not(.sidebar--collapsed) {
+            @include sidebar-expanded;
+        }
+    }
+
+    // Rail : seule la pastille du <x-logo> reste visible, le texte « PetCare » est masqué.
+    &__brand {
+        font-size: 0;
+
+        span {
+            font-size: var(--font-size-lg);
+        }
+    }
+
+    // Rail : dans le pied, au-dessus de la déconnexion (cf. maquette tablette).
+    &__toggle {
+        @include flex(row, center, center);
+        display: none;
+        width: 40px;
+        height: 40px;
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius-pill);
+        background: var(--card-bg);
+        color: var(--color-text);
+        transition: var(--transition);
+
+        @include breakpoint-up($breakpoint-md) {
+            display: flex;
+        }
+
+        &:hover {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-900);
+        }
+    }
+
+    &__group {
+        @include flex(column, flex-start, stretch, 0, var(--space-1));
+        width: 100%;
+    }
+
+    &__group-label {
+        display: none;
+        padding: 0 var(--space-2);
+        margin-bottom: var(--space-2);
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--color-neutral-600);
+    }
+
+    &__item {
+        @include flex(row, center, center, var(--space-2));
+        flex-wrap: nowrap;
+        width: 100%;
+        min-height: 44px;
         border-radius: var(--radius-sm);
+        color: var(--color-text);
+        transition: var(--transition);
+
+        &:hover {
+            background: var(--color-neutral-100);
+            color: var(--color-neutral-900);
+            text-decoration: none;
+        }
+
+        &[aria-current="page"] {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+            font-weight: 700;
+        }
+    }
+
+    &__icon {
+        flex: none;
+        width: 20px;
+        height: 20px;
+    }
+
+    &__avatar {
+        @include flex(row, center, center);
+        flex: none;
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-pill);
+        background: var(--color-primary-soft);
+        color: var(--color-primary);
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    &__label,
+    &__count {
+        display: none;
+    }
+
+    &__count {
+        margin-left: auto;
+        font-size: var(--font-size-xs);
+        color: var(--color-neutral-600);
+
+        [aria-current="page"] > & {
+            color: inherit;
+        }
     }
 
     &__footer {
-        padding: var(--space-4);
+        @include flex(column, flex-start, center, 0, var(--space-2));
+        width: 100%;
+        margin-top: auto;
     }
 }
