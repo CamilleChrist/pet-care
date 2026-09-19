@@ -57,7 +57,7 @@ la plus récente de son historique de poids.
 
 - **Backend :** PHP 8.3+, Laravel 13
 - **Vues :** Blade
-- **CSS :** Tailwind CSS 4, compilé par Vite
+- **CSS :** Sass + BEM, compilé par Vite (migration depuis Tailwind CSS 4 en cours sur les vues `pets/*` et `*-records/*`)
 - **Base de données :** SQLite (par défaut, en local)
 - **Tests :** Pest
 - **Style de code :** Laravel Pint
@@ -111,8 +111,8 @@ database/
   factories/          Factories pour les tests
   seeders/            Seeders (races et vaccins de référence)
 resources/
-  views/              Vues Blade (auth/, pets/, weight-records/, vaccination-records/, layouts/)
-  css/ js/            Assets compilés par Vite (Tailwind pour l'app, Sass pour la landing page)
+  views/              Vues Blade (auth/, pets/, weight-records/, vaccination-records/, components/ dont layouts/ et form/)
+  css/ js/            Assets compilés par Vite (Sass + BEM : base/, components/, app/, landing-page/)
 routes/
   web.php             Routes web
 tests/                Tests Pest

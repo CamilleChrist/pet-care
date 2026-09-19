@@ -19,6 +19,14 @@
     --color-sand-300: #E8DBD1; // Texte sur fond sombre (footer)
     --color-sand-400: #DDBDA4; // Survol des liens sur fond sombre
 
+    // Sémantiques (alertes, erreurs de formulaire)
+    --color-success: #307A4F;
+    --color-success-soft: #E0F5E6;
+    --color-danger: #C13C3B;
+    --color-danger-soft: #FFE9E5;
+    --color-info: #3E5FAD;
+    --color-info-soft: #E7EFFF;
+
     --color-text: var(--color-neutral-700);
     --color-text-light: var(--color-neutral-50);
 
@@ -37,9 +45,11 @@
 
     // Tailles de texte
     --font-size-xs: 13px; // Labels/eyebrows, petits textes (mentions légales, taglines)
+    --font-size-sm: 14px; // Descriptions secondaires (atouts auth)
     --font-size-base: 16px; // Texte courant (nav, boutons, corps de page, descriptions)
     --font-size-lg: 20px;   // Logo
     --font-size-xl: 22px;   // Titres de cartes
+    --font-size-2xl: 28px; // h1
 
     // Espacements (base 4px)
     --space-1: 4px;

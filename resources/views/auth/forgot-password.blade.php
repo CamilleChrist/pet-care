@@ -1,22 +1,30 @@
-<x-layouts.auth title="Mot de passe oublié" headline="Reprenez la main sur votre compte." description="Le lien reçu par e-mail est valable 60 minutes. Les fiches de vos animaux restent intactes.">
+<x-layouts.auth
+    :step="1"
+    title="Mot de passe oublié"
+    headline="Reprenez la main sur votre compte."
+    description="Le lien reçu par e-mail est valable 60 minutes. Les fiches de vos animaux restent intactes."
+>
 
-    <h1 class="text-xl font-bold mb-4">Mot de passe oublié</h1>
+    <x-card tagTitle="h1" title="Mot de passe oublié" description="Indiquez votre e-mail : vous recevrez un lien pour choisir un nouveau mot de passe.">
 
-    <form method="post" action="{{ route('password.email') }}" class="flex flex-col gap-4">
-        @csrf
-        <label class="flex flex-col gap-1">
-            Email :
-            <input name="email" type="email" value="{{ old('email') }}" class="border p-2">
-        </label>
+        @if (session('status'))
+            <x-alert tone="success">{{ session('status') }}</x-alert>
+        @endif
 
-        <button type="submit" class="bg-blue-600 text-white p-2 self-start">Envoyer le lien de réinitialisation</button>
-    </form>
+        <form method="post" action="{{ route('password.email') }}" class="form">
+            @csrf
+            <x-form.input name="email" label="E-mail" type="email" icon="mail" placeholder="camille@example.fr" required />
 
-    @if ($errors->any())
-        <ul class="mt-4 flex flex-col gap-1">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
+            <button type="submit" class="btn--primary btn--block">
+                <x-icon name="mail" class="btn__icon" />
+                Envoyer le lien
+            </button>
+        </form>
+
+        <x-alert tone="info">Rien reçu ? Vérifiez les indésirables avant de redemander un lien.</x-alert>
+
+        <a class="auth__link" href="{{ route('login') }}">Revenir à la connexion</a>
+
+    </x-card>
+
 </x-layouts.auth>

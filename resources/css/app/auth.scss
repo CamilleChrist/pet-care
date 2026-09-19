@@ -1,45 +1,146 @@
 @use "../abstracts/mixins" as *;
 
-// Écran scindé : bandeau brand (soleil) + carte formulaire.
-// Mobile : en colonne, la carte remonte sur le bandeau. ≥ md : deux colonnes.
 .auth {
-    display: flex;
-    flex-direction: column;
+    @include flex(column, flex-start, stretch);
     min-height: 100vh;
 
     @include breakpoint-up($breakpoint-md) {
         flex-direction: row;
     }
 
-    &__brand {
+    aside {
         @include flex(column, flex-start, stretch, 0, var(--space-4));
         padding: var(--space-8) var(--space-4) var(--space-10);
         background: var(--color-secondary);
         color: var(--color-neutral-900);
 
         @include breakpoint-up($breakpoint-md) {
-            flex: 0 0 560px;
+            flex: 0 0 clamp(380px, 40vw, 560px);
             padding: var(--space-10);
             row-gap: var(--space-6);
         }
     }
 
-    &__brand-header {
+    main {
+        @include flex(column, center, center, 0, var(--space-6));
+        flex: 1;
+        padding: var(--space-6) var(--space-4);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        background: var(--color-neutral-50);
+
+        @include breakpoint-up($breakpoint-md) {
+            padding: var(--space-10);
+            background: var(--color-neutral-100);
+        }
+    }
+
+    &-header {
         @include flex(column, flex-start, flex-start, 0, var(--space-2));
 
         @include breakpoint-up($breakpoint-md) {
             @include flex(row, space-between, center, var(--space-4), var(--space-2));
         }
+
+        &__tagline {
+            font-size: var(--font-size-xs);
+            font-weight: 700;
+
+            @include breakpoint-up($breakpoint-md) {
+                padding: 6px 14px;
+                border: 1px solid rgba(0, 0, 0, .25);
+                border-radius: var(--radius-pill);
+            }
+        }
     }
 
-    &__tagline {
-        font-size: var(--font-size-xs);
-        font-weight: 700;
+    // Liste des atouts : masquée en mobile, colonne en tablette, 3 colonnes en bureau
+    &-features {
+        display: none;
+        list-style: none;
+        margin: 0;
+        padding: 0;
 
         @include breakpoint-up($breakpoint-md) {
-            padding: 6px 14px;
-            border: 1px solid rgba(0, 0, 0, .25);
+            @include flex(column, flex-start, stretch, 0, var(--space-6));
+        }
+
+        &__item {
+            display: grid;
+            grid-template-columns: 20px 1fr;
+            column-gap: var(--space-4);
+            row-gap: var(--space-1);
+        }
+
+        &__icon {
+            width: 20px;
+            height: 20px;
+            align-self: start;
+        }
+
+        &__title {
+            font-weight: 700;
+        }
+
+        &__description {
+            font-size: var(--font-size-sm);
+            grid-column: 2;
+        }
+    }
+
+    // Étapes de réinitialisation : même grille que les atouts, pastille numérotée à la place de l'icône
+    &-steps {
+        display: none;
+        flex: 1;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        @include breakpoint-up($breakpoint-md) {
+            @include flex(column, flex-start, stretch, 0, var(--space-6));
+        }
+
+        &__item {
+            display: grid;
+            grid-template-columns: 32px 1fr;
+            column-gap: var(--space-4);
+            row-gap: var(--space-1);
+        }
+
+        &__number {
+            @include flex(row, center, center);
+            grid-row: span 2;
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid var(--color-neutral-900);
             border-radius: var(--radius-pill);
+            font: 800 15px/1 var(--font-title);
+
+            &--active {
+                border-color: var(--color-primary);
+                background: var(--color-primary);
+                color: var(--color-text-light);
+            }
+        }
+
+        &__title {
+            font-weight: 700;
+        }
+
+        &__description {
+            font-size: var(--font-size-sm);
+        }
+    }
+
+    &__back {
+        display: none;
+        padding-top: var(--space-6);
+        border-top: 1px solid rgba(0, 0, 0, .25);
+        font-size: var(--font-size-sm);
+        font-weight: 700;
+        color: var(--color-neutral-900);
+
+        @include breakpoint-up($breakpoint-md) {
+            display: block;
         }
     }
 
@@ -54,35 +155,37 @@
         max-width: 600px;
     }
 
-    &__panel {
-        @include flex(column, center, center, 0, var(--space-6));
-        flex: 1;
-        margin-top: calc(-1 * var(--radius-md));
-        padding: var(--space-6) var(--space-4);
-        border-radius: var(--radius-md) var(--radius-md) 0 0;
-        background: var(--color-neutral-100);
-
-        @include breakpoint-up($breakpoint-md) {
-            margin-top: 0;
-            padding: var(--space-10);
-            border-radius: 0;
-        }
-    }
-
-    &__card {
+    // En mobile le formulaire est à plat sur le fond, la card n'apparaît qu'à partir de la tablette
+    main > .card {
         width: 100%;
         max-width: 480px;
 
-        @include breakpoint-up($breakpoint-md) {
-            padding: var(--space-8);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius-md);
-            background: var(--card-bg);
-            box-shadow: var(--shadow);
+        @include breakpoint-down($breakpoint-md) {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
         }
     }
 
-    &__status {
-        margin-bottom: var(--space-4);
+    // Séparateur « ou » entre connexion et création de compte
+    &__divider {
+        @include flex(row, center, center, var(--space-4));
+        font-size: var(--font-size-xs);
+        color: var(--color-neutral-600);
+
+        &::before,
+        &::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--color-sand-300);
+        }
+    }
+
+    // Lien secondaire centré sous le formulaire (« Mot de passe oublié ? », « Déjà un compte ? »)
+    &__link {
+        align-self: center;
+        font-size: var(--font-size-sm);
+        font-weight: 600;
     }
 }

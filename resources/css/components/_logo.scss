@@ -1,6 +1,6 @@
 @use "../abstracts/mixins" as *;
 
-// Wordmark « P PetCare » : <a|p class="logo"><span>P</span> PetCare</…>
+// Wordmark « P PetCare » : <x-logo /> → <a class="logo"><span>P</span> PetCare</a>
 .logo {
     @include flex(row, flex-start, center, var(--space-2));
     font: 800 var(--font-size-lg)/1 var(--font-title);
@@ -17,11 +17,11 @@
         height: 36px;
         border-radius: var(--radius-pill);
         background: var(--color-secondary);
-        color: var(--color-text);
+        color: var(--color-neutral-900);
     }
 
     // Sur fond sombre (footer)
-    &--inverse {
+    &--white {
         color: var(--color-text-light);
 
         &:hover {
@@ -30,7 +30,7 @@
     }
 
     // Sur fond soleil (bandeau auth)
-    &--on-brand span {
+    &--dark span {
         background: var(--color-neutral-900);
         color: var(--color-secondary);
     }

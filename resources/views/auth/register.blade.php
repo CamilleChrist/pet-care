@@ -1,37 +1,25 @@
-<x-layouts.auth title="Créer un compte">
+<x-layouts.auth
+    title="Créer un compte"
+    description="Trois minutes suffisent. Le premier animal s'ajoute juste après."
+>
 
-    <h1 class="text-xl font-bold mb-4">Créer un compte</h1>
+    <x-card tagTitle="h1" title="Créer un compte" description="Trois minutes suffisent. Le premier animal s'ajoute juste après.">
 
-    <form method="post" action="" class="flex flex-col gap-4">
-        @csrf
-        <label class="flex flex-col gap-1">
-            Nom :
-            <input name="name" type="text" class="border p-2">
-        </label>
+        <form method="post" action="{{ route('register.store') }}" class="form">
+            @csrf
+            <x-form.input name="name" label="Nom" icon="user" placeholder="Camille Marchand" required />
+            <x-form.input name="email" label="E-mail" type="email" icon="mail" placeholder="camille@example.fr" required />
 
-        <label class="flex flex-col gap-1">
-            Email :
-            <input name="email" type="email" class="border p-2">
-        </label>
+            <div class="form__row">
+                <x-form.input name="password" label="Mot de passe" type="password" icon="lock" hint="6 caractères minimum." required />
+                <x-form.input name="password_confirmation" label="Confirmer le mot de passe" type="password" icon="lock" hint="Saisissez-le une seconde fois." required />
+            </div>
 
-        <label class="flex flex-col gap-1">
-            Mot de passe
-            <input name="password" type="password" class="border p-2">
-        </label>
+            <button type="submit" class="btn--primary btn--block">Créer un compte</button>
+        </form>
 
-        <label class="flex flex-col gap-1">
-            Confirmer le mot de passe
-            <input name="password_confirmation" type="password" class="border p-2">
-        </label>
+        <p class="auth__link">Déjà un compte ? <a href="{{ route('login') }}">Se connecter</a></p>
 
-        <button type="submit" class="bg-blue-600 text-white p-2 self-start">Créer un compte</button>
-    </form>
+    </x-card>
 
-    @if ($errors->any())
-        <ul class="mt-4 flex flex-col gap-1">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
 </x-layouts.auth>

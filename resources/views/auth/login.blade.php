@@ -1,28 +1,30 @@
 <x-layouts.auth title="Se connecter">
 
-    <h1 class="text-xl font-bold mb-4">Se connecter !</h1>
-    <form method="post" class="flex flex-col gap-4">
-        @csrf
-        <label class="flex flex-col gap-1">
-            Email :
-            <input name="email" type="email" class="border p-2">
-        </label>
+    <x-card tagTitle="h1" title="Se connecter" description="Retrouvez le carnet de vos animaux.">
 
-        <label class="flex flex-col gap-1">
-            Mot de passe
-            <input name="password" type="password" class="border p-2">
-        </label>
+        @if (session('status'))
+            <x-alert tone="success">{{ session('status') }}</x-alert>
+        @endif
 
-        <button type="submit" class="bg-blue-600 text-white p-2 self-start">Se connecter</button>
-    </form>
+        <form method="post" action="{{ route('login.attempt') }}" class="form">
+            @csrf
+            <x-form.input name="email" label="E-mail" type="email" icon="mail" placeholder="camille@example.fr" required />
+            <x-form.input name="password" label="Mot de passe" type="password" icon="lock" required />
 
-    @if ($errors->any())
-        <ul class="mt-4 flex flex-col gap-1">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    @endif
+            <x-form.switch name="remember" label="Rester connecté" checked />
 
-    <a class="mt-4 inline-block text-blue-600 hover:underline" href="{{ route('password.request') }}">Mot de passe oublié ?</a>
+            <button type="submit" class="btn--primary btn--block">Se connecter</button>
+        </form>
+
+        <a class="auth__link" href="{{ route('password.request') }}">Mot de passe oublié ?</a>
+
+        <p class="auth__divider">ou</p>
+
+        <a class="btn--tertiary btn--block" href="{{ route('register') }}">
+            <x-icon name="plus" class="btn__icon" />
+            Créer un compte
+        </a>
+
+    </x-card>
+
 </x-layouts.auth>
