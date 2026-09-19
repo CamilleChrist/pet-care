@@ -24,6 +24,8 @@
     <x-layouts.nav.sidebar :items="$navItems" :pets="$pets" />
 
     <main>
+        <x-breadcrumb />
+
         @if (session('success'))
             <p class="mb-4">{{ session('success') }}</p>
         @endif

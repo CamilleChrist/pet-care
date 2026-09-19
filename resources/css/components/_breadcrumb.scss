@@ -1,0 +1,35 @@
+@use "../abstracts/mixins" as *;
+
+.breadcrumb {
+    display: none;
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-neutral-600);
+
+    @include breakpoint-up($breakpoint-md) {
+        @include flex(row, space-between, flex-end, var(--space-6), var(--space-4));
+    }
+
+    &-list {
+        @include flex(row, flex-start, center, var(--space-2), var(--space-1));
+        flex-wrap: wrap;
+
+        &__item {
+            @include flex(row, flex-start, center, var(--space-2));
+
+            & + &::before {
+                content: "";
+                width: 6px;
+                height: 6px;
+                border-right: 1.5px solid;
+                border-bottom: 1.5px solid;
+                transform: rotate(-45deg);
+            }
+
+            span {
+                color: var(--color-text);
+            }
+        }
+    }
+}
