@@ -45,11 +45,15 @@
         </header>
 
         @if (session('success'))
-            <p class="mb-4">{{ session('success') }}</p>
+            <x-ui.alert tone="success">
+                <strong>{{ session('success') }}</strong>
+            </x-ui.alert>
         @endif
 
         @if (session('status'))
-            <p class="mb-4">{{ session('status') }}</p>
+            <x-ui.alert tone="info">
+                <strong>{{ session('status') }}</strong>
+            </x-ui.alert>
         @endif
 
         {{ $slot }}
