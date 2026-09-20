@@ -1,14 +1,21 @@
 @use "../../abstracts/mixins" as *;
 
 .card {
-    @include flex(column, flex-start, stretch, 0, var(--space-6));
+    @include flex(column, flex-start, stretch, 0, var(--space-2));
     padding: var(--space-6);
     border-radius: var(--radius-md);
     background: var(--card-bg);
     box-shadow: var(--shadow);
 
     &__header {
-        @include flex(column, flex-start, stretch, 0, var(--space-2));
+        @include flex(column, flex-start, stretch, 0, var(--space-1));
+    }
+
+    &__subtitle {
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--color-neutral-600);
     }
 
     &__title {
