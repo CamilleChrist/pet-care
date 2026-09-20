@@ -1,0 +1,6 @@
+// Carte « conseil » : fond jaune pâle, sans ombre.
+.tip {
+    background: var(--color-secondary-soft);
+    border: 1px solid var(--color-secondary-light);
+    box-shadow: none;
+}

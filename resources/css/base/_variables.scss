@@ -5,6 +5,9 @@
     --color-primary-soft: #DEE8FD;  // Bleu clair, texte sur fond foncé
     --color-primary-dark: #142C6F;  // Survol des boutons/liens foncés
     --color-secondary: #FFD42C;    // Jaune (fond secondaire)
+    --color-secondary-light: #FFE68A; // Bordure des cartes « conseil »
+    --color-secondary-soft: #FFFAE6;  // Fond des cartes « conseil », pastille des états vides
+    --color-secondary-dark: #8A6E00;  // Texte/icône sur fond jaune clair
 
     // Échelle neutre (gris/blanc/noir)
     --color-neutral-50: #FFFFFF;  // Fond blanc pour les sections
@@ -27,6 +30,14 @@
     --color-danger-soft: #FFE9E5;
     --color-info: #3E5FAD;
     --color-info-soft: #E7EFFF;
+    --color-warning: #825101;
+    --color-warning-soft: #FEF0D4;
+
+    // Teintes par espèce (avatars sans photo)
+    --species-dog-bg: #FFF2BF;
+    --species-dog-fg: var(--color-secondary-dark);
+    --species-cat-bg: var(--color-primary-soft);
+    --species-cat-fg: var(--color-primary-dark);
 
     --color-text: var(--color-neutral-700);
     --color-text-light: var(--color-neutral-50);
@@ -45,12 +56,13 @@
     --font-body: 'Instrument Sans', system-ui, -apple-system, sans-serif;
 
     // Tailles de texte
-    --font-size-xs: 13px; // Labels/eyebrows, petits textes (mentions légales, taglines)
+    --font-size-xs: 13px; // Labels/subtitles, petits textes (mentions légales, taglines)
     --font-size-sm: 14px; // Descriptions secondaires (atouts auth)
     --font-size-base: 16px; // Texte courant (nav, boutons, corps de page, descriptions)
     --font-size-lg: 20px;   // Logo
     --font-size-xl: 22px;   // Titres de cartes
     --font-size-2xl: 28px; // h1
+    --font-size-3xl: 36px; // Valeur des tuiles de statistiques
 
     // Espacements (base 4px)
     --space-1: 4px;

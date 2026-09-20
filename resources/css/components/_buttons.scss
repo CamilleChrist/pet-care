@@ -76,6 +76,11 @@
         width: 100%;
     }
 
+    &--sm {
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--font-size-sm);
+    }
+
     &__icon {
         width: 20px;
         height: 20px;
