@@ -1,0 +1,48 @@
+@use "../../abstracts/mixins" as *;
+
+// Rangée d'avatars défilante horizontalement, sans barre de scroll visible.
+.pet-switcher {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-1) 0 var(--space-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    &__item {
+        @include flex(column, flex-start, center, 0, var(--space-2));
+        flex: none;
+        width: 76px;
+        color: var(--color-neutral-600);
+
+        &:hover {
+            color: var(--color-neutral-900);
+            text-decoration: none;
+        }
+    }
+
+    &__label {
+        max-width: 100%;
+        font-size: var(--font-size-xs);
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__add {
+        @include flex(row, center, center);
+        width: 64px;
+        height: 64px;
+        border: 2px dashed var(--color-sand-400);
+        border-radius: var(--radius-pill);
+
+        svg {
+            width: 24px;
+            height: 24px;
+        }
+    }
+}

@@ -1,0 +1,63 @@
+@use "../../abstracts/mixins" as *;
+
+// Poids actuel d'un animal : libellé, valeur + unité + tendance, date de mesure ; ou message sans pesée.
+.pet-weight {
+    @include flex(column, flex-start, stretch, 0, var(--space-1));
+
+    &__label {
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--color-neutral-600);
+    }
+
+    &__row {
+        @include flex(row, flex-start, baseline, var(--space-2));
+    }
+
+    &__value {
+        font: 800 var(--font-size-3xl)/1.05 var(--font-title);
+        font-variant-numeric: tabular-nums lining-nums;
+        color: var(--color-neutral-900);
+    }
+
+    &__unit {
+        font-size: var(--font-size-base);
+        font-weight: 700;
+        color: var(--color-neutral-600);
+    }
+
+    &__trend {
+        @include flex(row, flex-start, center, var(--space-1));
+        display: inline-flex;
+        font-size: var(--font-size-sm);
+        font-weight: 700;
+
+        &--up {
+            color: var(--color-warning);
+        }
+
+        &--down {
+            color: var(--color-info);
+        }
+
+        &--flat {
+            color: var(--color-success);
+        }
+    }
+
+    &__trend-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    &__caption {
+        font-size: var(--font-size-sm);
+        color: var(--color-neutral-600);
+    }
+
+    &__empty {
+        @include flex(column, center, center, var(--space-2), var(--space-2));
+        font-weight: 700;
+    }
+}

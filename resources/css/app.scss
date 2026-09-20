@@ -14,7 +14,11 @@
 @use "components/ui/dialog";
 @use "components/ui/empty-state";
 @use "components/ui/logo";
+@use "components/pet/avatar";
+@use "components/pet/switcher";
+@use "components/pet/weight";
 @use "components/ui/tip";
+@use "components/weight/chart";
 
 @use "app/app";
 @use "app/page-header";
