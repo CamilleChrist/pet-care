@@ -1,6 +1,7 @@
 @props([
     'title' => '',
-    'description' => ''
+    'description' => '',
+    'noBreadcrumb' => false,
 ])
 
 @php
@@ -24,10 +25,12 @@
 
 <x-layouts.base :title="$title" class="app">
 
-    <x-layouts.nav.sidebar :items="$navItems" :pets="$pets" />
+        <x-layouts.nav.sidebar :items="$navItems" :pets="$pets" />
 
     <main>
-        <x-nav.breadcrumb />
+        @if(!$noBreadcrumb)
+            <x-nav.breadcrumb />
+        @endif
 
         <header class="page-header">
             <div class="page-header__heading">
