@@ -1,9 +1,9 @@
 <x-layouts.auth title="Se connecter">
 
-    <x-card tagTitle="h1" title="Se connecter" description="Retrouvez le carnet de vos animaux.">
+    <x-ui.card tagTitle="h1" title="Se connecter" description="Retrouvez le carnet de vos animaux.">
 
         @if (session('status'))
-            <x-alert tone="success">{{ session('status') }}</x-alert>
+            <x-ui.alert tone="success">{{ session('status') }}</x-ui.alert>
         @endif
 
         <form method="post" action="{{ route('login.attempt') }}" class="form">
@@ -21,10 +21,10 @@
         <p class="auth__divider">ou</p>
 
         <a class="btn--tertiary btn--block" href="{{ route('register') }}">
-            <x-icon name="plus" class="btn__icon" />
+            <x-ui.icon name="plus" class="btn__icon" />
             Créer un compte
         </a>
 
-    </x-card>
+    </x-ui.card>
 
 </x-layouts.auth>

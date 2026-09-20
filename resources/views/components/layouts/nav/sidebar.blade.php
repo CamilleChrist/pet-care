@@ -1,13 +1,13 @@
 @props(['items' => [], 'pets' => []])
 
 <nav {{ $attributes->class(['sidebar']) }} aria-label="Navigation principale">
-    <x-logo class="sidebar__brand"/>
+    <x-ui.logo class="sidebar__brand"/>
 
     <ul class="sidebar__group">
         @foreach ($items as $item)
             <li>
                 <a href="{{ $item['href'] }}" class="sidebar__item" @if ($item['active'] ?? false) aria-current="page" @endif>
-                    <x-icon :name="$item['icon']" class="sidebar__icon"/>
+                    <x-ui.icon :name="$item['icon']" class="sidebar__icon"/>
                     <span class="sidebar__label">{{ $item['label'] }}</span>
                     @isset($item['count'])
                         <span class="sidebar__count">{{ $item['count'] }}</span>
@@ -23,7 +23,7 @@
             @foreach ($pets as $pet)
                 <li>
                     <a href="{{ route('pets.show', $pet) }}" class="sidebar__item" @if (request()->route('pet')?->is($pet)) aria-current="page" @endif>
-                        <span class="sidebar__avatar"><x-icon name="paw-print"/></span>
+                        <span class="sidebar__avatar"><x-ui.icon name="paw-print"/></span>
                         <span class="sidebar__label">{{ $pet->name }}</span>
                     </a>
                 </li>
@@ -33,10 +33,10 @@
 
     <div class="sidebar__footer">
         <button type="button" class="sidebar__toggle" aria-label="Réduire le menu" aria-expanded="true">
-            <x-icon name="panel-left" class="sidebar__icon"/>
+            <x-ui.icon name="panel-left" class="sidebar__icon"/>
         </button>
         <button type="button" class="sidebar__item" data-dialog-open="logout-dialog">
-            <x-icon name="log-out" class="sidebar__icon"/>
+            <x-ui.icon name="log-out" class="sidebar__icon"/>
             <span class="sidebar__label">Se déconnecter</span>
         </button>
     </div>

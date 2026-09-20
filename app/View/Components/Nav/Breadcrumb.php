@@ -1,6 +1,6 @@
 <?php
 
-namespace App\View\Components;
+namespace App\View\Components\Nav;
 
 use App\Models\Pet;
 use App\Models\VaccinationRecord;
@@ -12,7 +12,7 @@ class Breadcrumb extends Component
 {
     public function render(): View|Closure|string
     {
-        return view('components.breadcrumb', ['items' => $this->build()]);
+        return view('components.nav.breadcrumb', ['items' => $this->build()]);
     }
 
     /**

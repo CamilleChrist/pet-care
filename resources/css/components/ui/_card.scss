@@ -1,4 +1,4 @@
-@use "../abstracts/mixins" as *;
+@use "../../abstracts/mixins" as *;
 
 .card {
     @include flex(column, flex-start, stretch, 0, var(--space-6));

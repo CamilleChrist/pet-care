@@ -1,4 +1,4 @@
-@use "../abstracts/mixins" as *;
+@use "../../abstracts/mixins" as *;
 
 // Wordmark « P PetCare » : <x-logo /> → <a class="logo"><span>P</span> PetCare</a>
 .logo {

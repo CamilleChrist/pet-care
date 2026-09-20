@@ -4,14 +4,14 @@
 @use "base/global";
 
 @use "components/buttons";
-@use "components/card";
+@use "components/ui/card";
 @use "components/form/form";
 @use "components/form/input";
 @use "components/form/switch";
-@use "components/alert";
-@use "components/breadcrumb";
-@use "components/dialog";
-@use "components/logo";
+@use "components/ui/alert";
+@use "components/nav/breadcrumb";
+@use "components/ui/dialog";
+@use "components/ui/logo";
 
 @use "app/app";
 @use "app/page-header";

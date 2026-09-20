@@ -27,7 +27,7 @@
     <x-layouts.nav.sidebar :items="$navItems" :pets="$pets" />
 
     <main>
-        <x-breadcrumb />
+        <x-nav.breadcrumb />
 
         <header class="page-header">
             <div class="page-header__heading">
@@ -55,12 +55,12 @@
     <x-layouts.nav.bottom-nav :items="$navItems" />
 
     {{-- Hors de la sidebar : elle est masquée sous md, le dialog doit rester ouvrable partout. --}}
-    <x-dialog id="logout-dialog" title="Se déconnecter ?" description="Vous devrez vous reconnecter pour retrouver vos animaux.">
+    <x-ui.dialog id="logout-dialog" title="Se déconnecter ?" description="Vous devrez vous reconnecter pour retrouver vos animaux.">
         <form method="post" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="btn btn--danger btn--block">Se déconnecter</button>
         </form>
         <button type="button" class="btn btn--ghost btn--block" data-dialog-close>Annuler</button>
-    </x-dialog>
+    </x-ui.dialog>
 
 </x-layouts.base>

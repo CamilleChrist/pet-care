@@ -5,11 +5,11 @@
     description="Le lien reçu par e-mail est valable 60 minutes. Les fiches de vos animaux restent intactes."
 >
 
-    <x-card tagTitle="h1" title="Nouveau mot de passe" :description="$email ? 'Pour '.$email.'.' : null">
+    <x-ui.card tagTitle="h1" title="Nouveau mot de passe" :description="$email ? 'Pour '.$email.'.' : null">
 
         {{-- Le jeton et l'e-mail viennent du lien reçu : leurs erreurs (lien expiré, e-mail inconnu) n'ont pas de champ visible --}}
         @error('email')
-            <x-alert tone="danger">{{ $message }}</x-alert>
+            <x-ui.alert tone="danger">{{ $message }}</x-ui.alert>
         @enderror
 
         <form method="post" action="{{ route('password.update') }}" class="form">
@@ -25,6 +25,6 @@
 
         <a class="auth__link" href="{{ route('login') }}">Revenir à la connexion</a>
 
-    </x-card>
+    </x-ui.card>
 
 </x-layouts.auth>

@@ -2,7 +2,7 @@
 
 use App\Models\Pet;
 use App\Models\User;
-use App\View\Components\Breadcrumb;
+use App\View\Components\Nav\Breadcrumb;
 
 test('the breadcrumb follows the route hierarchy up to the dashboard', function () {
     $user = User::factory()->create();

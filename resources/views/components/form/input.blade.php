@@ -17,7 +17,7 @@
 
     <div @class(['input', 'input--with-icon' => $icon])>
         @if ($icon)
-            <x-icon :name="$icon" class="input__icon" />
+            <x-ui.icon :name="$icon" class="input__icon" />
         @endif
         <input
             {{ $attributes->except('value')->class(['input__control', 'input__control--error' => $errors->has($name)]) }}
