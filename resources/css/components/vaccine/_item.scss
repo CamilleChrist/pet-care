@@ -1,0 +1,78 @@
+@use "../../abstracts/mixins" as *;
+
+// Ligne de rappel vaccinal : icône d'état, nom + échéance, badge, chevron.
+// Les lignes s'empilent dans une <ul class="vaccine-list">, séparées par un filet.
+.vaccine-list {
+    @include flex(column, flex-start, stretch);
+    list-style: none;
+    margin: 0 calc(var(--space-2) * -1);
+
+    li + li {
+        border-top: 1px solid var(--card-border);
+    }
+}
+
+.vaccine-item {
+    @include flex(row, flex-start, center, var(--space-3));
+    flex-wrap: nowrap;
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    color: inherit;
+    transition: var(--transition);
+
+    &:hover {
+        background: var(--color-neutral-100);
+        color: inherit;
+        text-decoration: none;
+    }
+
+    &__icon {
+        @include flex(row, center, center);
+        flex: none;
+        padding: var(--space-2);
+        border-radius: 100%;
+        aspect-ratio: 1;
+
+        svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        &--done {
+            background: var(--color-success-soft);
+            color: var(--color-success);
+        }
+
+        &--due {
+            background: var(--color-warning-soft);
+            color: var(--color-warning);
+        }
+
+        &--late {
+            background: var(--color-danger-soft);
+            color: var(--color-danger-dark);
+        }
+    }
+
+    &-body {
+        @include flex(column, flex-start, stretch);
+        flex: 1;
+        min-width: 0;
+        &__name {
+            font-weight: 700;
+            color: var(--color-neutral-900);
+        }
+
+        &__meta {
+            font-size: var(--font-size-sm);
+            color: var(--color-neutral-600);
+        }
+    }
+
+    &__chevron {
+        flex: none;
+        width: 20px;
+        height: 20px;
+        color: var(--color-neutral-600);
+    }
+}
