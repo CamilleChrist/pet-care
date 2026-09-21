@@ -23,7 +23,7 @@
             @foreach ($pets as $pet)
                 <li>
                     <a href="{{ route('pets.show', $pet) }}" class="sidebar__item" @if (request()->route('pet')?->is($pet)) aria-current="page" @endif>
-                        <x-pet.avatar :pet="$pet" />
+                        <x-pet.avatar :pet="$pet" size="xs" />
                         <span class="sidebar__label">{{ $pet->name }}</span>
                     </a>
                 </li>

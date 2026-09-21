@@ -1,3 +1,5 @@
+@use "../abstracts/mixins" as *;
+
 :root {
     // Couleurs principales
     --color-primary: #1A3680;  // Bleu foncé (accents, boutons)
@@ -35,7 +37,7 @@
 
     // Teintes par espèce (avatars sans photo)
     --species-dog-bg: #FFF2BF;
-    --species-dog-fg: var(--color-secondary-dark);
+    --species-dog-fg: #69560c;
     --species-cat-bg: var(--color-primary-soft);
     --species-cat-fg: var(--color-primary-dark);
 
@@ -63,6 +65,11 @@
     --font-size-xl: 22px;   // Titres de cartes
     --font-size-2xl: 28px; // h1
     --font-size-3xl: 36px; // Valeur des tuiles de statistiques
+
+    @include breakpoint-down($breakpoint-md) {
+        --font-size-2xl: 22px;
+        --font-size-3xl: 28px;
+    }
 
     // Espacements (base 4px)
     --space-1: 4px;
