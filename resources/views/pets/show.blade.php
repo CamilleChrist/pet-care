@@ -1,47 +1,61 @@
-@extends('layouts.base')
+<x-layouts.app :title="$pet->name" :back="route('pets.index')">
 
-@section('content')
-    <h1 class="text-xl font-bold mb-4">Détail d'un pet</h1>
+    <x-slot:avatar>
+        <x-pet.avatar :pet="$pet" size="lg" class="hidden-md-down"/>
+    </x-slot:avatar>
 
-    <ul class="flex flex-col gap-1 mb-4">
-        @if($pet->photo_path)
-            <li>
-                <img src="{{ $pet->photoUrl() }}">
-            </li>
-        @endif
+    {{-- Mobile : sous-titre texte (topbar). Desktop : badges sous le titre. --}}
+    <x-slot:description>
+        <span class="hidden-md-up">{{ $pet->breed->name }} · {{ $pet->age }}</span>
+        <span class="badge-list hidden-md-down">
+            <x-ui.badge :tone="$pet->breed->species">
+                <x-ui.icon :name="$pet->breed->species" class="badge__icon"/>
+                {{ $pet->breed->speciesLabel() }}
+            </x-ui.badge>
+            <x-ui.badge>{{ $pet->gender->label() }}</x-ui.badge>
+            <x-ui.badge>{{ $pet->breed->name }}</x-ui.badge>
+            <x-ui.badge>
+                <x-ui.icon name="cake" class="badge__icon"/>
+                {{ \Illuminate\Support\Carbon::parse($pet->birth_date)->isoFormat('LL') }} · {{ $pet->age }}
+            </x-ui.badge>
+        </span>
+    </x-slot:description>
 
-        <li>Nom : {{ $pet->name }}</li>
-        <li>Genre : {{ $pet->gender->label() }}</li>
-        <li>Race : {{ $pet->breed->name }}</li>
-        <li>Date de naissance : {{ $pet->birth_date }}</li>
-        @if( $pet->health_notes )
-            <li>Notes : {{ $pet->health_notes }}</li>
-        @endif
+    <x-slot:actions>
+        <a href="{{ route('pets.edit', [$pet->id]) }}" class="btn btn--tertiary">
+            <x-ui.icon name="pencil" class="btn__icon"/>
+            Modifier
+        </a>
+        <a href="{{ route('pets.weight-records.create', [$pet->id]) }}" class="btn btn--primary">
+            <x-ui.icon name="plus" class="btn__icon"/>
+            Ajouter un poids
+        </a>
+    </x-slot:actions>
 
-        @if( $pet->last_vet_visit_at )
-            <li>Dernière visite véto : {{ $pet->last_vet_visit_at }}</li>
-        @endif
-    </ul>
+    <div class="pet-profile hidden-md-up">
+        <x-pet.avatar :pet="$pet" size="lg"/>
+        <span class="badge-list">
+            <x-ui.badge :tone="$pet->breed->species">
+                <x-ui.icon :name="$pet->breed->species" class="badge__icon"/>
+                {{ $pet->breed->speciesLabel() }}
+            </x-ui.badge>
+            <x-ui.badge>{{ $pet->gender->label() }}</x-ui.badge>
+            <x-ui.badge>
+                <x-ui.icon name="cake" class="badge__icon"/>
+                {{ \Illuminate\Support\Carbon::parse($pet->birth_date)->isoFormat('LL') }}
+            </x-ui.badge>
+        </span>
+    </div>
 
-    <ul>
-        <li>
-            <a class="inline-block mb-4 text-blue-600 hover:underline"
-               href="{{ route('pets.weight-records.index', [$pet->id]) }}">Voir la courbe de poids
-            </a>
-        </li>
-        <li>
-            <a class="inline-block mb-4 text-blue-600 hover:underline"
-               href="{{ route('pets.vaccination-records.index', [$pet->id]) }}">Voir les vaccins
-            </a>
-        </li>
-        <li>
-            <a class="inline-block mb-4 text-blue-600 hover:underline" href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
-        </li>
-    </ul>
-    <form method="post" action="{{ route('pets.destroy', [$pet->id]) }}">
-        @csrf
-        @method('DELETE')
+    <div class="btn-row hidden-md-up">
+        <a href="{{ route('pets.edit', [$pet->id]) }}" class="btn btn--tertiary">
+            <x-ui.icon name="pencil" class="btn__icon"/>
+            Modifier
+        </a>
+        <a href="{{ route('pets.weight-records.create', [$pet->id]) }}" class="btn btn--primary">
+            <x-ui.icon name="plus" class="btn__icon"/>
+            Ajouter un poids
+        </a>
+    </div>
 
-        <button type="submit" class="text-red-600">Supprimer</button>
-    </form>
-@endsection
+</x-layouts.app>

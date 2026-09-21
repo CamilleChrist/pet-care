@@ -1,0 +1,8 @@
+@use "../../abstracts/mixins" as *;
+
+// Fiche d'un animal (mobile) : avatar + badges sous la topbar.
+.pet-profile {
+    @include flex(row, flex-start, center, var(--space-4));
+    flex-wrap: nowrap;
+    margin-bottom: var(--space-4);
+}
