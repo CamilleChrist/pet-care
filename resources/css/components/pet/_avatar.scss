@@ -21,6 +21,7 @@
     svg {
         width: 55%;
         height: 55%;
+        stroke-width: 2px;
     }
 
     &--xs {
@@ -31,6 +32,16 @@
     &--md {
         width: 64px;
         height: 64px;
+    }
+
+    &--lg {
+        width: 96px;
+        height: 96px;
+
+        @include breakpoint-up($breakpoint-lg)  {
+            width: 128px;
+            height: 128px;
+        }
     }
 
     &--dog {

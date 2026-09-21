@@ -1,4 +1,4 @@
-@props(['pet', 'size' => 'sm']) {{-- xs (32px) | sm (44px) | md (64px) --}}
+@props(['pet', 'size' => 'sm']) {{-- xs (32px) | sm (44px) | md (64px) | lg (116px) --}}
 
 @php
     $species = $pet->breed?->species;

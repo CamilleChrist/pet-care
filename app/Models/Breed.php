@@ -10,4 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 class Breed extends Model
 {
     use HasFactory;
+
+    public function speciesLabel(): string
+    {
+        return match ($this->species) {
+            'dog' => 'Chien',
+            'cat' => 'Chat',
+        };
+    }
 }
