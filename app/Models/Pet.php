@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
@@ -53,6 +54,11 @@ class Pet extends Model
     public function weightRecords(): HasMany
     {
         return $this->hasMany(WeightRecord::class)->orderBy('recorded_at', 'desc');
+    }
+
+    public function latestWeightRecord(): HasOne
+    {
+        return $this->hasOne(WeightRecord::class)->latestOfMany('recorded_at');
     }
 
     public function vaccinationRecords(): HasMany
