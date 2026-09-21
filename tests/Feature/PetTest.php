@@ -3,6 +3,8 @@
 use App\Models\Breed;
 use App\Models\Pet;
 use App\Models\User;
+use App\Models\VaccinationRecord;
+use App\Models\WeightRecord;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,6 +28,25 @@ test('a user sees their pets in the list', function () {
         ->get(route('pets.index'))
         ->assertOk()
         ->assertSee('Choupette');
+});
+
+test('the pet list shows the latest weight and the closest booster of each pet', function () {
+    $this->travelTo('2026-09-20');
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+    WeightRecord::factory()->create(['pet_id' => $pet->id, 'weight' => 20.0, 'recorded_at' => '2026-08-01']);
+    WeightRecord::factory()->create(['pet_id' => $pet->id, 'weight' => 21.8, 'recorded_at' => '2026-09-01']);
+    // Le rappel de la première injection est remplacé par celui de la seconde, le second vaccin est à jour.
+    $vaccine = VaccinationRecord::factory()->create(['pet_id' => $pet->id, 'administered_at' => '2025-09-01', 'next_due_at' => '2026-09-01'])->vaccine;
+    VaccinationRecord::factory()->create(['pet_id' => $pet->id, 'vaccine_id' => $vaccine->id, 'administered_at' => '2026-09-01', 'next_due_at' => '2026-10-01']);
+    VaccinationRecord::factory()->create(['pet_id' => $pet->id, 'administered_at' => '2026-09-01', 'next_due_at' => '2027-09-01']);
+
+    $this->actingAs($user)
+        ->get(route('pets.index'))
+        ->assertOk()
+        ->assertSee('21,8 kg')
+        ->assertSee('Dans 11 jours')
+        ->assertDontSee('En retard');
 });
 
 test('a user can create a pet', function () {

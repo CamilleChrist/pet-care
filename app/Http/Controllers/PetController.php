@@ -17,9 +17,11 @@ class PetController extends Controller
      */
     public function index()
     {
-        $pets = auth()->getUser()->pets;
+        $pets = auth()->user()->pets()->with(['breed', 'latestWeightRecord', 'vaccinationRecords.vaccine'])->get();
 
-        return view('pets.index', compact('pets'));
+        $description = trans_choice('{0} Aucun animal enregistré|{1} :count animal|[2,*] :count animaux', $pets->count()).' · poids et vaccins suivis';
+
+        return view('pets.index', compact('pets', 'description'));
     }
 
     /**
