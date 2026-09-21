@@ -2,6 +2,7 @@
     'title' => '',
     'description' => '',
     'noBreadcrumb' => false,
+    'back' => null, // URL du bouton retour, affiché sous md uniquement (topbar mobile)
 ])
 
 @php
@@ -33,6 +34,14 @@
         @endif
 
         <header class="page-header">
+            @if ($back)
+                <a href="{{ $back }}" class="page-header__back hidden-md-up" aria-label="Retour">
+                    <x-ui.icon name="arrow-left"/>
+                </a>
+            @endif
+            @isset($avatar)
+                {{ $avatar }}
+            @endisset
             <div class="page-header__heading">
                 <h1 class="page-header__title">{{ $title }}</h1>
                 @if ($description)
