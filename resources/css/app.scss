@@ -15,6 +15,7 @@
 @use "components/ui/empty-state";
 @use "components/ui/logo";
 @use "components/pet/avatar";
+@use "components/pet/item" as pet-item;
 @use "components/pet/switcher";
 @use "components/pet/weight";
 @use "components/ui/tip";

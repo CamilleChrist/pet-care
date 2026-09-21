@@ -1,16 +1,37 @@
-@extends('layouts.base')
+<x-layouts.app title="Mes animaux" :description="$description">
 
-@section('content')
+    @if ($pets->isNotEmpty())
+        <x-slot:actions>
+            <a href="{{ route('pets.create') }}" class="btn btn--primary">
+                <x-ui.icon name="plus" class="btn__icon"/>
+                Ajouter un animal
+            </a>
+        </x-slot>
+    @endif
 
-    <h1 class="text-xl font-bold mb-4">Mes Pet</h1>
+    @if ($pets->isEmpty())
+        <x-ui.empty-state
+            title="Aucun animal enregistré"
+            description="Créez une première fiche : nom, espèce, race, date de naissance et sexe."
+        >
+            <a href="{{ route('pets.create') }}" class="btn btn--primary">
+                <x-ui.icon name="plus" class="btn__icon"/>
+                Ajouter un animal
+            </a>
+        </x-ui.empty-state>
+    @else
+        <ul class="pet-list">
+            @foreach ($pets as $pet)
+                <li>
+                    <x-pet.item :pet="$pet"/>
+                </li>
+            @endforeach
+        </ul>
 
-    <p class="mb-4">Liste des mes animaux</p>
+        <a href="{{ route('pets.create') }}" class="btn btn--primary btn--block hidden-md-up">
+            <x-ui.icon name="plus" class="btn__icon"/>
+            Ajouter un animal
+        </a>
+    @endif
 
-    <ul class="flex flex-col gap-2">
-        @foreach($pets as $pet)
-            <li>
-                <a class="text-blue-600 hover:underline" href="{{ route('pets.show', [$pet->id]) }}">Voir la fiche {{ $pet->name }}</a>
-            </li>
-        @endforeach
-    </ul>
-@endsection
+</x-layouts.app>
