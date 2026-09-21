@@ -37,6 +37,36 @@ class VaccinationRecord extends Model
         );
     }
 
+    protected function daysUntilDue(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (int) today()->diffInDays($this->next_due_at, false),
+        );
+    }
+
+    /** late | due (dans les 30 jours) | done */
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => match (true) {
+                $this->days_until_due < 0 => 'late',
+                $this->days_until_due <= 30 => 'due',
+                default => 'done',
+            },
+        );
+    }
+
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => match ($this->status) {
+                'late' => 'Vaccins en retard',
+                'due' => 'Vaccins à faire ' . trans_choice("{0} aujourd'hui|{1} demain|[2,*] dans :count jours", $this->days_until_due),
+                'done' => 'Vaccins à jour',
+            },
+        );
+    }
+
     public function vaccine(): BelongsTo
     {
         return $this->belongsTo(Vaccine::class);

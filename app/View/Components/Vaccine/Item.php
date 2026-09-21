@@ -9,9 +9,6 @@ use Illuminate\View\Component;
 
 class Item extends Component
 {
-    /** Jours restants avant l'échéance (négatif si dépassée). */
-    public int $days;
-
     /** late | due | done */
     public string $status;
 
@@ -19,13 +16,7 @@ class Item extends Component
         public VaccinationRecord $record,
         public bool $withPet = false,
     ) {
-        $this->days = (int) today()->diffInDays($record->next_due_at, false);
-
-        $this->status = match (true) {
-            $this->days < 0 => 'late',
-            $this->days <= 30 => 'due',
-            default => 'done',
-        };
+        $this->status = $record->status;
     }
 
     public function render(): View|Closure|string
@@ -33,18 +24,9 @@ class Item extends Component
         return view('components.vaccine.item', [
             'icon' => ['late' => 'triangle-alert', 'due' => 'calendar-clock', 'done' => 'circle-check'][$this->status],
             'tone' => ['late' => 'danger', 'due' => 'warning', 'done' => 'success'][$this->status],
-            'badge' => $this->badge(),
+            'badge' => $this->record->status_label,
             'description' => $this->description(),
         ]);
-    }
-
-    private function badge(): string
-    {
-        return match ($this->status) {
-            'late' => 'En retard',
-            'due' => trans_choice("{0} Aujourd'hui|{1} Demain|[2,*] Dans :count jours", $this->days),
-            'done' => 'À jour',
-        };
     }
 
     private function description(): string
