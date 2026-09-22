@@ -54,7 +54,9 @@
             </section>
 
             <aside>
-                <x-pet.reminders :reminders="$reminders"></x-pet.reminders>
+                <x-ui.card subtitle="Vaccins" title="Prochains rappels">
+                    <x-pet.reminders :reminders="$reminders" with-pet/>
+                </x-ui.card>
 
                 <x-ui.tip title="Pesez au même moment">
                     Une pesée par mois, à la même heure, suffit pour repérer une variation anormale.

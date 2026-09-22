@@ -29,8 +29,8 @@
             </x-ui.card>
         </section>
         <aside>
-            <x-ui.card>
-{{--                <x-pet.reminders :reminders="$reminders"></x-pet.reminders>--}}
+            <x-ui.card subtitle="Vaccins" title="Prochains rappels">
+                <x-pet.reminders :reminders="$reminders"/>
             </x-ui.card>
         </aside>
     </div>

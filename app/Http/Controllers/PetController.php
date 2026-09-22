@@ -50,7 +50,9 @@ class PetController extends Controller
      */
     public function show(Pet $pet)
     {
-        return view('pets.show', compact('pet'));
+        $reminders = $pet->reminders();
+
+        return view('pets.show', compact('pet', 'reminders'));
     }
 
     /**
