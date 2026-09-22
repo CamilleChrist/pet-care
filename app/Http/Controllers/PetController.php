@@ -51,8 +51,9 @@ class PetController extends Controller
     public function show(Pet $pet)
     {
         $reminders = $pet->reminders();
+        $weightRecords = $pet->weightRecords()->paginate(5);
 
-        return view('pets.show', compact('pet', 'reminders'));
+        return view('pets.show', compact('pet', 'reminders', 'weightRecords'));
     }
 
     /**

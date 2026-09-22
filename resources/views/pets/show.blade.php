@@ -38,23 +38,57 @@
                     </a>
                 </x-slot:actions>
 
-                <ul class="weight-history">
-                    @foreach($pet->weightRecords as $record)
-                        <li>
-                            <span>{{ number_format($record->weight, 1) }}&nbsp;kg</span>
-                            <span>{{ $record->recorded_at->isoFormat('ll') }}</span>
-                            <form method="post" action="{{ route('weight-records.destroy', $record) }}">
-                                @csrf
-                                @method('DELETE')
+                <div class="weight-history">
 
-                                <button type="submit" class="btn btn--ghost-danger"
-                                        aria-label="Supprimer la pesée du {{ $record->recorded_at->isoFormat('LL') }}">
-                                    <x-ui.icon name="trash-2" class="btn__icon"/>
-                                </button>
-                            </form>
-                        </li>
-                    @endforeach
-                </ul>
+                    <ul class="weight-history-list">
+                        @foreach($weightRecords as $record)
+                            <li>
+                                <span>{{ number_format($record->weight, 1) }}&nbsp;kg</span>
+                                <span>{{ $record->recorded_at->isoFormat('ll') }}</span>
+                                <form method="post" action="{{ route('weight-records.destroy', $record) }}">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="btn btn--ghost-danger"
+                                            aria-label="Supprimer la pesée du {{ $record->recorded_at->isoFormat('LL') }}">
+                                        <x-ui.icon name="trash-2" class="btn__icon"/>
+                                    </button>
+                                </form>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    @if($weightRecords->hasPages())
+                        @php($onFirst = $weightRecords->onFirstPage())
+                        @php($onLast = !$weightRecords->hasMorePages())
+
+                        <nav class="weight-history-pagination" aria-label="Pagination de l'historique">
+                            <a @unless($onFirst) href="{{ $weightRecords->url(1) }}"
+                               @endunless aria-label="Première page">
+                                <x-ui.icon name="chevrons-left"/>
+                            </a>
+
+                            <a @unless($onFirst) href="{{ $weightRecords->previousPageUrl() }}"
+                               @endunless class="weight-history-pagination__link" aria-label="Page précédente">
+                                <x-ui.icon name="chevron-left"/>
+                            </a>
+
+                            <span>
+                                Page {{ $weightRecords->currentPage() }} sur {{ $weightRecords->lastPage() }}
+                            </span>
+
+                            <a @unless($onLast) href="{{ $weightRecords->nextPageUrl() }}"
+                               @endunless aria-label="Page suivante">
+                                <x-ui.icon name="chevron-right"/>
+                            </a>
+
+                            <a @unless($onLast) href="{{ $weightRecords->url($weightRecords->lastPage()) }}"
+                               @endunless aria-label="Dernière page">
+                                <x-ui.icon name="chevrons-right"/>
+                            </a>
+                        </nav>
+                    @endif
+                </div>
             </x-ui.card>
         </section>
         <aside>
