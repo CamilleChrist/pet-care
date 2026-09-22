@@ -1,36 +1,6 @@
 @use "../abstracts/mixins" as *;
 
-// Accueil : une colonne (alerte, animaux, rappels, conseil) ; dès xl, animaux à gauche, alerte + rappels + conseil à droite.
 .dashboard {
-    display: grid;
-    gap: var(--space-4);
-    min-width: 0;
-
-    @include breakpoint-up($breakpoint-xl) {
-        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-        grid-template-rows: auto 1fr; // La colonne animaux (2 lignes) ne doit pas gonfler la ligne de l'alerte.
-        align-items: start;
-    }
-
-    &__alert,
-    aside {
-        @include breakpoint-up($breakpoint-xl) {
-            grid-column: 2;
-        }
-    }
-
-    section {
-        @include flex(column, flex-start, stretch, 0, var(--space-4));
-
-        @include breakpoint-up($breakpoint-xl) {
-            grid-column: 1;
-            grid-row: 1 / span 2;
-        }
-    }
-
-    aside {
-        @include flex(column, flex-start, stretch, 0, var(--space-4));
-    }
 
     &__label {
         font-size: var(--font-size-xs);
@@ -42,6 +12,7 @@
     &__alert {
         font-size: var(--font-size-base);
         padding: var(--space-4);
+
         span > strong {
             font-size: var(--font-size-lg);
         }

@@ -13,6 +13,35 @@
     }
 }
 
+.two-columns {
+    display: grid;
+    gap: var(--space-4);
+    min-width: 0;
+    align-items: start;
+
+    @include breakpoint-up($breakpoint-xl) {
+        grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    }
+
+    > section,
+    > aside {
+        @include flex(column, flex-start, stretch, 0, var(--space-4));
+    }
+
+    aside {
+        @include breakpoint-up($breakpoint-xl) {
+            grid-column: 2;
+        }
+    }
+
+    section {
+        @include breakpoint-up($breakpoint-xl) {
+            grid-column: 1;
+            grid-row: 1 / span 2;
+        }
+    }
+}
+
 .hidden-md-down {
     @include breakpoint-down($breakpoint-md) {
         display: none;

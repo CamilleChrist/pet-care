@@ -18,7 +18,7 @@
             </a>
         </x-ui.empty-state>
     @else
-        <div class="dashboard">
+        <div class="dashboard two-columns">
             <x-pet.switcher :pets="$pets" class="hidden-md-up"/>
 
             @if ($overdue)
