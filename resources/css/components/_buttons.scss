@@ -62,6 +62,19 @@
         }
     }
 
+    // Action destructive discrète (supprimer une ligne dans une liste).
+    &--ghost-danger {
+        @extend .btn;
+        background: transparent;
+        color: var(--color-danger);
+        padding: var(--space-2);
+
+        &:hover {
+            background: var(--color-danger-soft);
+            color: var(--color-danger-dark);
+        }
+    }
+
     &--danger {
         @extend .btn;
         background: var(--color-danger);

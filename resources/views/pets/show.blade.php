@@ -1,3 +1,5 @@
+@php use Illuminate\Support\Carbon; @endphp
+
 <x-layouts.app :title="$pet->name" :back="route('pets.index')">
 
     <x-slot:avatar>
@@ -27,11 +29,45 @@
             <x-ui.card>
                 <x-pet.weight :pet="$pet"></x-pet.weight>
             </x-ui.card>
+
+            <x-ui.card title="Historique des pesées">
+                <x-slot:actions>
+                    <a href="{{ route('pets.weight-records.create', $pet) }}" class="btn btn--ghost btn--sm">
+                        <x-ui.icon name="plus" class="btn__icon"/>
+                        Ajouter
+                    </a>
+                </x-slot:actions>
+
+                <ul class="weight-history">
+                    @foreach($pet->weightRecords as $record)
+                        <li>
+                            <span>{{ number_format($record->weight, 1) }}&nbsp;kg</span>
+                            <span>{{ $record->recorded_at->isoFormat('ll') }}</span>
+                            <form method="post" action="{{ route('weight-records.destroy', $record) }}">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn--ghost-danger"
+                                        aria-label="Supprimer la pesée du {{ $record->recorded_at->isoFormat('LL') }}">
+                                    <x-ui.icon name="trash-2" class="btn__icon"/>
+                                </button>
+                            </form>
+                        </li>
+                    @endforeach
+                </ul>
+            </x-ui.card>
         </section>
         <aside>
-            <x-ui.card subtitle="Vaccins" title="Prochains rappels">
+            <x-ui.card title="Vaccins">
                 <x-pet.reminders :reminders="$reminders"/>
             </x-ui.card>
+
+            @if($pet->last_vet_visit_at)
+                <x-ui.card title="Dernière visite véterinaire">
+                    <strong>{{ Carbon::parse($pet->last_vet_visit_at)->isoFormat('LL') }}</strong>
+                </x-ui.card>
+            @endif
+
         </aside>
     </div>
 

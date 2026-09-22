@@ -8,7 +8,12 @@
     box-shadow: var(--shadow);
 
     &__header {
+        @include flex(row, space-between, center, var(--space-4), var(--space-2));
+    }
+
+    &__heading {
         @include flex(column, flex-start, stretch, 0, var(--space-1));
+        min-width: 0;
     }
 
     &__subtitle {

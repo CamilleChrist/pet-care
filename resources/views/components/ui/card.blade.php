@@ -6,19 +6,25 @@
 ])
 
 <div {{ $attributes->class(['card']) }}>
-    @if ($subtitle || $title || $description)
+    @if ($subtitle || $title || $description || isset($actions))
         <header class="card__header">
-            @if ($subtitle)
-                <p class="card__subtitle">{{ $subtitle }}</p>
-            @endif
+            <div class="card__heading">
+                @if ($subtitle)
+                    <p class="card__subtitle">{{ $subtitle }}</p>
+                @endif
 
-            @if ($title)
-                <{{ $tagTitle }} class="card__title">{{ $title }}</{{ $tagTitle }}>
-            @endif
+                @if ($title)
+                    <{{ $tagTitle }} class="card__title">{{ $title }}</{{ $tagTitle }}>
+                @endif
 
-            @if ($description)
-                <p class="card__description">{{ $description }}</p>
-            @endif
+                @if ($description)
+                    <p class="card__description">{{ $description }}</p>
+                @endif
+            </div>
+
+            @isset($actions)
+                {{ $actions }}
+            @endisset
         </header>
     @endif
 

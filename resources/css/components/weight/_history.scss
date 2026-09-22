@@ -1,0 +1,25 @@
+@use "../../abstracts/mixins" as *;
+
+.weight-history {
+    > li {
+        @include flex(row, flex-start, center, var(--space-2), var(--space-2));
+        flex-wrap: nowrap;
+        padding: var(--space-2) 0;
+        border-bottom: 1px solid var(--color-neutral-200);
+
+        span:first-of-type {
+            font-weight: 700;
+            color: var(--color-neutral-900);
+            font-size: var(--font-size-lg);
+
+            @include breakpoint-up($breakpoint-sm) {
+                min-width: 100px;
+            }
+        }
+
+        span:last-of-type {
+            flex: 1;
+            font-size: var(--font-size-sm);
+        }
+    }
+}

@@ -60,9 +60,9 @@ class VaccinationRecord extends Model
     {
         return Attribute::make(
             get: fn () => match ($this->status) {
-                'late' => 'Vaccins en retard',
-                'due' => 'Vaccins à faire ' . trans_choice("{0} aujourd'hui|{1} demain|[2,*] dans :count jours", $this->days_until_due),
-                'done' => 'Vaccins à jour',
+                'late' => 'En retard',
+                'due' => 'À faire ' . trans_choice("{0} aujourd'hui|{1} demain|[2,*] dans :count jours", $this->days_until_due),
+                'done' => 'À jour',
             },
         );
     }
