@@ -15,12 +15,7 @@ class Item extends Component
 
     public function __construct(public Pet $pet)
     {
-        $this->reminder = $pet->vaccinationRecords
-            ->sortByDesc('administered_at')
-            ->unique(fn (VaccinationRecord $record) => $record->display_name)
-            ->filter(fn (VaccinationRecord $record) => $record->next_due_at)
-            ->sortBy('next_due_at')
-            ->first();
+        $this->reminder = $pet->reminders()->first();
     }
 
     public function render(): View|Closure|string

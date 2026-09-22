@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PetGender;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,5 +65,16 @@ class Pet extends Model
     public function vaccinationRecords(): HasMany
     {
         return $this->hasMany(VaccinationRecord::class);
+    }
+
+    /** Rappels à venir : la dernière injection de chaque vaccin qui a une échéance, triée par échéance. */
+    public function reminders(): Collection
+    {
+        return $this->vaccinationRecords
+            ->sortByDesc('administered_at')
+            ->unique(fn (VaccinationRecord $record) => $record->display_name)
+            ->filter(fn (VaccinationRecord $record) => $record->next_due_at)
+            ->sortBy('next_due_at')
+            ->values();
     }
 }
