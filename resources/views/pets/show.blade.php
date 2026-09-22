@@ -19,14 +19,20 @@
     </div>
 
     <div class="btn-row hidden-md-up">
-        <a href="{{ route('pets.edit', [$pet->id]) }}" class="btn btn--tertiary">
-            <x-ui.icon name="pencil" class="btn__icon"/>
-            Modifier
-        </a>
-        <a href="{{ route('pets.weight-records.create', [$pet->id]) }}" class="btn btn--primary">
-            <x-ui.icon name="plus" class="btn__icon"/>
-            Ajouter un poids
-        </a>
+        <x-pet.actions :pet="$pet"/>
+    </div>
+
+    <div class="two-columns">
+        <section>
+            <x-ui.card>
+                <x-pet.weight :pet="$pet"></x-pet.weight>
+            </x-ui.card>
+        </section>
+        <aside>
+            <x-ui.card>
+{{--                <x-pet.reminders :reminders="$reminders"></x-pet.reminders>--}}
+            </x-ui.card>
+        </aside>
     </div>
 
 </x-layouts.app>
