@@ -26,7 +26,13 @@
 
     <div class="two-columns">
         <section>
-            <x-ui.card>
+            <x-ui.card title="Courbe de poids">
+                <x-slot:actions>
+                    <a href="{{ route('pets.weight-records.create', $pet) }}" class="btn btn--ghost btn--sm">
+                        <x-ui.icon name="plus" class="btn__icon"/>
+                        Ajouter
+                    </a>
+                </x-slot:actions>
                 <x-pet.weight :pet="$pet"></x-pet.weight>
             </x-ui.card>
 
@@ -93,7 +99,17 @@
         </section>
         <aside>
             <x-ui.card title="Vaccins">
+                <x-slot:actions>
+                    <a href="{{ route('pets.vaccination-records.index', $pet) }}" class="btn btn--ghost btn--sm">
+                        <x-ui.icon name="chevron-right" class="btn__icon"/>
+                        Tout voir
+                    </a>
+                </x-slot:actions>
                 <x-pet.reminders :reminders="$reminders"/>
+            </x-ui.card>
+
+            <x-ui.card title="Notes de santé">
+                <p>{{ $pet->health_notes }}</p>
             </x-ui.card>
 
             @if($pet->last_vet_visit_at)
