@@ -21,7 +21,12 @@ class WeightRecordController extends Controller
      */
     public function create(Pet $pet)
     {
-        return view('weight-records.create', compact('pet'));
+        return view('weight-records.create', [
+            'pet' => $pet,
+            'recorded' => $pet->weightRecords()->take(3)->get(),
+            'title' => 'Ajouter un poids',
+            'description' => collect([$pet->name, $pet->breed?->name])->filter()->implode(' · '),
+        ]);
     }
 
     /**

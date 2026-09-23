@@ -1,37 +1,34 @@
-<form method="post" action="{{ $action }}" class="flex flex-col gap-4">
+<form method="post" action="{{ $action }}" class="form">
     @csrf
     @method($method)
 
-    <label class="flex flex-col gap-1">
-        Poids :*
-        <input
-            name="weight"
-            type="text"
-            required
-            value="{{ old('weight', $weightRecord?->weight) }}" class="border p-2">
-    </label>
+    <x-ui.card>
+        <div class="form__body">
+            <div class="form__group">
+                <h2 class="form__legend">Pesée</h2>
 
-    <label class="flex flex-col gap-1">
-        Date :*
-        <input
-            name="recorded_at"
-            type="datetime-local"
-            required
-            max="{{ now()->format('Y-m-d\TH:i') }}"
-            value="{{ old('recorded_at', $weightRecord?->recorded_at?->format('Y-m-d\TH:i')) }}"
-            class="border p-2"
-        >
-    </label>
+                <div class="form__row">
+                    <x-form.input name="weight"
+                                  label="Poids"
+                                  required
+                                  suffix="kg"
+                                  :value="$weightRecord?->weight"
+                                  placeholder="21.8"
+                                  inputmode="decimal" />
 
-    <button type="submit" class="bg-blue-600 text-white p-2 self-start">
-        {{ $submitLabel }}
-    </button>
+                    <x-form.input name="recorded_at"
+                                  type="datetime-local"
+                                  label="Date"
+                                  required
+                                  :value="$weightRecord?->recorded_at?->format('Y-m-d\TH:i')"
+                                  :max="now()->format('Y-m-d\TH:i')" />
+                </div>
+            </div>
+
+            <div class="form__actions">
+                <a href="{{ $cancel }}" class="btn btn--ghost">Annuler</a>
+                <button type="submit" class="btn btn--primary">{{ $submitLabel }}</button>
+            </div>
+        </div>
+    </x-ui.card>
 </form>
-
-@if ($errors->any())
-    <ul class="mt-4 flex flex-col gap-1">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif

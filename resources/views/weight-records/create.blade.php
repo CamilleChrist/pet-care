@@ -1,17 +1,33 @@
-@extends('layouts.base')
+<x-layouts.app :title="$title" :description="$description" :back="route('pets.weight-records.index', $pet)">
 
-@section('content')
+    <div @class(['two-columns' => $recorded->isNotEmpty(), 'one-column' => $recorded->isEmpty()])>
+        <section>
+            @include('weight-records._partials.form', [
+                'action' => route('pets.weight-records.store', $pet),
+                'method' => 'POST',
+                'weightRecord' => null,
+                'cancel' => route('pets.weight-records.index', $pet),
+                'submitLabel' => 'Enregistrer',
+            ])
+        </section>
 
-    <h1 class="text-xl font-bold mb-4">Ajouter un poids</h1>
+        @if ($recorded->isNotEmpty())
+            <aside>
+                <x-ui.card tagTitle="h2" title="Dernières pesées">
+                    <div class="weight-history">
+                        <ul class="weight-history-list">
+                            @foreach ($recorded as $record)
+                                <li>
+                                    <span>{{ $record->formatted_weight }}&nbsp;kg</span>
+                                    <span>{{ $record->recorded_at->isoFormat('ll') }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </x-ui.card>
+            </aside>
+        @endif
 
-    <p class="mb-4">Ajout d'un poids</p>
+    </div>
 
-    @include('weight-records._partials.form', [
-      'action' => route('pets.weight-records.store', $pet),
-      'method' => 'POST',
-      'weightRecord' => null,
-      'pet' => $pet,
-      'submitLabel' => 'Ajouter un poids',
-    ])
-
-@endsection
+</x-layouts.app>
