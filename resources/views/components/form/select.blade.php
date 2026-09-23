@@ -1,11 +1,10 @@
 @props([
     'name',
     'label',
-    'type' => 'text',
+    'options', // [valeur => libellé]
     'icon' => null,
     'hint' => null,
     'required' => false,
-    'rows' => null, // rend un <textarea> de N lignes
 ])
 
 @php
@@ -33,23 +32,19 @@
         @endif
     </label>
 
-    <div @class(['input', 'input--with-icon' => $icon])>
+    <div @class(['input', 'input--select', 'input--with-icon' => $icon])>
         @if ($icon)
             <x-ui.icon :name="$icon" class="input__icon" />
         @endif
 
-        @if ($rows)
-            <textarea {{ $control }} id="{{ $name }}" name="{{ $name }}" rows="{{ $rows }}" @required($required)>{{ $value }}</textarea>
-        @else
-            <input
-                {{ $control }}
-                id="{{ $name }}"
-                name="{{ $name }}"
-                type="{{ $type }}"
-                @if ($type !== 'password') value="{{ $value }}" @endif
-                @required($required)
-            >
-        @endif
+        <select {{ $control }} id="{{ $name }}" name="{{ $name }}" @required($required)>
+            @foreach ($options as $optionValue => $optionLabel)
+                <option value="{{ $optionValue }}" @selected((string) $value === (string) $optionValue)>{{ $optionLabel }}</option>
+            @endforeach
+        </select>
+
+        {{-- Le reset supprime la flèche native (appearance: none). --}}
+        <x-ui.icon name="chevron-down" class="input__chevron" />
     </div>
 
     @error($name)

@@ -10,7 +10,7 @@
             <div class="form__group">
                 <h2 class="form__legend">Vaccin</h2>
 
-                <x-form.input name="vaccine_id" label="Vaccin" :options="$vaccineOptions"
+                <x-form.select name="vaccine_id" label="Vaccin" :options="$vaccineOptions"
                               :value="$record?->vaccine_id" hint="Référentiel de l'espèce de {{ $pet->name }}." />
 
                 <x-form.input name="custom_name" label="Autre vaccin" :value="$record?->custom_name"
