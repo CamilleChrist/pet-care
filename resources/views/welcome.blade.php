@@ -37,7 +37,7 @@
                     <a href="#features">Fonctionnalités</a>
                 </li>
                 <li class="header-nav-list__item hidden-md-up">
-                    <a href="#features">Se connecter</a>
+                    <a href="{{ route('login') }}">Se connecter</a>
                 </li>
             </ul>
         </nav>
