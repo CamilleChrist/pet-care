@@ -1,21 +1,12 @@
-@extends('layouts.base')
-
-@section('content')
-
-    <h1 class="text-xl font-bold mb-4">Create Pet</h1>
-
-    <p class="mb-4">Ajout d'un animal</p>
+<x-layouts.app title="Ajouter un animal" description="Les champs marqués d'un astérisque sont obligatoires"
+               :back="route('pets.index')">
 
     @include('pets._partials.form', [
-      'action' => route('pets.store'),
-      'method' => 'POST',
-      'pet' => null,
-      'breeds' => $breeds,
-      'genders' => $genders,
-      'submitLabel' => 'Créer un pet',
+        'action' => route('pets.store'),
+        'method' => 'POST',
+        'pet' => null,
+        'cancel' => route('pets.index'),
+        'submitLabel' => 'Enregistrer',
     ])
 
-@endsection
-
-
-@vite('resources/js/pet-form.js')
+</x-layouts.app>

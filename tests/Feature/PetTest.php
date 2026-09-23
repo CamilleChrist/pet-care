@@ -72,6 +72,19 @@ test('a user can create a pet', function () {
     ]);
 });
 
+test('the create form lists the breeds with their species', function () {
+    $user = User::factory()->create();
+    $breed = Breed::factory()->create(['name' => 'Berger Australien', 'species' => 'dog']);
+
+    $this->actingAs($user)
+        ->get(route('pets.create'))
+        ->assertOk()
+        ->assertSeeInOrder(['Identité', 'Santé', 'Photo'])
+        // Le filtrage des races par espèce (pet-form.js) s'appuie sur cet attribut.
+        ->assertSee('value="'.$breed->id.'" data-species="dog"', escape: false)
+        ->assertSee('Berger Australien');
+});
+
 test('a user can create a pet with a photo', function () {
     Storage::fake('public');
 
@@ -118,12 +131,20 @@ test('a user can see a pet', function () {
 
 test('a user can open the edit form of a pet', function () {
     $user = User::factory()->create();
-    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+    $pet = Pet::factory()->create([
+        'user_id' => $user->id,
+        'name' => 'Choupette',
+        'birth_date' => '2020-05-12',
+        'health_notes' => 'Croquettes sans céréales',
+    ]);
 
     $this->actingAs($user)
         ->get(route('pets.edit', $pet))
         ->assertOk()
-        ->assertSee('Choupette');
+        ->assertSee('Choupette')
+        ->assertSee('value="2020-05-12"', escape: false)
+        ->assertSee('Croquettes sans céréales')
+        ->assertSee('Supprimer la fiche');
 });
 
 test('a user can update a pet', function () {
