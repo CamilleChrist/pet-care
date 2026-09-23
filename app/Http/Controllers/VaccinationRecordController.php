@@ -43,7 +43,7 @@ class VaccinationRecordController extends Controller
 
         return view('vaccination-records.create', [
             'pet' => $pet,
-            'vaccines' => $this->getVaccinesForSpecies($pet),
+            'vaccines' => Vaccine::forPet($pet)->get(),
             'recorded' => $this->groupByVaccine($pet->vaccinationRecords),
             'title' => $title,
             'description' => $description,
@@ -94,7 +94,7 @@ class VaccinationRecordController extends Controller
         return view('vaccination-records.edit', [
             'vaccinationRecord' => $vaccinationRecord,
             'pet' => $pet,
-            'vaccines' => $this->getVaccinesForSpecies($pet),
+            'vaccines' => Vaccine::forPet($pet)->get(),
             // Le vaccin en cours de modification est déjà sous les yeux : on ne le répète pas.
             'recorded' => $this->groupByVaccine($pet->vaccinationRecords)->forget($vaccinationRecord->display_name),
             'title' => $title,
@@ -112,15 +112,6 @@ class VaccinationRecordController extends Controller
         return redirect()
             ->route('pets.vaccination-records.index', $vaccinationRecord->pet)
             ->with('success', 'Vaccin mis à jour');
-    }
-
-    /** Get only the vaccines for the pet breed */
-    private function getVaccinesForSpecies(Pet $pet): Collection
-    {
-        return Vaccine::when(
-            $pet->breed,
-            fn ($query) => $query->where('species', $pet->breed->species)
-        )->get();
     }
 
     /** Un groupe par vaccin (injection la plus récente en tête), les échéances les plus proches d'abord. */
