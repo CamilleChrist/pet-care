@@ -49,7 +49,6 @@ Route::prefix('/pets')->controller(PetController::class)->middleware('auth')->gr
 });
 
 Route::prefix('/pets/{pet}/weight-records')->controller(WeightRecordController::class)->middleware('auth')->group(function () {
-    Route::get('/', 'index')->name('pets.weight-records.index')->can('viewAny', [WeightRecord::class, 'pet']);
     Route::get('/create', 'create')->name('pets.weight-records.create')->can('create', [WeightRecord::class, 'pet']);
     Route::post('/', 'store')->name('pets.weight-records.store')->can('create', [WeightRecord::class, 'pet']);
 });

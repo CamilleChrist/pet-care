@@ -13,7 +13,6 @@ test('the breadcrumb follows the route hierarchy up to the dashboard', function 
     expect((new Breadcrumb)->render()->getData()['items'])->toBe([
         ['label' => 'Animaux', 'url' => route('pets.index')],
         ['label' => 'Choupette', 'url' => route('pets.show', $pet)],
-        ['label' => 'Poids', 'url' => route('pets.weight-records.index', $pet)],
         ['label' => 'Nouvelle pesée', 'url' => null],
     ]);
 });

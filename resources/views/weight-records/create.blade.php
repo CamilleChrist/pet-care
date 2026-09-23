@@ -1,4 +1,4 @@
-<x-layouts.app :title="$title" :description="$description" :back="route('pets.weight-records.index', $pet)">
+<x-layouts.app :title="$title" :description="$description" :back="route('pets.show', $pet)">
 
     <div @class(['two-columns' => $recorded->isNotEmpty(), 'one-column' => $recorded->isEmpty()])>
         <section>
@@ -6,7 +6,7 @@
                 'action' => route('pets.weight-records.store', $pet),
                 'method' => 'POST',
                 'weightRecord' => null,
-                'cancel' => route('pets.weight-records.index', $pet),
+                'cancel' => route('pets.show', $pet),
                 'submitLabel' => 'Enregistrer',
             ])
         </section>

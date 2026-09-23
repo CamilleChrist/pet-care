@@ -126,7 +126,8 @@ test('a user can see a pet', function () {
         ->assertOk()
         ->assertSee('Choupette')
         ->assertSee($pet->breed->name)
-        ->assertSee($pet->gender->label());
+        ->assertSee($pet->gender->label())
+        ->assertSee('Supprimer la fiche');
 });
 
 test('a user can open the edit form of a pet', function () {
@@ -143,8 +144,7 @@ test('a user can open the edit form of a pet', function () {
         ->assertOk()
         ->assertSee('Choupette')
         ->assertSee('value="2020-05-12"', escape: false)
-        ->assertSee('Croquettes sans céréales')
-        ->assertSee('Supprimer la fiche');
+        ->assertSee('Croquettes sans céréales');
 });
 
 test('a user can update a pet', function () {
