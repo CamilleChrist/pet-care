@@ -72,6 +72,26 @@ test('a user can create a pet', function () {
     ]);
 });
 
+test('a user can create a pet with a photo', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $breed = Breed::factory()->create();
+
+    $this->actingAs($user)->post(route('pets.store'), [
+        'breed_id' => $breed->id,
+        'name' => 'Choupette',
+        'gender' => 'female',
+        'birth_date' => '2020-05-12',
+        'photo' => UploadedFile::fake()->image('choupette.jpg'),
+    ]);
+
+    $path = Pet::firstWhere('name', 'Choupette')->photo_path;
+
+    expect($path)->not->toBeNull();
+    Storage::disk('public')->assertExists($path);
+});
+
 test('creating a pet fails with invalid data', function () {
     $response = $this->actingAs(User::factory()->create())->post(route('pets.store'), [
         'breed_id' => 999,

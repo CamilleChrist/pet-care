@@ -7,6 +7,7 @@ use App\Http\Requests\StorePetRequest;
 use App\Http\Requests\UpdatePetRequest;
 use App\Models\Breed;
 use App\Models\Pet;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -40,7 +41,11 @@ class PetController extends Controller
      */
     public function store(StorePetRequest $request)
     {
-        Pet::create($request->validated());
+        $pet = Pet::create($request->safe()->except('photo'));
+
+        if ($image = $request->file('photo')) {
+            $pet->update(['photo_path' => $this->storePhoto($pet, $image)]);
+        }
 
         return redirect()->route('dashboard')->with('success', 'Succès ! Animal créé');
     }
@@ -72,7 +77,7 @@ class PetController extends Controller
      */
     public function update(UpdatePetRequest $request, Pet $pet)
     {
-        $data = $request->safe()->except('remove_photo');
+        $data = $request->safe()->except(['photo', 'remove_photo']);
 
         if ($request->boolean('remove_photo')) {
             $this->deletePhoto($pet);
@@ -80,13 +85,7 @@ class PetController extends Controller
         }
 
         if ($image = $request->file('photo')) {
-            $this->deletePhoto($pet);
-
-            $year = now()->year;
-            $month = now()->month;
-            $filename = $pet->id.'_'.Str::slug($pet->name).'.'.$image->extension();
-
-            $data['photo_path'] = $image->storeAs("pets/{$year}/{$month}", $filename, 'public');
+            $data['photo_path'] = $this->storePhoto($pet, $image);
         }
 
         $pet->update($data);
@@ -104,6 +103,16 @@ class PetController extends Controller
         $this->deletePhoto($pet);
 
         return redirect()->route('dashboard')->with('success', $name.' a été supprimé !');
+    }
+
+    /** Range la photo dans pets/AAAA/MM et remplace celle déjà en place. */
+    private function storePhoto(Pet $pet, UploadedFile $image): string
+    {
+        $this->deletePhoto($pet);
+
+        $filename = $pet->id.'_'.Str::slug($pet->name).'.'.$image->extension();
+
+        return $image->storeAs('pets/'.now()->year.'/'.now()->month, $filename, 'public');
     }
 
     private function deletePhoto(Pet $pet): void
