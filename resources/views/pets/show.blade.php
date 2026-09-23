@@ -37,7 +37,7 @@
             </x-ui.card>
 
 
-            @if($weightRecords->count() > 0)
+            @if($weightRecords->isNotEmpty())
                 <x-ui.card title="Historique des pesées">
                     <x-slot:actions>
                         <a href="{{ route('pets.weight-records.create', $pet) }}" class="btn btn--ghost btn--sm">
@@ -78,8 +78,8 @@
                                 </a>
 
                                 <span>
-                                Page {{ $weightRecords->currentPage() }} sur {{ $weightRecords->lastPage() }}
-                            </span>
+                                    Page {{ $weightRecords->currentPage() }} sur {{ $weightRecords->lastPage() }}
+                                </span>
 
                                 <a @unless($onLast) href="{{ $weightRecords->nextPageUrl() }}"
                                    @endunless aria-label="Page suivante">
