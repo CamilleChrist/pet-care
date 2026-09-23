@@ -1,0 +1,56 @@
+@use "../../abstracts/mixins" as *;
+
+// Avatar d'animal : photo, sinon icône de l'espèce sur une teinte dédiée.
+.pet-avatar {
+    @include flex(row, center, center);
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    background: var(--color-neutral-200);
+    color: var(--color-neutral-600);
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    svg {
+        width: 55%;
+        height: 55%;
+        stroke-width: 2px;
+    }
+
+    &--xs {
+        width: 32px;
+        height: 32px;
+    }
+
+    &--md {
+        width: 64px;
+        height: 64px;
+    }
+
+    &--lg {
+        width: 96px;
+        height: 96px;
+
+        @include breakpoint-up($breakpoint-lg)  {
+            width: 128px;
+            height: 128px;
+        }
+    }
+
+    &--dog {
+        background: var(--species-dog-bg);
+        color: var(--species-dog-fg);
+    }
+
+    &--cat {
+        background: var(--species-cat-bg);
+        color: var(--species-cat-fg);
+    }
+}

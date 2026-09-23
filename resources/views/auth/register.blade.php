@@ -3,7 +3,7 @@
     description="Trois minutes suffisent. Le premier animal s'ajoute juste après."
 >
 
-    <x-card tagTitle="h1" title="Créer un compte" description="Trois minutes suffisent. Le premier animal s'ajoute juste après.">
+    <x-ui.card tagTitle="h1" title="Créer un compte" description="Trois minutes suffisent. Le premier animal s'ajoute juste après.">
 
         <form method="post" action="{{ route('register.store') }}" class="form">
             @csrf
@@ -20,6 +20,6 @@
 
         <p class="auth__link">Déjà un compte ? <a href="{{ route('login') }}">Se connecter</a></p>
 
-    </x-card>
+    </x-ui.card>
 
 </x-layouts.auth>

@@ -9,6 +9,10 @@ body {
     font: 400 var(--font-size-base)/1.5 var(--font-body);
 }
 
+main > .alert {
+    margin-bottom: var(--space-1);
+}
+
 a {
     color: var(--link-color);
     text-decoration: none;

@@ -117,7 +117,7 @@
             <div class="features__list">
                 <div class="feature">
                     <p class="feature__icon">
-                        <x-icon name="file"/>
+                        <x-ui.icon name="file"/>
                     </p>
                     <h3 class="feature__title">Fiche</h3>
                     <p class="feature__description">Une fiche par animal : nom, espèce, race, date de naissance,
@@ -125,7 +125,7 @@
                 </div>
                 <div class="feature">
                     <p class="feature__icon">
-                        <x-icon name="scale"/>
+                        <x-ui.icon name="scale"/>
                     </p>
                     <h3 class="feature__title">Historique de pesées</h3>
                     <p class="feature__description">
@@ -135,7 +135,7 @@
                 </div>
                 <div class="feature">
                     <p class="feature__icon">
-                        <x-icon name="syringe"/>
+                        <x-ui.icon name="syringe"/>
                     </p>
                     <h3 class="feature__title">Vaccins et rappels</h3>
                     <p class="feature__description">Date d'administration, date du prochain rappel. Les échéances
@@ -144,7 +144,7 @@
                 </div>
                 <div class="feature">
                     <p class="feature__icon">
-                        <x-icon name="heart-pulse"/>
+                        <x-ui.icon name="heart-pulse"/>
                     </p>
                     <h3 class="feature__title">Notes et visites vétérinaires</h3>
                     <p class="feature__description">Les observations du quotidien et la date de la dernière
@@ -158,8 +158,8 @@
     <!-- CTA Section -->
     <section class="cta">
         <div class="cta__watermark" aria-hidden="true">
-            <x-icon name="paw-print" class="cta__paw cta__paw--top"/>
-            <x-icon name="paw-print" class="cta__paw cta__paw--bottom"/>
+            <x-ui.icon name="paw-print" class="cta__paw cta__paw--top"/>
+            <x-ui.icon name="paw-print" class="cta__paw cta__paw--bottom"/>
         </div>
 
         <div class="container">

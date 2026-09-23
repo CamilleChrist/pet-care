@@ -1,0 +1,49 @@
+@use "../abstracts/mixins" as *;
+
+.dashboard {
+
+    &__label {
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--color-neutral-600);
+    }
+
+    &__alert {
+        font-size: var(--font-size-base);
+        padding: var(--space-4);
+
+        span > strong {
+            font-size: var(--font-size-lg);
+        }
+
+        svg {
+            margin-top: 5px;
+        }
+    }
+}
+
+// Carte d'un animal sur l'accueil : identité, poids actuel, courbe.
+.pet-card {
+    header {
+        @include flex(row, flex-start, center, var(--space-4), var(--space-2));
+    }
+
+    &-identity {
+        flex: 1;
+        min-width: 0;
+
+        &__name {
+            font-size: var(--font-size-lg);
+            font-weight: 700;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        &__meta {
+            font-size: var(--font-size-sm);
+            color: var(--color-neutral-600);
+        }
+    }
+}

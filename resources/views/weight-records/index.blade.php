@@ -20,12 +20,15 @@
                     <td>{{ $record->weight }}kg</td>
                     <td>{{ $record->recorded_at->format('j F Y') }}</td>
                     <td>
-                        <form method="post" action="{{ route('weight-records.destroy', $record) }}">
-                            @csrf
-                            @method('DELETE')
+                        <button type="button" class="text-red-600"
+                                data-dialog-open="delete-weight-record-{{ $record->id }}">
+                            Supprimer
+                        </button>
 
-                            <button type="submit" class="text-red-600">Supprimer</button>
-                        </form>
+                        <x-ui.confirm-delete id="delete-weight-record-{{ $record->id }}"
+                                             :action="route('weight-records.destroy', $record)"
+                                             title="Supprimer cette pesée ?"
+                                             description="La pesée du {{ $record->recorded_at->format('j F Y') }} sera définitivement supprimée." />
                     </td>
                 </tr>
             @endforeach

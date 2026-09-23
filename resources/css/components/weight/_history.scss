@@ -1,0 +1,61 @@
+@use "../../abstracts/mixins" as *;
+
+.weight-history {
+    &-list {
+        > li {
+            @include flex(row, flex-start, center, var(--space-2), var(--space-2));
+            flex-wrap: nowrap;
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--color-neutral-200);
+
+            span:first-of-type {
+                font-weight: 700;
+                color: var(--color-neutral-900);
+                font-size: var(--font-size-lg);
+
+                @include breakpoint-up($breakpoint-sm) {
+                    min-width: 100px;
+                }
+            }
+
+            span:last-of-type {
+                flex: 1;
+                font-size: var(--font-size-sm);
+            }
+        }
+    }
+
+    &-pagination {
+        @include flex(row, center, center, var(--space-1), var(--space-1));
+        padding-top: var(--space-4);
+
+        a {
+            @include flex(row, center, center, 0, 0);
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-pill);
+            color: var(--color-primary);
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            &:hover {
+                background: var(--color-primary-soft);
+                color: var(--color-primary-dark);
+            }
+
+            &:not([href]) {
+                opacity: 0.3;
+                pointer-events: none;
+            }
+        }
+
+        span {
+            padding: 0 var(--space-2);
+            color: var(--color-neutral-600);
+            font-size: var(--font-size-sm);
+        }
+    }
+}

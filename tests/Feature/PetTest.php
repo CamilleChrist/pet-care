@@ -3,6 +3,8 @@
 use App\Models\Breed;
 use App\Models\Pet;
 use App\Models\User;
+use App\Models\VaccinationRecord;
+use App\Models\WeightRecord;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,6 +30,25 @@ test('a user sees their pets in the list', function () {
         ->assertSee('Choupette');
 });
 
+test('the pet list shows the latest weight and the closest booster of each pet', function () {
+    $this->travelTo('2026-09-20');
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+    WeightRecord::factory()->create(['pet_id' => $pet->id, 'weight' => 20.0, 'recorded_at' => '2026-08-01']);
+    WeightRecord::factory()->create(['pet_id' => $pet->id, 'weight' => 21.8, 'recorded_at' => '2026-09-01']);
+    // Le rappel de la première injection est remplacé par celui de la seconde, le second vaccin est à jour.
+    $vaccine = VaccinationRecord::factory()->create(['pet_id' => $pet->id, 'administered_at' => '2025-09-01', 'next_due_at' => '2026-09-01'])->vaccine;
+    VaccinationRecord::factory()->create(['pet_id' => $pet->id, 'vaccine_id' => $vaccine->id, 'administered_at' => '2026-09-01', 'next_due_at' => '2026-10-01']);
+    VaccinationRecord::factory()->create(['pet_id' => $pet->id, 'administered_at' => '2026-09-01', 'next_due_at' => '2027-09-01']);
+
+    $this->actingAs($user)
+        ->get(route('pets.index'))
+        ->assertOk()
+        ->assertSee('21,8 kg')
+        ->assertSee('Dans 11 jours')
+        ->assertDontSee('En retard');
+});
+
 test('a user can create a pet', function () {
     $user = User::factory()->create();
     $breed = Breed::factory()->create();
@@ -49,6 +70,39 @@ test('a user can create a pet', function () {
         'gender' => 'female',
         'birth_date' => '2020-05-12',
     ]);
+});
+
+test('the create form lists the breeds with their species', function () {
+    $user = User::factory()->create();
+    $breed = Breed::factory()->create(['name' => 'Berger Australien', 'species' => 'dog']);
+
+    $this->actingAs($user)
+        ->get(route('pets.create'))
+        ->assertOk()
+        ->assertSeeInOrder(['Identité', 'Santé', 'Photo'])
+        // Le filtrage des races par espèce (pet-form.js) s'appuie sur cet attribut.
+        ->assertSee('value="'.$breed->id.'" data-species="dog"', escape: false)
+        ->assertSee('Berger Australien');
+});
+
+test('a user can create a pet with a photo', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $breed = Breed::factory()->create();
+
+    $this->actingAs($user)->post(route('pets.store'), [
+        'breed_id' => $breed->id,
+        'name' => 'Choupette',
+        'gender' => 'female',
+        'birth_date' => '2020-05-12',
+        'photo' => UploadedFile::fake()->image('choupette.jpg'),
+    ]);
+
+    $path = Pet::firstWhere('name', 'Choupette')->photo_path;
+
+    expect($path)->not->toBeNull();
+    Storage::disk('public')->assertExists($path);
 });
 
 test('creating a pet fails with invalid data', function () {
@@ -77,12 +131,20 @@ test('a user can see a pet', function () {
 
 test('a user can open the edit form of a pet', function () {
     $user = User::factory()->create();
-    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Choupette']);
+    $pet = Pet::factory()->create([
+        'user_id' => $user->id,
+        'name' => 'Choupette',
+        'birth_date' => '2020-05-12',
+        'health_notes' => 'Croquettes sans céréales',
+    ]);
 
     $this->actingAs($user)
         ->get(route('pets.edit', $pet))
         ->assertOk()
-        ->assertSee('Choupette');
+        ->assertSee('Choupette')
+        ->assertSee('value="2020-05-12"', escape: false)
+        ->assertSee('Croquettes sans céréales')
+        ->assertSee('Supprimer la fiche');
 });
 
 test('a user can update a pet', function () {

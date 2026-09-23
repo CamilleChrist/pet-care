@@ -2,6 +2,7 @@
 
 .btn {
     @include flex(row, center, center, var(--space-2));
+    flex-wrap: nowrap;
     padding: var(--space-4) var(--space-8);
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
@@ -61,6 +62,19 @@
         }
     }
 
+    // Action destructive discrète (supprimer une ligne dans une liste).
+    &--ghost-danger {
+        @extend .btn;
+        background: transparent;
+        color: var(--color-danger);
+        padding: var(--space-2);
+
+        &:hover {
+            background: var(--color-danger-soft);
+            color: var(--color-danger-dark);
+        }
+    }
+
     &--danger {
         @extend .btn;
         background: var(--color-danger);
@@ -76,9 +90,35 @@
         width: 100%;
     }
 
+    &--sm {
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--font-size-sm);
+    }
+
     &__icon {
         width: 20px;
         height: 20px;
+    }
+
+    &--round {
+        padding: var(--space-2);
+        border-radius: var(--radius-pill);
+        aspect-ratio: 1;
+    }
+}
+
+// Rangée de boutons à largeur égale (actions mobiles sous l'en-tête).
+.btn-row {
+    @include flex(row, flex-start, stretch, var(--space-2), var(--space-2));
+    margin-bottom: var(--space-4);
+
+    > * {
+        width: 100%;
+        padding-inline: var(--space-2);
+        @include breakpoint-up(380px) {
+            flex: 1;
+            width: auto;
+        }
     }
 }
 

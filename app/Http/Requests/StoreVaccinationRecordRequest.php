@@ -43,4 +43,22 @@ class StoreVaccinationRecordRequest extends FormRequest
             'notes' => ['nullable', 'string'],
         ];
     }
+
+    /**
+     * Noms lisibles des champs dans les messages d'erreur, propres à ce formulaire.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'vaccine_id' => 'vaccin',
+            'custom_name' => 'autre vaccin',
+            'administered_at' => "date d'administration",
+            'next_due_at' => 'date du rappel',
+            'veterinarian_name' => 'vétérinaire',
+            'clinic_name' => 'clinique',
+            'lot_number' => 'numéro de lot',
+        ];
+    }
 }

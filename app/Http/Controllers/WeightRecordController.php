@@ -44,7 +44,7 @@ class WeightRecordController extends Controller
         $weightRecord->delete();
 
         return redirect()
-            ->route('pets.weight-records.index', $weightRecord->pet_id)
-            ->with('success', 'Un record a été supprimé');
+            ->route('pets.show', $weightRecord->pet_id)
+            ->with('success', 'Un poids a bien été supprimé');
     }
 }

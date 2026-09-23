@@ -1,47 +1,127 @@
-@extends('layouts.base')
+@php use Illuminate\Support\Carbon; @endphp
 
-@section('content')
-    <h1 class="text-xl font-bold mb-4">Détail d'un pet</h1>
+<x-layouts.app :title="$pet->name" :back="route('pets.index')">
 
-    <ul class="flex flex-col gap-1 mb-4">
-        @if($pet->photo_path)
-            <li>
-                <img src="{{ $pet->photoUrl() }}">
-            </li>
-        @endif
+    <x-slot:avatar>
+        <x-pet.avatar :pet="$pet" size="lg" class="hidden-md-down"/>
+    </x-slot:avatar>
 
-        <li>Nom : {{ $pet->name }}</li>
-        <li>Genre : {{ $pet->gender->label() }}</li>
-        <li>Race : {{ $pet->breed->name }}</li>
-        <li>Date de naissance : {{ $pet->birth_date }}</li>
-        @if( $pet->health_notes )
-            <li>Notes : {{ $pet->health_notes }}</li>
-        @endif
+    <x-slot:description>
+        <span class="hidden-md-up">{{ $pet->breed->name }} · {{ $pet->age }}</span>
+        <x-pet.badges :pet="$pet" class="hidden-md-down"/>
+    </x-slot:description>
 
-        @if( $pet->last_vet_visit_at )
-            <li>Dernière visite véto : {{ $pet->last_vet_visit_at }}</li>
-        @endif
-    </ul>
+    <x-slot:actions>
+        <x-pet.actions :pet="$pet"/>
+    </x-slot:actions>
 
-    <ul>
-        <li>
-            <a class="inline-block mb-4 text-blue-600 hover:underline"
-               href="{{ route('pets.weight-records.index', [$pet->id]) }}">Voir la courbe de poids
-            </a>
-        </li>
-        <li>
-            <a class="inline-block mb-4 text-blue-600 hover:underline"
-               href="{{ route('pets.vaccination-records.index', [$pet->id]) }}">Voir les vaccins
-            </a>
-        </li>
-        <li>
-            <a class="inline-block mb-4 text-blue-600 hover:underline" href="{{ route('pets.edit', [$pet->id]) }}">Modifier</a>
-        </li>
-    </ul>
-    <form method="post" action="{{ route('pets.destroy', [$pet->id]) }}">
-        @csrf
-        @method('DELETE')
+    <div class="pet-profile hidden-md-up">
+        <x-pet.avatar :pet="$pet" size="lg"/>
+        <x-pet.badges :pet="$pet" compact/>
+    </div>
 
-        <button type="submit" class="text-red-600">Supprimer</button>
-    </form>
-@endsection
+    <div class="btn-row hidden-md-up">
+        <x-pet.actions :pet="$pet"/>
+    </div>
+
+    <div class="two-columns">
+        <section>
+            <x-ui.card title="Courbe de poids">
+                <x-slot:actions>
+                    <a href="{{ route('pets.weight-records.create', $pet) }}" class="btn btn--ghost btn--sm">
+                        <x-ui.icon name="plus" class="btn__icon"/>
+                        Ajouter
+                    </a>
+                </x-slot:actions>
+                <x-pet.weight :pet="$pet"></x-pet.weight>
+            </x-ui.card>
+
+            <x-ui.card title="Historique des pesées">
+                <x-slot:actions>
+                    <a href="{{ route('pets.weight-records.create', $pet) }}" class="btn btn--ghost btn--sm">
+                        <x-ui.icon name="plus" class="btn__icon"/>
+                        Ajouter
+                    </a>
+                </x-slot:actions>
+
+                <div class="weight-history">
+
+                    <ul class="weight-history-list">
+                        @foreach($weightRecords as $record)
+                            <li>
+                                <span>{{ $record->formatted_weight }}&nbsp;kg</span>
+                                <span>{{ $record->recorded_at->isoFormat('ll') }}</span>
+                                <button type="button" class="btn btn--ghost-danger"
+                                        data-dialog-open="delete-weight-record-{{ $record->id }}"
+                                        aria-label="Supprimer la pesée du {{ $record->recorded_at->isoFormat('LL') }}">
+                                    <x-ui.icon name="trash-2" class="btn__icon"/>
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    @if($weightRecords->hasPages())
+                        @php($onFirst = $weightRecords->onFirstPage())
+                        @php($onLast = !$weightRecords->hasMorePages())
+
+                        <nav class="weight-history-pagination" aria-label="Pagination de l'historique">
+                            <a @unless($onFirst) href="{{ $weightRecords->url(1) }}"
+                               @endunless aria-label="Première page">
+                                <x-ui.icon name="chevrons-left"/>
+                            </a>
+
+                            <a @unless($onFirst) href="{{ $weightRecords->previousPageUrl() }}"
+                               @endunless class="weight-history-pagination__link" aria-label="Page précédente">
+                                <x-ui.icon name="chevron-left"/>
+                            </a>
+
+                            <span>
+                                Page {{ $weightRecords->currentPage() }} sur {{ $weightRecords->lastPage() }}
+                            </span>
+
+                            <a @unless($onLast) href="{{ $weightRecords->nextPageUrl() }}"
+                               @endunless aria-label="Page suivante">
+                                <x-ui.icon name="chevron-right"/>
+                            </a>
+
+                            <a @unless($onLast) href="{{ $weightRecords->url($weightRecords->lastPage()) }}"
+                               @endunless aria-label="Dernière page">
+                                <x-ui.icon name="chevrons-right"/>
+                            </a>
+                        </nav>
+                    @endif
+
+                    @foreach($weightRecords as $record)
+                        <x-ui.confirm-delete id="delete-weight-record-{{ $record->id }}"
+                                             :action="route('weight-records.destroy', $record)"
+                                             title="Supprimer cette pesée ?"
+                                             description="La pesée de {{ $record->formatted_weight }} kg du {{ $record->recorded_at->isoFormat('LL') }} sera définitivement supprimée." />
+                    @endforeach
+                </div>
+            </x-ui.card>
+        </section>
+        <aside>
+            <x-ui.card title="Vaccins">
+                <x-slot:actions>
+                    <a href="{{ route('pets.vaccination-records.index', $pet) }}" class="btn btn--ghost btn--sm">
+                        <x-ui.icon name="chevron-right" class="btn__icon"/>
+                        Tout voir
+                    </a>
+                </x-slot:actions>
+                <x-pet.reminders :reminders="$reminders"/>
+            </x-ui.card>
+
+            <x-ui.card title="Notes de santé">
+                <p>{{ $pet->health_notes }}</p>
+            </x-ui.card>
+
+            @if($pet->last_vet_visit_at)
+                <x-ui.card title="Dernière visite véterinaire">
+                    <strong>{{ Carbon::parse($pet->last_vet_visit_at)->isoFormat('LL') }}</strong>
+                </x-ui.card>
+            @endif
+
+        </aside>
+    </div>
+
+</x-layouts.app>

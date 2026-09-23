@@ -37,6 +37,45 @@ class VaccinationRecord extends Model
         );
     }
 
+    protected function daysUntilDue(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => (int) today()->diffInDays($this->next_due_at, false),
+        );
+    }
+
+    /** late | due (dans les 30 jours) | done (à jour, ou sans rappel prévu) */
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => match (true) {
+                ! $this->next_due_at => 'done',
+                $this->days_until_due < 0 => 'late',
+                $this->days_until_due <= 30 => 'due',
+                default => 'done',
+            },
+        );
+    }
+
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => match ($this->status) {
+                'late' => 'En retard',
+                'due' => trans_choice("{0} Aujourd'hui|{1} Demain|[2,*] Dans :count jours", $this->days_until_due),
+                'done' => $this->next_due_at ? 'À jour' : 'Sans rappel',
+            },
+        );
+    }
+
+    /** Ton du badge d'état (voir x-ui.badge). */
+    protected function statusTone(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => ['late' => 'danger', 'due' => 'warning', 'done' => 'success'][$this->status],
+        );
+    }
+
     public function vaccine(): BelongsTo
     {
         return $this->belongsTo(Vaccine::class);

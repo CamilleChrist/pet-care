@@ -4,15 +4,31 @@
 @use "base/global";
 
 @use "components/buttons";
-@use "components/card";
+@use "components/ui/card";
 @use "components/form/form";
 @use "components/form/input";
 @use "components/form/switch";
-@use "components/alert";
-@use "components/dialog";
-@use "components/logo";
+@use "components/ui/alert";
+@use "components/ui/badge";
+@use "components/nav/breadcrumb";
+@use "components/ui/dialog";
+@use "components/ui/empty-state";
+@use "components/ui/logo";
+@use "components/pet/avatar";
+@use "components/pet/item" as pet-item;
+@use "components/pet/profile";
+@use "components/pet/switcher";
+@use "components/pet/weight";
+@use "components/ui/tip";
+@use "components/vaccine/item";
+@use "components/vaccine/table" as vaccine-table;
+@use "components/vaccine/detail" as vaccine-detail;
+@use "components/weight/chart";
+@use "components/weight/history";
 
 @use "app/app";
+@use "app/page-header";
+@use "app/dashboard";
 @use "app/nav/sidebar";
 @use "app/nav/bottom-nav";
 @use "app/auth";

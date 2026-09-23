@@ -13,6 +13,7 @@ test('guests cannot access vaccination records', function () {
     $this->get(route('pets.vaccination-records.index', $pet))->assertRedirect(route('login'));
     $this->get(route('pets.vaccination-records.create', $pet))->assertRedirect(route('login'));
     $this->post(route('pets.vaccination-records.store', $pet))->assertRedirect(route('login'));
+    $this->get(route('vaccination-records.show', $vaccinationRecord))->assertRedirect(route('login'));
     $this->get(route('vaccination-records.edit', $vaccinationRecord))->assertRedirect(route('login'));
     $this->patch(route('vaccination-records.update', $vaccinationRecord))->assertRedirect(route('login'));
     $this->delete(route('vaccination-records.destroy', $vaccinationRecord))->assertRedirect(route('login'));
@@ -102,7 +103,7 @@ test('adding a vaccination record fails when the vaccine species does not match 
     ]);
 
     $response->assertSessionHasErrors([
-        'vaccine_id' => 'La valeur sélectionnée pour vaccine id est invalide.',
+        'vaccine_id' => 'La valeur sélectionnée pour vaccin est invalide.',
     ]);
     $this->assertDatabaseEmpty('vaccination_records');
 });
@@ -119,7 +120,7 @@ test('adding a vaccination record fails when the next reminder is before the adm
     ]);
 
     $response->assertSessionHasErrors([
-        'next_due_at' => 'Le champ next due at doit être une date postérieure ou égale à administered at.',
+        'next_due_at' => 'Le champ date du rappel doit être une date postérieure ou égale à date d\'administration.',
     ]);
     $this->assertDatabaseEmpty('vaccination_records');
 });
@@ -135,7 +136,7 @@ test('adding a vaccination record fails when the administration date is in the f
     ]);
 
     $response->assertSessionHasErrors([
-        'administered_at' => 'Le champ administered at doit être une date antérieure ou égale à today.',
+        'administered_at' => 'Le champ date d\'administration doit être une date antérieure ou égale à today.',
     ]);
     $this->assertDatabaseEmpty('vaccination_records');
 });
@@ -166,6 +167,44 @@ test('a user cannot open the form to add a vaccination record to another user pe
 
     $this->actingAs(User::factory()->create())
         ->get(route('pets.vaccination-records.create', $pet))
+        ->assertForbidden();
+});
+
+test('the detail page shows every injection of the vaccine, most recent first', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Bilou']);
+    $rage = Vaccine::factory()->create(['name' => 'Rage']);
+    $other = Vaccine::factory()->create(['name' => 'Parvovirose']);
+
+    $first = VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2022-01-10',
+        'next_due_at' => '2025-01-10',
+        'lot_number' => 'RB-2210-A',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2025-01-10',
+        'next_due_at' => now()->addYears(2)->format('Y-m-d'),
+        'veterinarian_name' => 'Dr Lemoine',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create(['vaccine_id' => $other->id]);
+
+    // On ouvre la page depuis l'injection la plus ancienne : elle couvre quand même tout le vaccin.
+    $this->actingAs($user)
+        ->get(route('vaccination-records.show', $first))
+        ->assertOk()
+        ->assertSee('Bilou · 2 injections')
+        ->assertSeeInOrder(['Injection en cours', 'Dr Lemoine', 'Injection précédente', 'RB-2210-A'])
+        ->assertSee('Remplacée')
+        ->assertDontSee('Parvovirose');
+});
+
+test('a user cannot see the detail of another user vaccination record', function () {
+    $vaccinationRecord = VaccinationRecord::factory()->create();
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('vaccination-records.show', $vaccinationRecord))
         ->assertForbidden();
 });
 
@@ -217,6 +256,17 @@ test('a user cannot update another user vaccination record', function () {
     ]);
 });
 
+test('deleting a vaccination record goes through a confirmation dialog', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+    $record = VaccinationRecord::factory()->for($pet)->create();
+
+    $this->actingAs($user)
+        ->get(route('pets.vaccination-records.index', $pet))
+        ->assertSee('data-dialog-open="delete-vaccination-record-'.$record->id.'"', false)
+        ->assertSee('<dialog id="delete-vaccination-record-'.$record->id.'"', false);
+});
+
 test('a user can delete a vaccination record from their pet', function () {
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id]);
@@ -238,4 +288,64 @@ test('a user cannot delete a vaccination record from another user pet', function
 
     $response->assertForbidden();
     $this->assertDatabaseHas('vaccination_records', ['id' => $vaccinationRecord->id]);
+});
+
+test('the list groups the injections of a vaccine and counts them in the header', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+    $rage = Vaccine::factory()->create(['name' => 'Rage']);
+    $lepto = Vaccine::factory()->create(['name' => 'Leptospirose']);
+
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2022-01-10',
+        'next_due_at' => '2025-01-10',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2025-01-10',
+        'next_due_at' => now()->addYears(2)->format('Y-m-d'),
+    ]);
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $lepto->id,
+        'administered_at' => '2025-08-02',
+        'next_due_at' => now()->subMonth()->format('Y-m-d'),
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('pets.vaccination-records.index', $pet))
+        ->assertOk()
+        ->assertSee('3 enregistrements · 2 vaccins · 1 rappel dépassé')
+        ->assertSee('2 injections', false)
+        ->assertSee('Rage · injection précédente')
+        ->assertSee('Remplacée')
+        ->assertSeeInOrder(['Leptospirose', 'Rage']) // le rappel dépassé en tête
+        ->assertSeeInOrder(['Vaccin', 'Fait le', 'Rappel', 'Statut']); // en-têtes du tableau bureau
+});
+
+test('the edit form is filled with the record and lists the other recorded vaccines', function () {
+    $user = User::factory()->create();
+    $breed = Breed::factory()->create(['species' => 'dog']);
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Bilou', 'breed_id' => $breed->id]);
+    $rage = Vaccine::factory()->create(['name' => 'Rage', 'species' => 'dog']);
+    Vaccine::factory()->create(['name' => 'Typhus', 'species' => 'cat']);
+
+    $record = VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2025-01-10',
+        'next_due_at' => '2028-01-10',
+        'lot_number' => 'RB-2210-A',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create(['vaccine_id' => null, 'custom_name' => 'Parvovirose']);
+
+    $this->actingAs($user)
+        ->get(route('vaccination-records.edit', $record))
+        ->assertOk()
+        ->assertSee('value="2025-01-10"', false)
+        ->assertSee('value="2028-01-10"', false)
+        ->assertSee('value="RB-2210-A"', false)
+        ->assertSee('<option value="'.$rage->id.'" selected="selected">Rage</option>', false)
+        // Le référentiel suit l'espèce de l'animal, et le vaccin modifié n'est pas répété dans l'aparté.
+        ->assertDontSee('Typhus')
+        ->assertSeeInOrder(['Déjà enregistrés', 'Parvovirose']);
 });

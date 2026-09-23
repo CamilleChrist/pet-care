@@ -1,0 +1,64 @@
+@use "../abstracts/mixins" as *;
+
+// En-tête de page : titre + description sous le fil d'Ariane.
+.page-header {
+    @include flex(row, space-between, center, var(--space-6), var(--space-4));
+    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+
+    @include breakpoint-down($breakpoint-md) {
+        column-gap: var(--space-2); // bouton retour collé au titre (topbar)
+        margin-bottom: var(--space-4);
+    }
+
+    &__heading {
+        @include flex(column, flex-start, stretch);
+        flex: 1;
+        min-width: 0;
+
+        @include breakpoint-up($breakpoint-md) {
+            row-gap: var(--space-2);
+        }
+    }
+
+    &__back {
+        @include flex(row, center, center);
+        flex: none;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-pill);
+        color: var(--color-neutral-800);
+        transition: var(--transition);
+
+        &:hover {
+            background: var(--color-neutral-200);
+        }
+
+        svg {
+            width: 22px;
+            height: 22px;
+        }
+    }
+
+    &__actions {
+        display: none;
+        flex: none;
+        flex-wrap: wrap;
+
+        @include breakpoint-up($breakpoint-md) {
+            @include flex(row, flex-start, center, var(--space-2), var(--space-2));
+        }
+    }
+
+    &__title {
+        font: 700 var(--font-size-2xl)/1.25 var(--font-title);
+    }
+
+    &__description {
+        color: var(--color-neutral-600);
+
+        @include breakpoint-down($breakpoint-md) {
+            font-size: var(--font-size-xs);
+        }
+    }
+}

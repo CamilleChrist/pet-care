@@ -5,7 +5,25 @@
     'icon' => null,
     'hint' => null,
     'required' => false,
+    'rows' => null, // rend un <textarea> de N lignes
 ])
+
+@php
+    $value = old($name, $attributes->get('value'));
+
+    $hasError = $errors->has($name);
+
+    $control = $attributes
+        ->except('value')
+        ->class([
+            'input__control',
+            'input__control--error' => $hasError,
+        ])
+        ->merge([
+            'aria-invalid' => $hasError ? 'true' : null,
+            'aria-describedby' => $hasError ? "{$name}-error" : null,
+        ]);
+@endphp
 
 <div class="field">
     <label class="field__label" for="{{ $name }}">
@@ -17,17 +35,21 @@
 
     <div @class(['input', 'input--with-icon' => $icon])>
         @if ($icon)
-            <x-icon :name="$icon" class="input__icon" />
+            <x-ui.icon :name="$icon" class="input__icon" />
         @endif
-        <input
-            {{ $attributes->except('value')->class(['input__control', 'input__control--error' => $errors->has($name)]) }}
-            id="{{ $name }}"
-            name="{{ $name }}"
-            type="{{ $type }}"
-            @if ($type !== 'password') value="{{ old($name, $attributes->get('value')) }}" @endif
-            @required($required)
-            @if ($errors->has($name)) aria-invalid="true" aria-describedby="{{ $name }}-error" @endif
-        >
+
+        @if ($rows)
+            <textarea {{ $control }} id="{{ $name }}" name="{{ $name }}" rows="{{ $rows }}" @required($required)>{{ $value }}</textarea>
+        @else
+            <input
+                {{ $control }}
+                id="{{ $name }}"
+                name="{{ $name }}"
+                type="{{ $type }}"
+                @if ($type !== 'password') value="{{ $value }}" @endif
+                @required($required)
+            >
+        @endif
     </div>
 
     @error($name)

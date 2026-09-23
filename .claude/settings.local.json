@@ -1,5 +1,13 @@
 {
-  "enabledMcpjsonServers": [
-    "laravel-boost"
-  ]
+    "enabledMcpjsonServers": [
+        "laravel-boost"
+    ],
+    "permissions": {
+        "deny": [
+            "Read(./.env)",
+            "Read(./.env.*)",
+            "Bash(cat .env*)",
+            "Bash(cat ./.env*)"
+        ]
+    }
 }

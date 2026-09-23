@@ -1,113 +1,89 @@
-<form method="post" action="{{ $action }}" enctype="multipart/form-data" class="flex flex-col gap-4">
+@php
+    $genderOptions = collect($genders)->mapWithKeys(fn ($gender) => [$gender->value => $gender->label()])->prepend('— Choisir —', '');
+    $speciesOptions = ['' => '— Choisir —', 'dog' => 'Chien', 'cat' => 'Chat'];
+    $breedOptions = $breeds->pluck('name', 'id')->prepend('— Choisir —', '');
+    // Lu par pet-form.js pour n'afficher que les races de l'espèce choisie.
+    $breedSpecies = $breeds->mapWithKeys(fn ($breed) => [$breed->id => ['data-species' => $breed->species]]);
+@endphp
+
+<form method="post" action="{{ $action }}" enctype="multipart/form-data" class="form">
     @csrf
     @method($method)
 
-    <label class="flex flex-col gap-1">
-        Nom :*
-        <input name="name" type="text" required value="{{ old('name', $pet?->name) }}" class="border p-2">
-    </label>
+    <div class="two-columns">
+        <section>
+            <x-ui.card>
+                <div class="form__body">
+                    <div class="form__group">
+                        <h2 class="form__legend">Identité</h2>
 
-    <label class="flex flex-col gap-1">
-        Genre :*
-        <select name="gender" required class="border p-2">
-            <option value="" disabled>Choisir une option</option>
+                        <div class="form__row">
+                            <x-form.input name="name" label="Nom" required :value="$pet?->name"
+                                          placeholder="Choupette" />
 
-            @foreach ($genders as $gender)
-                <option value="{{ $gender->value }}" @selected(old('gender', $pet?->gender?->value) === $gender->value)>
-                    {{ $gender->label() }}
-                </option>
-            @endforeach
-        </select>
-    </label>
+                            <x-form.select name="gender" label="Sexe" required :options="$genderOptions"
+                                          :value="$pet?->gender?->value" />
 
-    <label class="flex flex-col gap-1">
-        Espèce :*
-        <select name="species" id="species" required class="border p-2">
-            <option value="" disabled @selected(!old('species', $pet?->breed?->species))>
-                Choisir une option
-            </option>
+                            <x-form.select name="species" label="Espèce" required :options="$speciesOptions"
+                                          :value="$pet?->breed?->species" />
 
-            <option value="dog"@selected(old('species', $pet?->breed?->species) === 'dog')>
-                Chien
-            </option>
+                            <x-form.select name="breed_id" label="Race" required :options="$breedOptions"
+                                          :option-attributes="$breedSpecies" :value="$pet?->breed_id"
+                                          hint="Selon l'espèce choisie." />
 
-            <option value="cat"@selected(old('species', $pet?->breed?->species) === 'cat')>
-                Chat
-            </option>
-        </select>
-    </label>
+                            <x-form.input name="birth_date" type="date" label="Date de naissance" required
+                                          :value="$pet?->birth_date" :max="now()->format('Y-m-d')"
+                                          hint="Aujourd'hui au plus tard." />
+                        </div>
+                    </div>
 
-    <label class="flex flex-col gap-1">
-        Race :*
-        <select name="breed_id" id="breed_id" required class="border p-2">
-            <option value="" disabled @selected(!old('breed_id', $pet?->breed_id))>
-                Choisir une option
-            </option>
+                    <hr class="form__separator">
 
-            @foreach($breeds as $breed)
-                <option
-                    value="{{ $breed->id }}"
-                    data-species="{{ $breed->species }}"
-                    @selected((string) old('breed_id', $pet?->breed_id) === (string) $breed->id)
-                >
-                    {{ $breed->name }}
-                </option>
-            @endforeach
-        </select>
-    </label>
+                    <div class="form__group">
+                        <h2 class="form__legend">Santé</h2>
 
-    <label class="flex flex-col gap-1">
-        Date de naissance :*
-        <input
-            name="birth_date"
-            type="date"
-            required
-            value="{{ old('birth_date', $pet?->birth_date) }}"
-            class="border p-2"
-        >
-    </label>
+                        <x-form.input name="last_vet_visit_at" type="date" label="Dernière visite vétérinaire"
+                                      :value="$pet?->last_vet_visit_at" :max="now()->format('Y-m-d')" />
 
-    {{-- Don't display his fields in the create form / only in the update form --}}
-    @if($method === 'PUT' || $method === 'PATCH')
-        <label class="flex flex-col gap-1">
-            Photo
-            <input name="photo" type="file">
-        </label>
+                        <x-form.input name="health_notes" label="Notes de santé" :rows="4"
+                                      :value="$pet?->health_notes"
+                                      placeholder="Allergies, traitements en cours…" />
+                    </div>
 
-        @if($pet->photo_path)
-            <img src="{{ $pet->photoUrl() }}" style="max-width: 200px" alt="Image de {{ $pet->name }}">
+                    <div class="form__actions">
+                        <a href="{{ $cancel }}" class="btn btn--ghost">Annuler</a>
+                        <button type="submit" class="btn btn--primary">{{ $submitLabel }}</button>
+                    </div>
+                </div>
+            </x-ui.card>
+        </section>
 
-            <label class="flex items-center gap-2">
-                <input type="checkbox" name="remove_photo" value="1">
-                Supprimer la photo
-            </label>
-        @endif
+        <aside>
+            <x-ui.card tagTitle="h2" title="Photo">
+                @if ($pet?->photo_path)
+                    <img class="upload__preview" src="{{ $pet->photoUrl() }}" alt="Photo de {{ $pet->name }}">
+                @endif
 
-        <label class="flex flex-col gap-1">
-            Notes
-            <textarea name="health_notes" class="border p-2">{{ old('health_notes', $pet?->health_notes) }}</textarea>
-        </label>
+                <label class="upload">
+                    <span class="upload__icon"><x-ui.icon name="image" /></span>
+                    <span class="upload__hint">JPEG ou PNG, 2 Mo maximum</span>
+                    <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" class="upload__input">
+                </label>
 
-        <label class="flex flex-col gap-1">
-            Dernière visite vétérinaire
-            <input
-                name="last_vet_visit_at"
-                type="date"
-                value="{{ old('last_vet_visit_at', $pet?->last_vet_visit_at) }}"
-                class="border p-2"
-            >
-        </label>
-    @endif
+                @error('photo')
+                    <p class="field__error">{{ $message }}</p>
+                @enderror
 
-    <button type="submit" class="bg-blue-600 text-white p-2 self-start">
-        {{ $submitLabel }}
-    </button>
+                @if ($pet?->photo_path)
+                    <x-form.switch name="remove_photo" label="Supprimer la photo" />
+                @endif
+            </x-ui.card>
+
+            @unless ($pet)
+                <x-ui.tip title="Ensuite">
+                    Après l'enregistrement, ajoutez une première pesée puis les vaccins déjà faits.
+                </x-ui.tip>
+            @endunless
+        </aside>
+    </div>
 </form>
-
-@if ($errors->any())
-    <ul class="mt-4 flex flex-col gap-1">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif

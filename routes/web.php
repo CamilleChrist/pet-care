@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\VaccinationRecordController;
 use App\Http\Controllers\WeightRecordController;
@@ -34,9 +35,7 @@ Route::controller(AuthController::class)->middleware('guest')->group(function ()
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // ****  DASHBOARD  **** //
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth');
+Route::get('/dashboard', DashboardController::class)->name('dashboard')->middleware('auth');
 
 // ****  PETS  **** //
 Route::prefix('/pets')->controller(PetController::class)->middleware('auth')->group(function () {
@@ -67,7 +66,13 @@ Route::prefix('/pets/{pet}/vaccination-records')->controller(VaccinationRecordCo
     Route::post('/', 'store')->name('pets.vaccination-records.store')->can('create', [VaccinationRecord::class, 'pet']);
 });
 
-Route::get('/vaccination-records/{vaccinationRecord}', [VaccinationRecordController::class, 'edit'])
+Route::get('/vaccination-records/{vaccinationRecord}', [VaccinationRecordController::class, 'show'])
+    ->name('vaccination-records.show')
+    ->can('update', 'vaccinationRecord')
+    ->middleware('auth');
+
+
+Route::get('/vaccination-records/{vaccinationRecord}/edit', [VaccinationRecordController::class, 'edit'])
     ->name('vaccination-records.edit')
     ->can('update', 'vaccinationRecord')
     ->middleware('auth');
