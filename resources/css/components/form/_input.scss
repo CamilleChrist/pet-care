@@ -18,8 +18,22 @@
         padding-left: var(--space-10);
     }
 
-    &--select &__control {
+    &--select &__control,
+    &--with-suffix &__control {
         padding-right: var(--space-10);
+    }
+
+    &--with-suffix &__control {
+        font-weight: 700;
+        font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    &__suffix {
+        position: absolute;
+        right: var(--space-4);
+        font-weight: 700;
+        color: var(--color-neutral-600);
+        pointer-events: none;
     }
 
     &__chevron {

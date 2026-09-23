@@ -3,6 +3,7 @@
     'label',
     'type' => 'text',
     'icon' => null,
+    'suffix' => null, // unité affichée dans le champ (« kg »)
     'hint' => null,
     'required' => false,
     'rows' => null, // rend un <textarea> de N lignes
@@ -33,7 +34,7 @@
         @endif
     </label>
 
-    <div @class(['input', 'input--with-icon' => $icon])>
+    <div @class(['input', 'input--with-icon' => $icon, 'input--with-suffix' => $suffix])>
         @if ($icon)
             <x-ui.icon :name="$icon" class="input__icon" />
         @endif
@@ -49,6 +50,10 @@
                 @if ($type !== 'password') value="{{ $value }}" @endif
                 @required($required)
             >
+        @endif
+
+        @if ($suffix)
+            <span class="input__suffix" aria-hidden="true">{{ $suffix }}</span>
         @endif
     </div>
 

@@ -28,4 +28,17 @@ class StoreWeightRecordRequest extends FormRequest
             'recorded_at' => 'required|date_format:Y-m-d\TH:i|before_or_equal:now',
         ];
     }
+
+    /**
+     * Noms lisibles des champs dans les messages d'erreur, propres à ce formulaire.
+     *
+     * @return array<string, string>
+     */
+    public function attributes(): array
+    {
+        return [
+            'weight' => 'poids',
+            'recorded_at' => 'date',
+        ];
+    }
 }

@@ -73,7 +73,7 @@ test('adding a weight record fails when the weight is out of range', function (f
     ]);
 
     $response->assertSessionHasErrors([
-        'weight' => 'Le champ weight doit être compris entre 0 et 150.',
+        'weight' => 'Le champ poids doit être compris entre 0 et 150.',
     ]);
     $this->assertDatabaseEmpty('weight_records');
 })->with([
@@ -91,7 +91,7 @@ test('adding a weight record fails when the date is in the future', function () 
     ]);
 
     $response->assertSessionHasErrors([
-        'recorded_at' => 'Le champ recorded at doit être une date antérieure ou égale à now.',
+        'recorded_at' => 'Le champ date doit être une date antérieure ou égale à now.',
     ]);
     $this->assertDatabaseEmpty('weight_records');
 });
@@ -106,7 +106,7 @@ test('adding a weight record fails when the date has the wrong format', function
     ]);
 
     $response->assertSessionHasErrors([
-        'recorded_at' => 'Le champ recorded at doit correspondre au format Y-m-d\TH:i.',
+        'recorded_at' => 'Le champ date doit correspondre au format Y-m-d\TH:i.',
     ]);
     $this->assertDatabaseEmpty('weight_records');
 });
