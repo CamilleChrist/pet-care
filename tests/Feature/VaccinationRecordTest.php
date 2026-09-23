@@ -103,7 +103,7 @@ test('adding a vaccination record fails when the vaccine species does not match 
     ]);
 
     $response->assertSessionHasErrors([
-        'vaccine_id' => 'La valeur sélectionnée pour vaccine id est invalide.',
+        'vaccine_id' => 'La valeur sélectionnée pour vaccin est invalide.',
     ]);
     $this->assertDatabaseEmpty('vaccination_records');
 });
@@ -120,7 +120,7 @@ test('adding a vaccination record fails when the next reminder is before the adm
     ]);
 
     $response->assertSessionHasErrors([
-        'next_due_at' => 'Le champ next due at doit être une date postérieure ou égale à administered at.',
+        'next_due_at' => 'Le champ date du rappel doit être une date postérieure ou égale à date d\'administration.',
     ]);
     $this->assertDatabaseEmpty('vaccination_records');
 });
@@ -136,7 +136,7 @@ test('adding a vaccination record fails when the administration date is in the f
     ]);
 
     $response->assertSessionHasErrors([
-        'administered_at' => 'Le champ administered at doit être une date antérieure ou égale à today.',
+        'administered_at' => 'Le champ date d\'administration doit être une date antérieure ou égale à today.',
     ]);
     $this->assertDatabaseEmpty('vaccination_records');
 });
