@@ -9,7 +9,7 @@
 
     <span class="pet-item-side">
         @if ($pet->latestWeightRecord)
-            <span class="pet-item-side__weight">{{ $pet->latestWeightRecord->weight }} kg</span>
+            <span class="pet-item-side__weight">{{ $pet->latestWeightRecord->formatted_weight }} kg</span>
         @endif
 
         @if ($reminder)

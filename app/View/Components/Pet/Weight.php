@@ -36,7 +36,7 @@ class Weight extends Component
     public function render(): View|Closure|string
     {
         return view('components.pet.weight', [
-            'value' => $this->latest ? number_format($this->latest->weight, 1, ',', ' ') : null,
+            'value' => $this->latest?->formatted_weight,
             'trendLabel' => $this->trendLabel(),
             'records' => $this->pet->weightRecords->take(12)->reverse(),
         ]);
