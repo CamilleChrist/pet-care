@@ -2,6 +2,10 @@
 
 .dashboard {
 
+    @include breakpoint-up($breakpoint-xl) {
+        grid-template-rows: auto 1fr;
+    }
+
     &__label {
         font-size: var(--font-size-xs);
         font-weight: 700;
@@ -12,10 +16,6 @@
     &__alert {
         font-size: var(--font-size-base);
         padding: var(--space-4);
-
-        span > strong {
-            font-size: var(--font-size-lg);
-        }
 
         svg {
             margin-top: 5px;
