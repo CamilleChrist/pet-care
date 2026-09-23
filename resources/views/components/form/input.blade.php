@@ -5,7 +5,16 @@
     'icon' => null,
     'hint' => null,
     'required' => false,
+    'options' => null, // [valeur => libellé] : rend un <select>
+    'rows' => null,    // rend un <textarea> de N lignes
 ])
+
+@php
+    $value = old($name, $attributes->get('value'));
+    $control = $attributes->except('value')
+        ->class(['input__control', 'input__control--error' => $errors->has($name)])
+        ->merge($errors->has($name) ? ['aria-invalid' => 'true', 'aria-describedby' => $name.'-error'] : []);
+@endphp
 
 <div class="field">
     <label class="field__label" for="{{ $name }}">
@@ -15,19 +24,32 @@
         @endif
     </label>
 
-    <div @class(['input', 'input--with-icon' => $icon])>
+    <div @class(['input', 'input--with-icon' => $icon, 'input--select' => $options !== null])>
         @if ($icon)
             <x-ui.icon :name="$icon" class="input__icon" />
         @endif
-        <input
-            {{ $attributes->except('value')->class(['input__control', 'input__control--error' => $errors->has($name)]) }}
-            id="{{ $name }}"
-            name="{{ $name }}"
-            type="{{ $type }}"
-            @if ($type !== 'password') value="{{ old($name, $attributes->get('value')) }}" @endif
-            @required($required)
-            @if ($errors->has($name)) aria-invalid="true" aria-describedby="{{ $name }}-error" @endif
-        >
+
+        @if ($options !== null)
+            <select {{ $control }} id="{{ $name }}" name="{{ $name }}" @required($required)>
+                @foreach ($options as $optionValue => $optionLabel)
+                    <option value="{{ $optionValue }}" @selected((string) $value === (string) $optionValue)>{{ $optionLabel }}</option>
+                @endforeach
+            </select>
+
+            {{-- Le reset supprime la flèche native (appearance: none). --}}
+            <x-ui.icon name="chevron-down" class="input__chevron" />
+        @elseif ($rows)
+            <textarea {{ $control }} id="{{ $name }}" name="{{ $name }}" rows="{{ $rows }}" @required($required)>{{ $value }}</textarea>
+        @else
+            <input
+                {{ $control }}
+                id="{{ $name }}"
+                name="{{ $name }}"
+                type="{{ $type }}"
+                @if ($type !== 'password') value="{{ $value }}" @endif
+                @required($required)
+            >
+        @endif
     </div>
 
     @error($name)
