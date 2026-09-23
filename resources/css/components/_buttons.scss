@@ -99,6 +99,12 @@
         width: 20px;
         height: 20px;
     }
+
+    &--round {
+        padding: var(--space-2);
+        border-radius: var(--radius-pill);
+        aspect-ratio: 1;
+    }
 }
 
 // Rangée de boutons à largeur égale (actions mobiles sous l'en-tête).

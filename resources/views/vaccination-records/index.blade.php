@@ -1,59 +1,102 @@
-@extends('layouts.base')
+<x-layouts.app :title="$title" :description="$description" :back="route('pets.show', $pet)">
 
-@section('content')
+    <x-slot:actions>
+        <a href="{{ route('pets.vaccination-records.create', $pet) }}" class="btn btn--primary">
+            <x-ui.icon name="plus" class="btn__icon"/>
+            Ajouter un vaccin
+        </a>
+    </x-slot:actions>
 
-    <h1 class="text-xl font-bold mb-4">Suivi des vaccins</h1>
+    @if ($vaccines->isEmpty())
+        <x-ui.empty-state icon="syringe" title="Aucun vaccin enregistré"
+                          description="Ajoutez les vaccins de {{ $pet->name }} pour suivre les rappels.">
+            <a href="{{ route('pets.vaccination-records.create', $pet) }}" class="btn btn--primary">
+                <x-ui.icon name="plus" class="btn__icon"/>
+                Ajouter un vaccin
+            </a>
+        </x-ui.empty-state>
+    @else
+        {{-- Bureau (lg et plus) : tableau des échéances. Sous lg : la même liste que la fiche animal. --}}
+        <x-ui.card class="hidden-lg-down">
+            <table class="vaccine-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Vaccin</th>
+                        <th scope="col">Fait le</th>
+                        <th scope="col">Rappel</th>
+                        <th scope="col">Statut</th>
+                        <th scope="col"></th> {{-- actions --}}
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($vaccines as $name => $injections)
+                        @php($current = $injections->first())
 
-    <p class="mb-4">Suivi des vaccins de {{ $pet->name }}</p>
+                        <tr @class(['vaccine-table__row--late' => $current->status === 'late'])>
+                            <th scope="row">{{ $name }}</th>
+                            <td>{{ $current->administered_at->isoFormat('ll') }}</td>
+                            <td class="vaccine-table__due">{{ $current->next_due_at?->isoFormat('ll') ?? '—' }}</td>
+                            <td><x-ui.badge :tone="$current->status_tone">{{ $current->status_label }}</x-ui.badge></td>
+                            <td>@include('vaccination-records._partials.actions', ['record' => $current])</td>
+                        </tr>
 
-    @if($pet->vaccinationRecords->isNotEmpty())
-        <table class="w-full text-left">
-            <thead>
-            <tr>
-                <th>Vaccin effectué</th>
-                <th>Date</th>
-                <th>Prochain vaccin</th>
-                <th>Nom du vétérinaire</th>
-                <th>Nom de la clinique</th>
-                <th>Numéro du lot</th>
-                <th>Notes</th>
-                <th></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-                        @foreach($pet->vaccinationRecords as $record)
-                            <tr>
-                                <td>{{ $record->displayName }}</td>
-                                <td>{{ $record->administered_at->format('j F Y') }}</td>
-                                <td>@if ($record->next_due_at) {{ $record->next_due_at->format('j F Y') }}@endif</td>
-                                <td>@if ($record->veterinarian_name) {{ $record->veterinarian_name }}@endif</td>
-                                <td>@if ($record->clinic_name) {{ $record->clinic_name }}@endif</td>
-                                <td>@if ($record->lot_number) {{ $record->lot_number }}@endif</td>
-                                <td>@if ($record->notes) {{ $record->notes }}@endif</td>
-
-                                <td>
-                                    <a href="{{ route('vaccination-records.edit', $record) }}">Modifier</a>
-                                </td>
-
-                                <td>
-                                    <form method="post" action="{{ route('vaccination-records.destroy', $record) }}">
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button type="submit" class="text-red-600">Supprimer</button>
-                                    </form>
-                                </td>
+                        @foreach ($injections->skip(1) as $previous)
+                            <tr class="vaccine-table__row--previous">
+                                <th scope="row">
+                                    {{ $name }} <span class="vaccine-table__hint">Injection précédente</span>
+                                </th>
+                                <td>{{ $previous->administered_at->isoFormat('ll') }}</td>
+                                <td class="vaccine-table__due">{{ $previous->next_due_at?->isoFormat('ll') ?? '—' }}</td>
+                                <td><x-ui.badge>Remplacée</x-ui.badge></td>
+                                <td>@include('vaccination-records._partials.actions', ['record' => $previous])</td>
                             </tr>
                         @endforeach
-            </tbody>
-        </table>
-    @else
-        <p>Aucun vaccin enregistré pour le moment pour {{ $pet->name }}</p>
+                    @endforeach
+                </tbody>
+            </table>
+        </x-ui.card>
+
+        {{-- Mobile --}}
+        <x-ui.card class="hidden-lg-up">
+            <ul class="vaccine-list">
+                @foreach ($vaccines as $name => $injections)
+                    <li>
+                        <x-vaccine.item :record="$injections->first()" :injections="$injections->count()" :link="false">
+                            @include('vaccination-records._partials.actions', ['record' => $injections->first()])
+                        </x-vaccine.item>
+
+                        {{-- Injections remplacées : même vaccin, administré plus tôt. --}}
+                        @foreach ($injections->skip(1) as $previous)
+                            <div class="vaccine-item vaccine-item--previous">
+                                <span class="vaccine-item__icon">
+                                    <x-ui.icon name="corner-down-right"/>
+                                </span>
+
+                                <span class="vaccine-item-body">
+                                    <span class="vaccine-item-body__name">{{ $name }} · injection précédente</span>
+                                    <span class="vaccine-item-body__description">
+                                        Fait le {{ $previous->administered_at->isoFormat('LL') }}
+                                        @if ($previous->next_due_at)
+                                            · Rappel le {{ $previous->next_due_at->isoFormat('LL') }}
+                                        @endif
+                                    </span>
+                                </span>
+
+                                <x-ui.badge>Remplacée</x-ui.badge>
+
+                                @include('vaccination-records._partials.actions', ['record' => $previous])
+                            </div>
+                        @endforeach
+                    </li>
+                @endforeach
+            </ul>
+        </x-ui.card>
+        @foreach ($vaccines->flatten() as $record)
+            <x-ui.confirm-delete id="delete-vaccination-record-{{ $record->id }}"
+                                 :action="route('vaccination-records.destroy', $record)"
+                                 title="Supprimer ce vaccin ?"
+                                 description="{{ $record->display_name }} administré le {{ $record->administered_at->isoFormat('LL') }} sera définitivement supprimé." />
+        @endforeach
     @endif
 
-    <a class="inline-block bg-blue-600 text-white p-2 mt-4 self-start"
-       href="{{ route('pets.vaccination-records.create', $pet) }}">
-        Ajouter un vaccin
-    </a>
-@endsection
+</x-layouts.app>

@@ -21,6 +21,7 @@
 @use "components/pet/weight";
 @use "components/ui/tip";
 @use "components/vaccine/item";
+@use "components/vaccine/table" as vaccine-table;
 @use "components/weight/chart";
 @use "components/weight/history";
 

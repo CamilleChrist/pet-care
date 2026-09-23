@@ -20,7 +20,8 @@
     color: inherit;
     transition: var(--transition);
 
-    &:hover {
+    // Seules les lignes cliquables réagissent au survol.
+    &:is(a):hover {
         background: var(--color-neutral-100);
         color: inherit;
         text-decoration: none;
@@ -67,6 +68,23 @@
             font-size: var(--font-size-sm);
             color: var(--color-neutral-600);
         }
+    }
+
+    // Injection remplacée par une plus récente : retrait visuel, actions conservées.
+    &--previous {
+        box-shadow: inset 3px 0 0 var(--card-border);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        text-decoration: line-through;
+
+        .vaccine-item__icon,
+        .vaccine-item-body__name {
+            color: var(--color-neutral-600);
+        }
+    }
+
+    &__actions {
+        @include flex(row, flex-end, center, var(--space-1));
+        flex: none;
     }
 
     &__chevron {

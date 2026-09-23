@@ -15,7 +15,23 @@ class VaccinationRecordController extends Controller
      */
     public function index(Pet $pet)
     {
-        return view('vaccination-records.index', compact('pet'));
+        $records = $pet->vaccinationRecords;
+        $late = $pet->reminders()->where('status', 'late')->count();
+
+        $vaccines = $records->sortByDesc('administered_at')
+            ->groupBy('display_name')
+            ->sortBy(fn ($injections) => $injections->first()->next_due_at?->timestamp ?? PHP_INT_MAX);
+
+        $title = 'Vaccins — ' . $pet->name;
+        $description = $records->isEmpty()
+            ? 'Aucun vaccin enregistré'
+            : collect([
+                trans_choice('{1} :count enregistrement|[2,*] :count enregistrements', $records->count()),
+                trans_choice('{1} :count vaccin|[2,*] :count vaccins', $records->unique('display_name')->count()),
+                $late ? trans_choice('{1} :count rappel dépassé|[2,*] :count rappels dépassés', $late) : null,
+            ])->filter()->implode(' · ');
+
+        return view('vaccination-records.index', compact('pet', 'vaccines', 'title', 'description'));
     }
 
     /**

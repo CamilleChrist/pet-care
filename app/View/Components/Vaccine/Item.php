@@ -15,6 +15,8 @@ class Item extends Component
     public function __construct(
         public VaccinationRecord $record,
         public bool $withPet = false,
+        public bool $link = true, // false : ligne non cliquable, le slot reçoit les actions (page vaccins)
+        public int $injections = 1,
     ) {
         $this->status = $record->status;
     }
@@ -23,7 +25,7 @@ class Item extends Component
     {
         return view('components.vaccine.item', [
             'icon' => ['late' => 'triangle-alert', 'due' => 'calendar-clock', 'done' => 'circle-check'][$this->status],
-            'tone' => ['late' => 'danger', 'due' => 'warning', 'done' => 'success'][$this->status],
+            'tone' => $this->record->status_tone,
             'badge' => $this->record->status_label,
             'description' => $this->description(),
         ]);
@@ -31,8 +33,26 @@ class Item extends Component
 
     private function description(): string
     {
-        return ($this->withPet ? $this->record->pet->name.' · ' : '')
-            .($this->status === 'late' ? 'Rappel dépassé le ' : 'Rappel le ')
-            .$this->record->next_due_at->isoFormat('LL');
+        $parts = [];
+
+        if ($this->withPet) {
+            $parts[] = $this->record->pet->name;
+        }
+
+        if ($this->injections > 1) {
+            $parts[] = "{$this->injections} injections";
+        }
+
+        if ($this->record->next_due_at) {
+            $label = $this->status === 'late'
+                ? 'Rappel dépassé le '
+                : 'Rappel le ';
+
+            $parts[] = $label . $this->record->next_due_at->isoFormat('LL');
+        } else {
+            $parts[] = 'Fait le ' . $this->record->administered_at->isoFormat('LL');
+        }
+
+        return implode(' · ', $parts);
     }
 }

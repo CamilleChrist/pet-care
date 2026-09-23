@@ -1,0 +1,68 @@
+@use "../../abstracts/mixins" as *;
+
+// Tableau des échéances (bureau, à partir de lg) : même contenu que .vaccine-list, en colonnes.
+.vaccine-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: var(--font-size-sm);
+
+    th,
+    td {
+        padding: var(--space-3) var(--space-2);
+        border-bottom: 1px solid var(--card-border);
+    }
+
+    thead th {
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--color-neutral-600);
+    }
+
+    tbody th {
+        font-weight: 700;
+        color: var(--color-neutral-900);
+    }
+
+    tbody tr:last-child th,
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    &__due {
+        font-weight: 700;
+    }
+
+    // Rappel dépassé : la ligne entière alerte.
+    &__row--late {
+        background: var(--color-danger-soft);
+
+        .vaccine-table__due {
+            color: var(--color-danger-dark);
+        }
+    }
+
+    // Injection remplacée par une plus récente.
+    &__row--previous {
+        text-decoration: line-through;
+        th,
+        td {
+            color: var(--color-neutral-600) !important;
+            padding-top: var(--space-1);
+            padding-bottom: var(--space-1);
+        }
+
+        th {
+            box-shadow: inset 5px 0 0 var(--card-border);
+            padding-left: var(--space-3) ;
+        }
+    }
+
+    &__hint {
+        display: block;
+        font-size: var(--font-size-xs);
+        font-weight: 400;
+    }
+}

@@ -13,6 +13,18 @@
     }
 }
 
+.one-column,
+.two-columns {
+    > section,
+    > aside {
+        @include flex(column, flex-start, stretch, 0, var(--space-4));
+    }
+}
+
+.one-column {
+
+}
+
 .two-columns {
     display: grid;
     gap: var(--space-4);
@@ -21,11 +33,6 @@
 
     @include breakpoint-up($breakpoint-xl) {
         grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
-    }
-
-    > section,
-    > aside {
-        @include flex(column, flex-start, stretch, 0, var(--space-4));
     }
 
     aside {
@@ -39,6 +46,18 @@
             grid-column: 1;
             grid-row: 1 / span 2;
         }
+    }
+}
+
+.hidden-lg-down {
+    @include breakpoint-down($breakpoint-lg) {
+        display: none;
+    }
+}
+
+.hidden-lg-up {
+    @include breakpoint-up($breakpoint-lg) {
+        display: none;
     }
 }
 

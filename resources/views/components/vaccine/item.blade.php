@@ -1,4 +1,6 @@
-<a href="{{ route('pets.vaccination-records.index', $record->pet) }}" {{ $attributes->class(['vaccine-item']) }}>
+@php($tag = $link ? 'a' : 'div')
+
+<{{ $tag }} @if ($link) href="{{ route('pets.vaccination-records.index', $record->pet) }}" @endif {{ $attributes->class(['vaccine-item']) }}>
     <span class="vaccine-item__icon vaccine-item__icon--{{ $status }}">
         <x-ui.icon :name="$icon" />
     </span>
@@ -10,5 +12,9 @@
 
     <x-ui.badge :tone="$tone">{{ $badge }}</x-ui.badge>
 
-    <x-ui.icon name="chevron-right" class="vaccine-item__chevron" />
-</a>
+    @if ($link)
+        <x-ui.icon name="chevron-right" class="vaccine-item__chevron" />
+    @endif
+
+    {{ $slot }}
+</{{ $tag }}>

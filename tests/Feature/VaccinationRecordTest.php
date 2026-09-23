@@ -217,6 +217,17 @@ test('a user cannot update another user vaccination record', function () {
     ]);
 });
 
+test('deleting a vaccination record goes through a confirmation dialog', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+    $record = VaccinationRecord::factory()->for($pet)->create();
+
+    $this->actingAs($user)
+        ->get(route('pets.vaccination-records.index', $pet))
+        ->assertSee('data-dialog-open="delete-vaccination-record-'.$record->id.'"', false)
+        ->assertSee('<dialog id="delete-vaccination-record-'.$record->id.'"', false);
+});
+
 test('a user can delete a vaccination record from their pet', function () {
     $user = User::factory()->create();
     $pet = Pet::factory()->create(['user_id' => $user->id]);
@@ -238,4 +249,37 @@ test('a user cannot delete a vaccination record from another user pet', function
 
     $response->assertForbidden();
     $this->assertDatabaseHas('vaccination_records', ['id' => $vaccinationRecord->id]);
+});
+
+test('the list groups the injections of a vaccine and counts them in the header', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+    $rage = Vaccine::factory()->create(['name' => 'Rage']);
+    $lepto = Vaccine::factory()->create(['name' => 'Leptospirose']);
+
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2022-01-10',
+        'next_due_at' => '2025-01-10',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2025-01-10',
+        'next_due_at' => now()->addYears(2)->format('Y-m-d'),
+    ]);
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $lepto->id,
+        'administered_at' => '2025-08-02',
+        'next_due_at' => now()->subMonth()->format('Y-m-d'),
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('pets.vaccination-records.index', $pet))
+        ->assertOk()
+        ->assertSee('3 enregistrements · 2 vaccins · 1 rappel dépassé')
+        ->assertSee('2 injections', false)
+        ->assertSee('Rage · injection précédente')
+        ->assertSee('Remplacée')
+        ->assertSeeInOrder(['Leptospirose', 'Rage']) // le rappel dépassé en tête
+        ->assertSeeInOrder(['Vaccin', 'Fait le', 'Rappel', 'Statut']); // en-têtes du tableau bureau
 });
