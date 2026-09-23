@@ -111,10 +111,12 @@
                 <x-pet.reminders :reminders="$reminders"/>
             </x-ui.card>
 
-            <x-ui.card title="Notes de santé">
-                <p>{{ $pet->health_notes }}</p>
-            </x-ui.card>
-
+            @if($pet->health_notes)
+                <x-ui.card title="Notes de santé">
+                    <p>{{ $pet->health_notes }}</p>
+                </x-ui.card>
+            @endif
+            
             @if($pet->last_vet_visit_at)
                 <x-ui.card title="Dernière visite véterinaire">
                     <strong>{{ Carbon::parse($pet->last_vet_visit_at)->isoFormat('LL') }}</strong>
