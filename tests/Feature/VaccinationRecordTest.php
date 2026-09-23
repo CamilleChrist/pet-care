@@ -344,7 +344,7 @@ test('the edit form is filled with the record and lists the other recorded vacci
         ->assertSee('value="2025-01-10"', false)
         ->assertSee('value="2028-01-10"', false)
         ->assertSee('value="RB-2210-A"', false)
-        ->assertSee('<option value="'.$rage->id.'" selected>Rage</option>', false)
+        ->assertSee('<option value="'.$rage->id.'" selected="selected">Rage</option>', false)
         // Le référentiel suit l'espèce de l'animal, et le vaccin modifié n'est pas répété dans l'aparté.
         ->assertDontSee('Typhus')
         ->assertSeeInOrder(['Déjà enregistrés', 'Parvovirose']);

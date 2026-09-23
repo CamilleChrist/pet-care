@@ -1,7 +1,10 @@
+@use('Illuminate\View\ComponentAttributeBag')
+
 @props([
     'name',
     'label',
     'options', // [valeur => libellé]
+    'optionAttributes' => [], // [valeur => [attribut => valeur]] : attributs portés par un <option>
     'icon' => null,
     'hint' => null,
     'required' => false,
@@ -39,7 +42,17 @@
 
         <select {{ $control }} id="{{ $name }}" name="{{ $name }}" @required($required)>
             @foreach ($options as $optionValue => $optionLabel)
-                <option value="{{ $optionValue }}" @selected((string) $value === (string) $optionValue)>{{ $optionLabel }}</option>
+                @php
+                    // Une option porte sa valeur, son état sélectionné, et les attributs que
+                    // le formulaire lui ajoute (ex. data-species sur les races).
+                    $option = new ComponentAttributeBag([
+                        'value' => $optionValue,
+                        'selected' => (string) $value === (string) $optionValue,
+                        ...($optionAttributes[$optionValue] ?? []),
+                    ]);
+                @endphp
+
+                <option {{ $option }}>{{ $optionLabel }}</option>
             @endforeach
         </select>
 
