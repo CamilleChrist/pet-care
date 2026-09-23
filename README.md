@@ -7,11 +7,12 @@ dans le temps leur poids, leurs vaccins, leurs notes de santé et leurs visites
 chez le vétérinaire.
 
 > **État du projet :** v1 en cours de développement. L'authentification, la gestion
-> des fiches animaux, le suivi du poids et le suivi des vaccins sont fonctionnels.
-> Restent les finitions : tableau de bord récapitulatif, mise en avant des rappels
-> de vaccin à venir/dépassés, poids le plus récent affiché sur la fiche animal,
-> traduction complète en français et données de démonstration. Le design de
-> l'interface est également en cours.
+> des fiches animaux, le suivi du poids et le suivi des vaccins sont fonctionnels,
+> de même que le tableau de bord récapitulatif, la mise en avant des rappels de
+> vaccin à venir/dépassés, le poids le plus récent sur la fiche animal et la
+> traduction en français. Restent les finitions : l'édition du profil, des données
+> de démonstration (seuls les référentiels races et vaccins sont semés) et la fin
+> de l'intégration des maquettes.
 
 ## Fonctionnalités de la v1
 
@@ -46,9 +47,11 @@ Chaque animal appartient à un utilisateur et comporte :
 | Table | Clés | Contenu | Relations |
 | --- | --- | --- | --- |
 | `users` | `id` | `firstname`, `lastname`, `email`, `password` | possède plusieurs `pets` |
-| `pets` | `id`, `user_id` | `name`, `species`, `breed`, `birth_date`, `sex`, `photo_path`, `health_notes`, `last_vet_visit_at` | appartient à un `user` |
-| `weight_records` | `id`, `pet_id` | `weight`, `measured_at` | appartient à un `pet` |
-| `vaccination_records` | `id`, `pet_id` | `vaccine_name`, `administered_at`, `next_due_at` | appartient à un `pet` |
+| `pets` | `id`, `user_id`, `breed_id` | `name`, `gender`, `birth_date`, `photo_path`, `health_notes`, `last_vet_visit_at` | appartient à un `user` et à une `breed` |
+| `weight_records` | `id`, `pet_id` | `weight`, `recorded_at` | appartient à un `pet` |
+| `breeds` | `id` | `name`, `species` (`dog`/`cat`) | référencée par les `pets` |
+| `vaccines` | `id` | `name`, `species`, `description` | catalogue par espèce, référencé par les `vaccination_records` |
+| `vaccination_records` | `id`, `pet_id`, `vaccine_id` | `custom_name`, `administered_at`, `next_due_at`, `veterinarian_name`, `clinic_name`, `lot_number`, `notes` | appartient à un `pet`, référence une `vaccine` du catalogue (ou `custom_name` si absente) |
 
 Le poids actuel de l'animal n'est pas stocké sur sa fiche : c'est toujours l'entrée
 la plus récente de son historique de poids.
@@ -57,7 +60,7 @@ la plus récente de son historique de poids.
 
 - **Backend :** PHP 8.3+, Laravel 13
 - **Vues :** Blade
-- **CSS :** Sass + BEM, compilé par Vite (migration depuis Tailwind CSS 4 en cours sur les vues `pets/*` et `*-records/*`)
+- **CSS :** Sass + BEM, compilé par Vite (migration depuis Tailwind CSS 4 terminée, Tailwind n'est plus chargé)
 - **Base de données :** SQLite (par défaut, en local)
 - **Tests :** Pest
 - **Style de code :** Laravel Pint
@@ -96,70 +99,21 @@ L'application est disponible sur http://localhost:8000.
 composer test
 ```
 
-## Structure du projet
-
-```
-app/
-  Enums/              Enums (PetGender, …)
-  Http/Controllers/   Contrôleurs (AuthController, PetController, WeightRecordController, VaccinationRecordController)
-  Http/Requests/      Form Requests de validation
-  Models/             Modèles Eloquent (User, Pet, Breed, WeightRecord, Vaccine, VaccinationRecord)
-  Policies/           Policies d'autorisation (une par ressource appartenant à un pet)
-database/
-  data/               Données de référence statiques (races, vaccins)
-  migrations/         Migrations de la base
-  factories/          Factories pour les tests
-  seeders/            Seeders (races et vaccins de référence)
-resources/
-  views/              Vues Blade (auth/, pets/, weight-records/, vaccination-records/, components/ dont layouts/ et form/)
-  css/ js/            Assets compilés par Vite (Sass + BEM : base/, components/, app/, landing-page/)
-routes/
-  web.php             Routes web
-tests/                Tests Pest
-```
-
 ## Feuille de route
 
 La v1 avance par étapes, chacune apportant quelque chose d'utilisable.
 
-### 1. Compte utilisateur
+- [x] **Compte utilisateur** — inscription, connexion/déconnexion, réinitialisation du mot de passe par e-mail
+- [x] **Espace personnel** — accès réservé aux personnes connectées, navigation entre les pages
+- [x] **Fiches animaux** — création (nom, espèce, race, naissance, sexe), photo, notes de santé et dernière visite, consultation, modification, suppression, cloisonnement par propriétaire
+- [x] **Suivi du poids** — enregistrement d'une pesée, historique, poids le plus récent sur la fiche
+- [x] **Suivi des vaccins** — administration et date de rappel, historique, repérage des rappels à venir et dépassés
 
-- [x] Créer un compte
-- [x] Se connecter et se déconnecter
-- [x] Réinitialiser son mot de passe par e-mail
+### Finitions
 
-### 2. Espace personnel
-
-- [x] Arriver sur son espace privé après connexion
-- [x] Naviguer entre les pages de l'application
-- [x] Réserver l'accès aux personnes connectées
-
-### 3. Fiches animaux
-
-- [x] Ajouter un animal : nom, espèce, race, date de naissance, sexe
-- [x] Ajouter une photo à la fiche
-- [x] Renseigner les notes de santé et la date de la dernière visite chez le vétérinaire
-- [x] Consulter la fiche d'un animal
-- [x] Modifier et supprimer un animal
-- [x] Ne voir que ses propres animaux
-
-### 4. Suivi du poids
-
-- [x] Enregistrer une pesée
-- [x] Consulter l'historique du poids d'un animal
-- [ ] Voir sur la fiche le poids le plus récent
-
-### 5. Suivi des vaccins
-
-- [x] Enregistrer un vaccin avec sa date d'administration
-- [x] Indiquer la date du prochain rappel
-- [x] Consulter l'historique des vaccins d'un animal
-- [ ] Repérer les rappels à venir et ceux dépassés
-
-### 6. Finitions
-
-- [ ] Voir sur le tableau de bord le poids actuel et le prochain rappel de chaque animal
-- [ ] Disposer d'une application entièrement en français
+- [x] Voir sur le tableau de bord le poids actuel et le prochain rappel de chaque animal
+- [x] Disposer d'une application entièrement en français
+- [ ] Éditer son profil
 - [ ] Utiliser l'application confortablement sur mobile
 - [ ] Démarrer avec des données de démonstration
 
@@ -172,4 +126,7 @@ Pistes à trancher une fois la v1 livrée :
 - [ ] Documents joints : ordonnances, comptes rendus vétérinaires
 - [ ] Export PDF du carnet de santé d'un animal
 - [ ] Partage d'un animal entre plusieurs personnes (foyer, garde partagée)
+- [ ] Espace d'administration réservé aux comptes admin : liste des utilisateurs,
+      modification de leur fiche et réinitialisation de leur mot de passe, gestion
+      des races et vaccins
 - [ ] Version bureau et mobile avec NativePHP
