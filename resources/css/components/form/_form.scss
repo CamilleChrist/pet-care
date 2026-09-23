@@ -40,6 +40,23 @@
         }
     }
 
+    // Pet form => En mobile, seul la carte photo passe en premier
+    .two-columns {
+        @include breakpoint-down($breakpoint-xl) {
+            > aside {
+                display: contents;
+
+                > :first-child {
+                    order: -1;
+                }
+            }
+
+            .tip {
+                order: 1;
+            }
+        }
+    }
+
     .field {
         @include flex(column, flex-start, stretch, 0, var(--space-2));
 
