@@ -16,7 +16,7 @@
 <!-- Header -->
 <header class="header">
     <div class="container">
-        <h1 class="header__logo"><a class="logo" href="{{ route('welcome') }}"><span>P</span> PetCare</a></h1>
+        <h1 class="header__logo"><x-ui.logo/></h1>
 
         <button type="button" class="header__burger" aria-expanded="false" aria-controls="header-nav"
                 aria-label="Ouvrir le menu">
@@ -188,23 +188,23 @@
     <div class="container">
         <div class="footer__row">
             <div class="footer__col">
-                <p class="logo logo--inverse footer__logo"><span>P</span> PetCare</p>
+                <x-ui.logo class="logo--white footer__logo"/>
                 <p class="footer__description">Le suivi de santé de tes chiens et chats : vaccins, poids, notes, visites véto.</p>
             </div>
 
             <div class="footer__col">
                 <ul class="list">
                     <li class="list__item list__item--heading">Produit</li>
-                    <li class="list__item">Comment ça marche</li>
-                    <li class="list__item">Fonctionalités</li>
+                    <li class="list__item"><a href="#how-it-works">Comment ça marche</a></li>
+                    <li class="list__item"><a href="#features">Fonctionalités</a></li>
                 </ul>
             </div>
             <div class="footer__col">
                 <ul class="list">
                     <li class="list__item list__item--heading">Compte</li>
-                    <li class="list__item">Crée un compte</li>
-                    <li class="list__item">Se connecter</li>
-                    <li class="list__item">Mot de passe oublié</li>
+                    <li class="list__item"><a href="{{ route('register') }}">Crée un compte</a></li>
+                    <li class="list__item"><a href="{{ route('login') }}">Se connecter</a></li>
+                    <li class="list__item"><a href="{{ route('password.request') }}">Mot de passe oublié</a></li>
                 </ul>
             </div>
         </div>

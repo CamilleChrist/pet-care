@@ -49,12 +49,13 @@
             list-style: none;
             font-size: var(--font-size-xs);
         }
+    }
 
-        a {
-            color: var(--color-sand-300);
-            &:hover {
-                color: var(--color-secondary);
-            }
+    li a {
+        color: var(--color-sand-300);
+
+        &:hover {
+            color: var(--color-secondary);
         }
     }
 }
