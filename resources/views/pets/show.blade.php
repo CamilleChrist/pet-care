@@ -49,17 +49,13 @@
                     <ul class="weight-history-list">
                         @foreach($weightRecords as $record)
                             <li>
-                                <span>{{ number_format($record->weight, 1) }}&nbsp;kg</span>
+                                <span>{{ $record->formatted_weight }}&nbsp;kg</span>
                                 <span>{{ $record->recorded_at->isoFormat('ll') }}</span>
-                                <form method="post" action="{{ route('weight-records.destroy', $record) }}">
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button type="submit" class="btn btn--ghost-danger"
-                                            aria-label="Supprimer la pesée du {{ $record->recorded_at->isoFormat('LL') }}">
-                                        <x-ui.icon name="trash-2" class="btn__icon"/>
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn--ghost-danger"
+                                        data-dialog-open="delete-weight-record-{{ $record->id }}"
+                                        aria-label="Supprimer la pesée du {{ $record->recorded_at->isoFormat('LL') }}">
+                                    <x-ui.icon name="trash-2" class="btn__icon"/>
+                                </button>
                             </li>
                         @endforeach
                     </ul>
@@ -94,6 +90,13 @@
                             </a>
                         </nav>
                     @endif
+
+                    @foreach($weightRecords as $record)
+                        <x-ui.confirm-delete id="delete-weight-record-{{ $record->id }}"
+                                             :action="route('weight-records.destroy', $record)"
+                                             title="Supprimer cette pesée ?"
+                                             description="La pesée de {{ $record->formatted_weight }} kg du {{ $record->recorded_at->isoFormat('LL') }} sera définitivement supprimée." />
+                    @endforeach
                 </div>
             </x-ui.card>
         </section>

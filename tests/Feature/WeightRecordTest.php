@@ -146,7 +146,7 @@ test('a user can delete a weight record from their pet', function () {
 
     $response = $this->actingAs($user)->delete(route('weight-records.destroy', $weightRecord));
 
-    $response->assertRedirect(route('pets.weight-records.index', $pet));
+    $response->assertRedirect(route('pets.show', $pet));
     $response->assertSessionHas('success');
     $this->assertDatabaseMissing('weight_records', ['id' => $weightRecord->id]);
 });
