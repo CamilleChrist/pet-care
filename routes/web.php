@@ -66,7 +66,13 @@ Route::prefix('/pets/{pet}/vaccination-records')->controller(VaccinationRecordCo
     Route::post('/', 'store')->name('pets.vaccination-records.store')->can('create', [VaccinationRecord::class, 'pet']);
 });
 
-Route::get('/vaccination-records/{vaccinationRecord}', [VaccinationRecordController::class, 'edit'])
+Route::get('/vaccination-records/{vaccinationRecord}', [VaccinationRecordController::class, 'show'])
+    ->name('vaccination-records.show')
+    ->can('update', 'vaccinationRecord')
+    ->middleware('auth');
+
+
+Route::get('/vaccination-records/{vaccinationRecord}/edit', [VaccinationRecordController::class, 'edit'])
     ->name('vaccination-records.edit')
     ->can('update', 'vaccinationRecord')
     ->middleware('auth');

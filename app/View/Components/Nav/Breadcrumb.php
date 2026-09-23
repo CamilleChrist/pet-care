@@ -68,6 +68,12 @@ class Breadcrumb extends Component
                 $this->item('Vaccins', route('pets.vaccination-records.index', $pet)),
                 $this->item('Nouveau vaccin'),
             ],
+            'vaccination-records.show' => [
+                $this->item('Animaux', route('pets.index')),
+                $this->item($pet->name, route('pets.show', $pet)),
+                $this->item('Vaccins', route('pets.vaccination-records.index', $pet)),
+                $this->item($record->display_name),
+            ],
             'vaccination-records.edit' => [
                 $this->item('Animaux', route('pets.index')),
                 $this->item($pet->name, route('pets.show', $pet)),

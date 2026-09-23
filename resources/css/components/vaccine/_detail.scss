@@ -1,0 +1,35 @@
+@use "../../abstracts/mixins" as *;
+
+.vaccine-detail {
+
+    &-top {
+        @include flex(row, flex-start, flex-start, var(--space-6), var(--space-2));
+        border-bottom: 1px solid var(--color-sand-300);
+        margin-bottom: var(--space-2);
+        padding-bottom: var(--space-4);
+        width: 100%;
+        font-weight: 700;
+
+        > li {
+            @include flex(column, flex-start, flex-start, var(--space-1), var(--space-1));
+
+            span:first-of-type {
+                text-transform: uppercase;
+            }
+
+            span:last-of-type {
+                font-family: var(--font-title);
+                font-size: var(--font-size-xl);
+                color: var(--color-neutral-900);
+            }
+        }
+    }
+
+    &-bottom {
+        @include flex(column, flex-start, flex-start, var(--space-2), var(--space-2));
+
+        span:last-of-type {
+            font-weight: 700;
+        }
+    }
+}

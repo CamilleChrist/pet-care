@@ -7,6 +7,12 @@
     background: var(--card-bg);
     box-shadow: var(--shadow);
 
+    &--sunken {
+        background: var(--color-sand-50);
+        border: 1px solid var(--color-sand-200);
+        box-shadow: none;
+    }
+
     &__header {
         @include flex(row, space-between, center, var(--space-4), var(--space-2));
     }

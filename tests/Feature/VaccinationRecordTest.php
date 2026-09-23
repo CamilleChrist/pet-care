@@ -13,6 +13,7 @@ test('guests cannot access vaccination records', function () {
     $this->get(route('pets.vaccination-records.index', $pet))->assertRedirect(route('login'));
     $this->get(route('pets.vaccination-records.create', $pet))->assertRedirect(route('login'));
     $this->post(route('pets.vaccination-records.store', $pet))->assertRedirect(route('login'));
+    $this->get(route('vaccination-records.show', $vaccinationRecord))->assertRedirect(route('login'));
     $this->get(route('vaccination-records.edit', $vaccinationRecord))->assertRedirect(route('login'));
     $this->patch(route('vaccination-records.update', $vaccinationRecord))->assertRedirect(route('login'));
     $this->delete(route('vaccination-records.destroy', $vaccinationRecord))->assertRedirect(route('login'));
@@ -166,6 +167,44 @@ test('a user cannot open the form to add a vaccination record to another user pe
 
     $this->actingAs(User::factory()->create())
         ->get(route('pets.vaccination-records.create', $pet))
+        ->assertForbidden();
+});
+
+test('the detail page shows every injection of the vaccine, most recent first', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Bilou']);
+    $rage = Vaccine::factory()->create(['name' => 'Rage']);
+    $other = Vaccine::factory()->create(['name' => 'Parvovirose']);
+
+    $first = VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2022-01-10',
+        'next_due_at' => '2025-01-10',
+        'lot_number' => 'RB-2210-A',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2025-01-10',
+        'next_due_at' => now()->addYears(2)->format('Y-m-d'),
+        'veterinarian_name' => 'Dr Lemoine',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create(['vaccine_id' => $other->id]);
+
+    // On ouvre la page depuis l'injection la plus ancienne : elle couvre quand même tout le vaccin.
+    $this->actingAs($user)
+        ->get(route('vaccination-records.show', $first))
+        ->assertOk()
+        ->assertSee('Bilou · 2 injections')
+        ->assertSeeInOrder(['Injection en cours', 'Dr Lemoine', 'Injection précédente', 'RB-2210-A'])
+        ->assertSee('Remplacée')
+        ->assertDontSee('Parvovirose');
+});
+
+test('a user cannot see the detail of another user vaccination record', function () {
+    $vaccinationRecord = VaccinationRecord::factory()->create();
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('vaccination-records.show', $vaccinationRecord))
         ->assertForbidden();
 });
 

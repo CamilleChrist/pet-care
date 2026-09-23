@@ -21,6 +21,9 @@
     --color-neutral-900: #000; // Fond du footer
 
     // Échelle sable (tons chauds beige/tan)
+    --color-sand-50: #FFFBF6;
+    --color-sand-100: var(--color-neutral-100);
+    --color-sand-200: #F7F1E9;
     --color-sand-300: #E8DBD1; // Texte sur fond sombre (footer)
     --color-sand-400: #DDBDA4; // Survol des liens sur fond sombre
 

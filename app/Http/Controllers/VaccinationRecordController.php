@@ -60,6 +60,25 @@ class VaccinationRecordController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(VaccinationRecord $vaccinationRecord)
+    {
+        $pet = $vaccinationRecord->pet;
+
+        // toutes ses injections du même vaccin, la plus récente d'abord.
+        $injections = $pet->vaccinationRecords
+            ->where('display_name', $vaccinationRecord->display_name)
+            ->sortByDesc('administered_at')
+            ->values();
+
+        $title = $vaccinationRecord->display_name;
+        $description = $pet->name.' · '.trans_choice('{1} :count injection|[2,*] :count injections', $injections->count());
+
+        return view('vaccination-records.show', compact('pet', 'injections', 'title', 'description'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(VaccinationRecord $vaccinationRecord)

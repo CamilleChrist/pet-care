@@ -22,6 +22,7 @@
 @use "components/ui/tip";
 @use "components/vaccine/item";
 @use "components/vaccine/table" as vaccine-table;
+@use "components/vaccine/detail" as vaccine-detail;
 @use "components/weight/chart";
 @use "components/weight/history";
 

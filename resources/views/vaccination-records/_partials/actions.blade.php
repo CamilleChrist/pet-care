@@ -1,4 +1,9 @@
 <span class="vaccine-item__actions">
+    <a href="{{ route('vaccination-records.show', $record) }}" class="btn btn--ghost btn--round"
+       aria-label="Détail de {{ $record->display_name }}">
+        <x-ui.icon name="eye" class="btn__icon"/>
+    </a>
+
     <a href="{{ route('vaccination-records.edit', $record) }}" class="btn btn--ghost btn--round"
        aria-label="Modifier {{ $record->display_name }} du {{ $record->administered_at->isoFormat('LL') }}">
         <x-ui.icon name="pencil" class="btn__icon"/>
