@@ -1,6 +1,5 @@
 @use "../abstracts/mixins" as *;
 
-// Coquille connectée : bottom-nav en mobile, sidebar + contenu côte à côte dès md.
 .app {
     display: flex;
     flex-direction: column;
@@ -17,5 +16,10 @@
         @include breakpoint-up($breakpoint-md) {
             padding: var(--space-10);
         }
+    }
+
+    .page-footer {
+        @include flex(row, center, center);
+        margin-top: var(--space-6);
     }
 }
