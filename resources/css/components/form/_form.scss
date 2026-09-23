@@ -1,8 +1,35 @@
 @use "../../abstracts/mixins" as *;
 
-// Formulaire : une colonne de champs, .form__row met deux champs côte à côte dès md
 .form {
     @include flex(column, flex-start, stretch, 0, var(--space-4));
+
+    &__body {
+        @include flex(column, flex-start, stretch, 0, var(--space-6));
+    }
+
+    &__group {
+        @include flex(column, flex-start, stretch, 0, var(--space-4));
+        min-width: 0;
+    }
+
+    &__legend {
+        font-size: var(--font-size-lg);
+        font-weight: 700;
+    }
+
+    &__separator {
+        height: 1px;
+        border: 0;
+        background: var(--color-sand-200);
+    }
+
+    &__actions {
+        @include flex(column-reverse, flex-start, stretch, 0, var(--space-2));
+
+        @include breakpoint-up($breakpoint-md) {
+            @include flex(row, flex-end, center, var(--space-2), var(--space-2));
+        }
+    }
 
     &__row {
         display: grid;

@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateVaccinationRecordRequest;
 use App\Models\Pet;
 use App\Models\VaccinationRecord;
 use App\Models\Vaccine;
+use Illuminate\Support\Collection;
 
 class VaccinationRecordController extends Controller
 {
@@ -18,9 +19,7 @@ class VaccinationRecordController extends Controller
         $records = $pet->vaccinationRecords;
         $late = $pet->reminders()->where('status', 'late')->count();
 
-        $vaccines = $records->sortByDesc('administered_at')
-            ->groupBy('display_name')
-            ->sortBy(fn ($injections) => $injections->first()->next_due_at?->timestamp ?? PHP_INT_MAX);
+        $vaccines = $this->groupByVaccine($records);
 
         $title = 'Vaccins — ' . $pet->name;
         $description = $records->isEmpty()
@@ -39,12 +38,16 @@ class VaccinationRecordController extends Controller
      */
     public function create(Pet $pet)
     {
-        $vaccines = Vaccine::when(
-            $pet->breed,
-            fn ($query) => $query->where('species', $pet->breed->species)
-        )->get();
+        $title = 'Ajouter un vaccin';
+        $description = collect([$pet->name, $pet->breed?->name])->filter()->implode(' · ');
 
-        return view('vaccination-records.create', compact('pet', 'vaccines'));
+        return view('vaccination-records.create', [
+            'pet' => $pet,
+            'vaccines' => $this->getVaccinesForSpecies($pet),
+            'recorded' => $this->groupByVaccine($pet->vaccinationRecords),
+            'title' => $title,
+            'description' => $description,
+        ]);
     }
 
     /**
@@ -83,12 +86,20 @@ class VaccinationRecordController extends Controller
      */
     public function edit(VaccinationRecord $vaccinationRecord)
     {
-        $vaccines = Vaccine::when(
-            $vaccinationRecord->pet->breed,
-            fn ($query) => $query->where('species', $vaccinationRecord->pet->breed->species)
-        )->get();
+        $pet = $vaccinationRecord->pet;
 
-        return view('vaccination-records.edit', compact('vaccinationRecord', 'vaccines'));
+        $title = 'Modifier un vaccin';
+        $description = collect([$vaccinationRecord->display_name, $pet->name])->filter()->implode(' · ');
+
+        return view('vaccination-records.edit', [
+            'vaccinationRecord' => $vaccinationRecord,
+            'pet' => $pet,
+            'vaccines' => $this->getVaccinesForSpecies($pet),
+            // Le vaccin en cours de modification est déjà sous les yeux : on ne le répète pas.
+            'recorded' => $this->groupByVaccine($pet->vaccinationRecords)->forget($vaccinationRecord->display_name),
+            'title' => $title,
+            'description' => $description,
+        ]);
     }
 
     /**
@@ -101,6 +112,23 @@ class VaccinationRecordController extends Controller
         return redirect()
             ->route('pets.vaccination-records.index', $vaccinationRecord->pet)
             ->with('success', 'Vaccin mis à jour');
+    }
+
+    /** Get only the vaccines for the pet breed */
+    private function getVaccinesForSpecies(Pet $pet): Collection
+    {
+        return Vaccine::when(
+            $pet->breed,
+            fn ($query) => $query->where('species', $pet->breed->species)
+        )->get();
+    }
+
+    /** Un groupe par vaccin (injection la plus récente en tête), les échéances les plus proches d'abord. */
+    private function groupByVaccine(Collection $records): Collection
+    {
+        return $records->sortByDesc('administered_at')
+            ->groupBy('display_name')
+            ->sortBy(fn ($injections) => $injections->first()->next_due_at?->timestamp ?? PHP_INT_MAX);
     }
 
     /**

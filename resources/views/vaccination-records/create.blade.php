@@ -1,17 +1,17 @@
-@extends('layouts.base')
+<x-layouts.app :title="$title" :description="$description" :back="route('pets.vaccination-records.index', $pet)">
 
-@section('content')
+    <div @class(['two-columns' => $recorded->isNotEmpty(), 'one-column' => $recorded->isEmpty()])>
+        <section>
+            @include('vaccination-records._partials.form', [
+                'action' => route('pets.vaccination-records.store', $pet),
+                'method' => 'POST',
+                'vaccinationRecord' => null,
+                'cancel' => route('pets.vaccination-records.index', $pet),
+                'submitLabel' => 'Enregistrer',
+            ])
+        </section>
 
-    <h1 class="text-xl font-bold mb-4">Ajouter un vaccin</h1>
+        @include('vaccination-records._partials.recorded', ['recorded' => $recorded])
+    </div>
 
-    <p class="mb-4">Ajout d'un vaccin</p>
-
-    @include('vaccination-records._partials.form', [
-      'action' => route('pets.vaccination-records.store', $pet),
-      'method' => 'POST',
-      'vaccinationRecord' => null,
-      'pet' => $pet,
-      'submitLabel' => 'Ajouter un vaccin',
-    ])
-
-@endsection
+</x-layouts.app>

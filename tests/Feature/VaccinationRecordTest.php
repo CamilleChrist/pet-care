@@ -322,3 +322,30 @@ test('the list groups the injections of a vaccine and counts them in the header'
         ->assertSeeInOrder(['Leptospirose', 'Rage']) // le rappel dépassé en tête
         ->assertSeeInOrder(['Vaccin', 'Fait le', 'Rappel', 'Statut']); // en-têtes du tableau bureau
 });
+
+test('the edit form is filled with the record and lists the other recorded vaccines', function () {
+    $user = User::factory()->create();
+    $breed = Breed::factory()->create(['species' => 'dog']);
+    $pet = Pet::factory()->create(['user_id' => $user->id, 'name' => 'Bilou', 'breed_id' => $breed->id]);
+    $rage = Vaccine::factory()->create(['name' => 'Rage', 'species' => 'dog']);
+    Vaccine::factory()->create(['name' => 'Typhus', 'species' => 'cat']);
+
+    $record = VaccinationRecord::factory()->for($pet)->create([
+        'vaccine_id' => $rage->id,
+        'administered_at' => '2025-01-10',
+        'next_due_at' => '2028-01-10',
+        'lot_number' => 'RB-2210-A',
+    ]);
+    VaccinationRecord::factory()->for($pet)->create(['vaccine_id' => null, 'custom_name' => 'Parvovirose']);
+
+    $this->actingAs($user)
+        ->get(route('vaccination-records.edit', $record))
+        ->assertOk()
+        ->assertSee('value="2025-01-10"', false)
+        ->assertSee('value="2028-01-10"', false)
+        ->assertSee('value="RB-2210-A"', false)
+        ->assertSee('<option value="'.$rage->id.'" selected>Rage</option>', false)
+        // Le référentiel suit l'espèce de l'animal, et le vaccin modifié n'est pas répété dans l'aparté.
+        ->assertDontSee('Typhus')
+        ->assertSeeInOrder(['Déjà enregistrés', 'Parvovirose']);
+});

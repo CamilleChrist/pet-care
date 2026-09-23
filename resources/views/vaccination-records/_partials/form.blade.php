@@ -1,90 +1,58 @@
-<form method="post" action="{{ $action }}" class="flex flex-col gap-4">
+@php($record = $vaccinationRecord ?? null)
+@php($vaccineOptions = $vaccines->pluck('name', 'id')->prepend('— Aucun —', ''))
+
+<form method="post" action="{{ $action }}" class="form">
     @csrf
     @method($method)
 
-    <label class="flex flex-col gap-1">
-        Vaccin :
-        <select name="vaccine_id" class="border p-2">
-            <option value="">— Aucun —</option>
-            @foreach ($vaccines as $vaccine)
-                <option value="{{ $vaccine->id }}" @selected(old('vaccine_id', $vaccinationRecord?->vaccine_id) == $vaccine->id)>
-                    {{ $vaccine->name }}
-                </option>
-            @endforeach
-        </select>
-    </label>
+    <x-ui.card>
+        <div class="form__body">
+            <div class="form__group">
+                <h2 class="form__legend">Vaccin</h2>
 
-    <label class="flex flex-col gap-1">
-        Nom du vaccin si absent de la liste ci-dessus :
-        <input
-            name="custom_name"
-            type="text"
-            value="{{ old('custom_name', $vaccinationRecord?->custom_name) }}" class="border p-2">
-    </label>
+                <x-form.input name="vaccine_id" label="Vaccin" :options="$vaccineOptions"
+                              :value="$record?->vaccine_id" hint="Référentiel de l'espèce de {{ $pet->name }}." />
 
-    <label class="flex flex-col gap-1">
-        Date d'administration :*
-        <input
-            name="administered_at"
-            type="date"
-            required
-            max="{{ now()->format('Y-m-d') }}"
-            value="{{ old('administered_at', $vaccinationRecord?->administered_at?->format('Y-m-d')) }}"
-            class="border p-2"
-        >
-    </label>
+                <x-form.input name="custom_name" label="Autre vaccin" :value="$record?->custom_name"
+                              placeholder="Leptospirose" hint="À remplir si le vaccin n'est pas dans la liste." />
 
-    <label class="flex flex-col gap-1">
-        Prochain rappel :
-        <input
-            name="next_due_at"
-            type="date"
-            value="{{ old('next_due_at', $vaccinationRecord?->next_due_at?->format('Y-m-d')) }}"
-            class="border p-2"
-        >
-    </label>
+                <div class="form__row">
+                    <x-form.input name="administered_at" type="date" label="Date d'administration" required
+                                  :value="$record?->administered_at?->format('Y-m-d')"
+                                  :max="now()->format('Y-m-d')" hint="Aujourd'hui au plus tard." />
 
-    <label class="flex flex-col gap-1">
-        Vétérinaire :
-        <input
-            name="veterinarian_name"
-            type="text"
-            value="{{ old('veterinarian_name', $vaccinationRecord?->veterinarian_name) }}" class="border p-2">
-    </label>
+                    <x-form.input name="next_due_at" type="date" label="Date du rappel"
+                                  :value="$record?->next_due_at?->format('Y-m-d')"
+                                  hint="À laisser vide si aucun rappel n'est prévu." />
+                </div>
+            </div>
 
-    <label class="flex flex-col gap-1">
-        Clinique :
-        <input
-            name="clinic_name"
-            type="text"
-            value="{{ old('clinic_name', $vaccinationRecord?->clinic_name) }}" class="border p-2">
-    </label>
+            <hr class="form__separator">
 
-    <label class="flex flex-col gap-1">
-        N° de lot :
-        <input
-            name="lot_number"
-            type="text"
-            value="{{ old('lot_number', $vaccinationRecord?->lot_number) }}" class="border p-2">
-    </label>
+            <div class="form__group">
+                <h2 class="form__legend">Praticien</h2>
 
-    <label class="flex flex-col gap-1">
-        Notes :
-        <input
-            name="notes"
-            type="text"
-            value="{{ old('notes', $vaccinationRecord?->notes) }}" class="border p-2">
-    </label>
+                <div class="form__row">
+                    <x-form.input name="veterinarian_name" label="Vétérinaire" :value="$record?->veterinarian_name"
+                                  placeholder="Dr Lemoine" />
 
-    <button type="submit" class="bg-blue-600 text-white p-2 self-start">
-        {{ $submitLabel }}
-    </button>
+                    <x-form.input name="clinic_name" label="Clinique" :value="$record?->clinic_name"
+                                  placeholder="Clinique des Lilas" />
+                </div>
+
+                <x-form.input name="lot_number" label="N° de lot" :value="$record?->lot_number"
+                              placeholder="LP-4471-B" />
+            </div>
+
+            <hr class="form__separator">
+
+            <x-form.input name="notes" label="Notes" :rows="4" :value="$record?->notes"
+                          placeholder="Réaction, remarque du vétérinaire…" />
+
+            <div class="form__actions">
+                <a href="{{ $cancel }}" class="btn btn--ghost">Annuler</a>
+                <button type="submit" class="btn btn--primary">{{ $submitLabel }}</button>
+            </div>
+        </div>
+    </x-ui.card>
 </form>
-
-@if ($errors->any())
-    <ul class="mt-4 flex flex-col gap-1">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif
