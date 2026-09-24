@@ -46,15 +46,9 @@ class Breadcrumb extends Component
                 $this->item($pet->name, route('pets.show', $pet)),
                 $this->item('Modifier'),
             ],
-            'pets.weight-records.index' => [
-                $this->item('Animaux', route('pets.index')),
-                $this->item($pet->name, route('pets.show', $pet)),
-                $this->item('Poids'),
-            ],
             'pets.weight-records.create' => [
                 $this->item('Animaux', route('pets.index')),
                 $this->item($pet->name, route('pets.show', $pet)),
-                $this->item('Poids', route('pets.weight-records.index', $pet)),
                 $this->item('Nouvelle pesée'),
             ],
             'pets.vaccination-records.index' => [

@@ -13,7 +13,11 @@
         @endif
 
         @if ($reminder)
-            <x-ui.badge :tone="$tone">{{ $reminder->status_label }}</x-ui.badge>
+            <x-ui.badge :tone="$tone">
+                <x-ui.icon name="syringe" class="badge__icon"/>
+                <span class="sr-only">Vaccins :</span>
+                {{ $reminder->status_label }}
+            </x-ui.badge>
         @endif
     </span>
 

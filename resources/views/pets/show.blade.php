@@ -129,4 +129,15 @@
         </aside>
     </div>
 
+    <div class="page-footer">
+        <button type="button" class="btn btn--danger" data-dialog-open="delete-pet">
+            <x-ui.icon name="trash-2" class="btn__icon"/>
+            Supprimer la fiche
+        </button>
+    </div>
+
+    <x-ui.confirm-delete id="delete-pet" :action="route('pets.destroy', $pet)"
+                         title="Supprimer {{ $pet->name }} ?"
+                         description="La fiche, les pesées et les vaccins de {{ $pet->name }} seront définitivement supprimés." />
+
 </x-layouts.app>

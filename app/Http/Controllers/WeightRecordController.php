@@ -9,14 +9,6 @@ use App\Models\WeightRecord;
 class WeightRecordController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index(Pet $pet)
-    {
-        return view('weight-records.index', compact('pet'));
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create(Pet $pet)
@@ -37,7 +29,7 @@ class WeightRecordController extends Controller
         $pet->weightRecords()->create($request->validated());
 
         return redirect()
-            ->route('pets.weight-records.index', $pet)
+            ->route('pets.show', $pet)
             ->with('success', 'Poids ajouté pour '.$pet->name);
     }
 

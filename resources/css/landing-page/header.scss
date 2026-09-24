@@ -6,6 +6,7 @@
     z-index: 50;
     background: var(--color-neutral-100);
     border-bottom: 1px solid var(--card-border);
+    padding-top: env(safe-area-inset-top, 0px);
 
     > .container {
         @include flex(row, flex-start, center);

@@ -3,7 +3,7 @@
 .footer {
     background: var(--color-neutral-800);
     color: var(--color-sand-300);
-    padding: var(--space-10) 0 0;
+    padding: var(--space-10) 0 env(safe-area-inset-bottom, 0px);
 
     &__row {
         @include flex(row, flex-start, flex-start);
@@ -49,12 +49,13 @@
             list-style: none;
             font-size: var(--font-size-xs);
         }
+    }
 
-        a {
-            color: var(--color-sand-300);
-            &:hover {
-                color: var(--color-secondary);
-            }
+    li a {
+        color: var(--color-sand-300);
+
+        &:hover {
+            color: var(--color-secondary);
         }
     }
 }
