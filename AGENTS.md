@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Pet Care: a Laravel 13 app for tracking pet health (weight, vaccinations, vet visits). French-language UI and validation messages. v1 is in progress — only auth and pet/weight/vaccination-record CRUD exist so far (see README.md for the full feature/data-model target). UI design is also still in progress.
+Pet Care: a Laravel 13 app for tracking pet health (weight, vaccinations, vet visits). French-language UI and validation messages. v1 is in progress — only auth, the account profile (name/e-mail, password change, account deletion) and pet/weight/vaccination-record CRUD exist so far (see README.md for the full feature/data-model target). UI design is also still in progress.
 
 Stack: PHP 8.3+, Blade views, Sass (compiled by Vite; app views are migrating off Tailwind CSS 4 to Sass/BEM — see Architecture), SQLite locally, Pest for tests, Pint for style. `.ai/rules/general.md` defines the git workflow (GitHub Flow, Conventional Commits branch names/messages) — read it before starting work on a branch or PR.
 
