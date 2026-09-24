@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VaccinationRecordController;
 use App\Http\Controllers\WeightRecordController;
 use App\Models\VaccinationRecord;
@@ -37,6 +38,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 // ****  DASHBOARD  **** //
 Route::get('/dashboard', DashboardController::class)->name('dashboard')->middleware('auth');
 
+// ****  PROFILE  **** //
+Route::prefix('/profile')->controller(ProfileController::class)->middleware('auth')->group(function () {
+    Route::get('/', 'edit')->name('profile.edit');
+    Route::patch('/', 'update')->name('profile.update');
+
+    Route::get('/password', 'editPassword')->name('profile.password.edit');
+    Route::patch('/password', 'updatePassword')->name('profile.password.update');
+});
+
 // ****  PETS  **** //
 Route::prefix('/pets')->controller(PetController::class)->middleware('auth')->group(function () {
     Route::get('/', 'index')->name('pets.index');
@@ -69,7 +79,6 @@ Route::get('/vaccination-records/{vaccinationRecord}', [VaccinationRecordControl
     ->name('vaccination-records.show')
     ->can('update', 'vaccinationRecord')
     ->middleware('auth');
-
 
 Route::get('/vaccination-records/{vaccinationRecord}/edit', [VaccinationRecordController::class, 'edit'])
     ->name('vaccination-records.edit')
