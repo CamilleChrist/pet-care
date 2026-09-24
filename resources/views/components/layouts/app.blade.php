@@ -21,6 +21,12 @@
             'href' => route('pets.index'),
             'active' => request()->routeIs('pets.index', 'pets.create')
         ],
+        [
+            'label' => 'Profil',
+            'icon' => 'user',
+            'href' => route('profile.edit'),
+            'active' => request()->routeIs('profile.*')
+        ],
     ];
 @endphp
 

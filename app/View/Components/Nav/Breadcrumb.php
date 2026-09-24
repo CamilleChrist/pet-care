@@ -30,6 +30,13 @@ class Breadcrumb extends Component
         $pet ??= $record?->pet;
 
         return match ($route?->getName()) {
+            'profile.edit' => [
+                $this->item('Profil'),
+            ],
+            'profile.password.edit' => [
+                $this->item('Profil', route('profile.edit')),
+                $this->item('Mot de passe'),
+            ],
             'pets.index' => [
                 $this->item('Animaux'),
             ],
