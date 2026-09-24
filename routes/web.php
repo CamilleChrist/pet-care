@@ -42,6 +42,7 @@ Route::get('/dashboard', DashboardController::class)->name('dashboard')->middlew
 Route::prefix('/profile')->controller(ProfileController::class)->middleware('auth')->group(function () {
     Route::get('/', 'edit')->name('profile.edit');
     Route::patch('/', 'update')->name('profile.update');
+    Route::delete('/', 'destroy')->name('profile.destroy');
 
     Route::get('/password', 'editPassword')->name('profile.password.edit');
     Route::patch('/password', 'updatePassword')->name('profile.password.update');

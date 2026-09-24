@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Pet;
 use App\Models\User;
+use App\Models\WeightRecord;
 use Illuminate\Support\Facades\Hash;
 
 test('a user can see their profile', function () {
@@ -66,9 +68,23 @@ test('the password change fails when the current password is wrong', function ()
     expect(Hash::check('ancien-mot-de-passe', $user->refresh()->password))->toBeTrue();
 });
 
+test('deleting the account removes the pets and their records', function () {
+    $user = User::factory()->create();
+    $pet = Pet::factory()->create(['user_id' => $user->id]);
+    $record = WeightRecord::factory()->create(['pet_id' => $pet->id]);
+
+    $this->actingAs($user)->delete(route('profile.destroy'))->assertRedirect(route('login'));
+
+    $this->assertGuest();
+    $this->assertDatabaseMissing('users', ['id' => $user->id]);
+    $this->assertDatabaseMissing('pets', ['id' => $pet->id]);
+    $this->assertDatabaseMissing('weight_records', ['id' => $record->id]);
+});
+
 test('guests cannot access the profile', function () {
     $this->get(route('profile.edit'))->assertRedirect(route('login'));
     $this->get(route('profile.password.edit'))->assertRedirect(route('login'));
     $this->patch(route('profile.update'))->assertRedirect(route('login'));
     $this->patch(route('profile.password.update'))->assertRedirect(route('login'));
+    $this->delete(route('profile.destroy'))->assertRedirect(route('login'));
 });
