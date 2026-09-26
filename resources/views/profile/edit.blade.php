@@ -28,6 +28,25 @@
         </section>
 
         <aside>
+            <x-ui.card title="Notifications"
+                       description="Les rappels de vaccin arrivent 7 jours avant l'échéance, puis le jour même.">
+                <div class="form">
+                    <form method="post" action="{{ route('profile.notifications.update') }}" data-auto-submit>
+                        @csrf
+                        @method('PATCH')
+
+                        <x-form.switch name="mail_notifications" label="Par e-mail"
+                                       :checked="$user->mail_notifications"/>
+                    </form>
+
+                    <div class="field">
+                        <x-form.switch name="push" label="Sur cet appareil" aria-describedby="push-status"
+                                       :data-push-url="route('profile.push-subscription.store')"/>
+                        <p id="push-status" class="field__hint" aria-live="polite" data-push-status></p>
+                    </div>
+                </div>
+            </x-ui.card>
+
             <x-ui.card title="Compte"
                        description="La suppression du compte efface les fiches de vos animaux et tout leur historique.">
 

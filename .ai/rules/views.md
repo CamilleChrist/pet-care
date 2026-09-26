@@ -25,3 +25,6 @@ Deleting a whole record belongs at the foot of its show page (`.page-footer`), n
 
 ## A badge whose text alone is ambiguous carries its icon and an sr-only label
 `À jour` next to a weight reads as if it were about the weight. Give the badge the icon that names its subject (`syringe`, as the species and birth-date badges already do), and — since `<x-ui.icon>` is always `aria-hidden` — a `<span class="sr-only">` prefix so the context reaches a screen reader too. The utility lives in `utilities/_helpers.scss`.
+
+## Switches that save on change use <form data-auto-submit>, not a submit button
+A preference switch applies as soon as it is toggled: wrap it in `<form method="post" data-auto-submit>` (with @csrf and @method), with no "Enregistrer" button. `resources/js/components/auto-submit.js` sends the FormData with `fetch` (`Accept: application/json`) and flips the switch back if the response is not ok, so the controller answers `response()->noContent()`, not a redirect. Do not reload the page: that would redraw the push switch, whose state is only known after the browser has been queried (grey → blue flicker). An unchecked switch sends nothing — read it with `$request->boolean()`.

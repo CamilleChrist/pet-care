@@ -87,4 +87,59 @@ test('guests cannot access the profile', function () {
     $this->patch(route('profile.update'))->assertRedirect(route('login'));
     $this->patch(route('profile.password.update'))->assertRedirect(route('login'));
     $this->delete(route('profile.destroy'))->assertRedirect(route('login'));
+    $this->patch(route('profile.notifications.update'))->assertRedirect(route('login'));
+    $this->post(route('profile.push-subscription.store'))->assertRedirect(route('login'));
+});
+
+test('a user can turn the reminders by mail on and off', function (bool $before, array $payload, bool $after) {
+    $user = User::factory()->create(['mail_notifications' => $before]);
+
+    $this->actingAs($user)->patch(route('profile.notifications.update'), $payload)->assertNoContent();
+
+    expect($user->refresh()->mail_notifications)->toBe($after);
+})->with([
+    // Un switch décoché n'envoie rien : l'absence du champ vaut « désactivé ».
+    'off' => [true, [], false],
+    'on' => [false, ['mail_notifications' => '1'], true],
+]);
+
+test('a user can register the push subscription of their device', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->postJson(route('profile.push-subscription.store'), [
+        'endpoint' => 'https://fcm.googleapis.com/fcm/send/abc123',
+        'key' => 'BNcRdreALRFXTkOOUHK1EtK2wtaz5Ry4YfYCA_0QTpQtUbVlUls0VJXg7A8u-Ts1XbjhazAkj7I99e8QcYP7DkM',
+        'token' => 'tBHItJI5svbpez7KI4CCXg',
+        'encoding' => 'aes128gcm',
+    ])->assertNoContent();
+
+    $this->assertDatabaseHas('push_subscriptions', [
+        'subscribable_type' => User::class,
+        'subscribable_id' => $user->id,
+        'endpoint' => 'https://fcm.googleapis.com/fcm/send/abc123',
+        'public_key' => 'BNcRdreALRFXTkOOUHK1EtK2wtaz5Ry4YfYCA_0QTpQtUbVlUls0VJXg7A8u-Ts1XbjhazAkj7I99e8QcYP7DkM',
+        'auth_token' => 'tBHItJI5svbpez7KI4CCXg',
+        'content_encoding' => 'aes128gcm',
+    ]);
+});
+
+test('a push subscription needs an endpoint and its keys', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->postJson(route('profile.push-subscription.store'), [])
+        ->assertJsonValidationErrors(['endpoint', 'key', 'token']);
+
+    $this->assertDatabaseEmpty('push_subscriptions');
+});
+
+test('a push subscription is refused when its endpoint is not https', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->postJson(route('profile.push-subscription.store'), [
+        'endpoint' => 'http://push.example.com/abc123',
+        'key' => 'BNcRdreALRFXTkOOUHK1EtK2wtaz5Ry4YfYCA_0QTpQtUbVlUls0VJXg7A8u-Ts1XbjhazAkj7I99e8QcYP7DkM',
+        'token' => 'tBHItJI5svbpez7KI4CCXg',
+    ])->assertJsonValidationErrors('endpoint');
+
+    $this->assertDatabaseEmpty('push_subscriptions');
 });

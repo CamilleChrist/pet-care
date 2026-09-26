@@ -1,0 +1,10 @@
+{
+    "name": "PetCare",
+    "short_name": "PetCare",
+    "lang": "fr",
+    "start_url": "/dashboard",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#FFF9F1",
+    "theme_color": "#1A3680"
+}
