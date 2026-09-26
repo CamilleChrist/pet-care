@@ -5,12 +5,15 @@ namespace App\Console\Commands;
 use App\Models\Pet;
 use App\Models\VaccinationRecord;
 use App\Notifications\VaccineNotification;
+use App\Notifications\VaccineOverdueNotification;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 #[Signature('app:vaccine-notification')]
-#[Description('Send the vaccine booster reminders due in 7 days and today')]
+#[Description('Send the vaccine booster reminders due in 7 days and today, and ask a week after the due date whether it was done')]
 class SendVaccineNotification extends Command
 {
     /**
@@ -21,15 +24,43 @@ class SendVaccineNotification extends Command
      */
     public function handle(): int
     {
-        Pet::query()
-            ->whereHas('vaccinationRecords', fn ($query) => $query
-                ->whereDate('next_due_at', '>=', today())
-                ->whereDate('next_due_at', '<=', today()->addWeek()))
-            ->with(['user', 'vaccinationRecords.vaccine'])
-            ->each(fn (Pet $pet) => $pet->reminders()
-                ->filter(fn (VaccinationRecord $record) => in_array($record->days_until_due, [0, 7], true))
-                ->each(fn (VaccinationRecord $record) => $pet->user->notify(new VaccineNotification($record))));
+        foreach ($this->petsWithBoosterDueAroundToday() as $pet) {
+            foreach ($pet->reminders() as $record) {
+                $notification = $this->notificationFor($record);
+
+                if ($notification) {
+                    $pet->user->notify($notification);
+                }
+            }
+        }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Pets with a booster due between a week ago and a week from now: the only ones that may get a message today.
+     *
+     * @return Collection<int, Pet>
+     */
+    private function petsWithBoosterDueAroundToday(): Collection
+    {
+        return Pet::query()
+            ->whereHas('vaccinationRecords', fn (Builder $query) => $query
+                ->whereDate('next_due_at', '>=', today()->subWeek())
+                ->whereDate('next_due_at', '<=', today()->addWeek()))
+            ->with(['user', 'vaccinationRecords.vaccine'])
+            ->get();
+    }
+
+    /**
+     * The message to send for a booster, from the days left before its due date — none on the other days.
+     */
+    private function notificationFor(VaccinationRecord $record): ?VaccineNotification
+    {
+        return match ($record->days_until_due) {
+            7, 0 => new VaccineNotification($record),
+            -7 => new VaccineOverdueNotification($record),
+            default => null,
+        };
     }
 }
