@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
@@ -95,3 +96,9 @@ Route::delete('/vaccination-records/{vaccinationRecord}', [VaccinationRecordCont
     ->name('vaccination-records.destroy')
     ->middleware('auth')
     ->can('delete', 'vaccinationRecord');
+
+// ****  ADMIN  **** //
+Route::prefix('/admin-pet-care')->name('admin.')->middleware(['auth', 'can:admin'])->group(function () {
+    Route::get('/', fn () => redirect()->route('admin.users.index'))->name('home');
+    Route::resource('users', AdminUserController::class)->except('create', 'store');
+});

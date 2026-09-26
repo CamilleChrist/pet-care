@@ -1,0 +1,17 @@
+@use "../../abstracts/mixins" as *;
+
+.admin-pagination {
+    @include flex(row, space-between, center, var(--space-3), var(--space-2));
+    flex-wrap: wrap;
+    margin-top: var(--space-4);
+
+    &__status {
+        font-size: var(--font-size-sm);
+        color: var(--color-neutral-600);
+    }
+
+    [aria-disabled="true"] {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+}
