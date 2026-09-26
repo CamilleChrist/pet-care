@@ -13,6 +13,12 @@
             'active' => request()->routeIs('admin.users.*'),
         ],
         [
+            'label' => 'Animaux',
+            'icon' => 'paw-print',
+            'href' => route('admin.pets.index'),
+            'active' => request()->routeIs('admin.pets.*'),
+        ],
+        [
             'label' => "Retour à l'app",
             'icon' => 'arrow-left',
             'href' => route('dashboard'),

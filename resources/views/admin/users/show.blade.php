@@ -32,13 +32,21 @@
         @if ($pets->isEmpty())
             <p class="admin-empty">Ce compte n'a enregistré aucun animal.</p>
         @else
-            <x-admin.table :headers="['Nom', 'Race', 'Dernier poids', 'Vaccinations']">
+            <x-admin.table :headers="['Nom', 'Race', 'Dernier poids', 'Vaccinations', 'Actions']">
                 @foreach ($pets as $pet)
                     <tr>
                         <th scope="row">{{ $pet->name }}</th>
                         <td>{{ $pet->breed?->name ?? '—' }}</td>
                         <td>{{ $pet->latestWeightRecord?->formatted_weight ?? '—' }}</td>
                         <td>{{ $pet->vaccinationRecords->count() }}</td>
+                        <td class="admin-table__actions">
+                            <x-admin.row-actions :edit="route('admin.pets.edit', $pet)"
+                                                 :destroy="route('admin.pets.destroy', $pet)"
+                                                 :label="$pet->name"
+                                                 dialog="delete-pet-{{ $pet->id }}"
+                                                 title="Supprimer cet animal ?"
+                                                 :description="'La fiche de '.$pet->name.', ses pesées et ses vaccinations seront définitivement supprimées.'"/>
+                        </td>
                     </tr>
                 @endforeach
             </x-admin.table>

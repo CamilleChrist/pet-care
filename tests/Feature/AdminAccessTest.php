@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Pet;
 use App\Models\User;
 
 test('a guest is redirected to login', function (string $route) {
@@ -36,6 +37,8 @@ test('the back-office root lands on the user list', function () {
 
 dataset('admin routes', [
     'users index' => ['admin.users.index'],
+    'pets index' => ['admin.pets.index'],
+    'pets create' => ['admin.pets.create'],
 ]);
 
 test('a listing offers delete for every row but the admin own account', function () {
@@ -46,4 +49,13 @@ test('a listing offers delete for every row but the admin own account', function
 
     $response->assertSee('delete-user-'.$other->id)
         ->assertDontSee('delete-user-'.$admin->id);
+});
+
+test('every row action carries an accessible name', function () {
+    $pet = Pet::factory()->create(['name' => 'Moustache']);
+
+    $this->actingAs(User::factory()->admin()->create())
+        ->get(route('admin.pets.index'))
+        ->assertSee('Modifier Moustache')
+        ->assertSee('Supprimer Moustache');
 });
