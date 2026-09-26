@@ -8,6 +8,8 @@
 
     &__scroll {
         overflow-x: auto;
+        min-width: 0;
+        max-width: 100%;
     }
 
     th,
@@ -65,5 +67,20 @@
         font-size: var(--font-size-xs);
         font-weight: 400;
         color: var(--color-neutral-600);
+    }
+
+    @include breakpoint-down($breakpoint-md) {
+        &__actions {
+            display: none;
+        }
+
+        &--users tr > :nth-child(4), // Animaux
+        &--users tr > :nth-child(5), // Inscrit le
+        &--pets tr > :nth-child(4), // Race
+        &--pets tr > :nth-child(5), // Naissance
+        &--breeds tr > :nth-child(3), // Animaux
+        &--vaccines tr > :nth-child(3) { // Description
+            display: none;
+        }
     }
 }

@@ -4,6 +4,18 @@
     .card + .card {
         margin-top: var(--space-4);
     }
+
+    .page-header__actions {
+        @include flex(row, flex-start, center, var(--space-2), var(--space-2));
+
+        @include breakpoint-down($breakpoint-md) {
+            width: 100%;
+
+            .btn {
+                flex: 1;
+            }
+        }
+    }
 }
 
 .admin-toolbar {
@@ -13,9 +25,10 @@
 }
 
 .admin-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-4) var(--space-8);
 
     dt {
         font-size: var(--font-size-xs);

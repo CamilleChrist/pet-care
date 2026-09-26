@@ -23,7 +23,7 @@
         </x-ui.empty-state>
     @else
         <x-ui.card>
-            <x-admin.table :headers="['Nom', 'Propriétaire', 'Espèce', 'Race', 'Naissance', 'Actions']">
+            <x-admin.table class="admin-table--pets" :headers="['Nom', 'Propriétaire', 'Espèce', 'Race', 'Naissance', 'Actions']">
                 @foreach ($pets as $pet)
                     <tr>
                         <th scope="row">

@@ -15,6 +15,16 @@
         display: none;
     }
 
+    &--scroll {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+
+        .bottom-nav__item {
+            flex: none;
+            min-width: 76px;
+        }
+    }
+
     &__item {
         @include flex(column, center, center, 0, var(--space-1));
         flex: 1;

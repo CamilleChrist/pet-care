@@ -4,7 +4,7 @@
         <x-ui.empty-state title="Aucun inscrit" description="Les comptes créés depuis l'inscription apparaîtront ici."/>
     @else
         <x-ui.card>
-            <x-admin.table :headers="['Nom', 'E-mail', 'Rôle', 'Animaux', 'Inscrit le', 'Actions']">
+            <x-admin.table class="admin-table--users" :headers="['Nom', 'E-mail', 'Rôle', 'Animaux', 'Inscrit le', 'Actions']">
                 @foreach ($users as $user)
                     <tr>
                         <th scope="row">{{ $user->name }}</th>

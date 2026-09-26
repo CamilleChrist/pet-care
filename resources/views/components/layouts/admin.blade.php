@@ -76,6 +76,8 @@
         {{ $slot }}
     </main>
 
+    <x-layouts.nav.bottom-nav :items="$navItems" class="bottom-nav--scroll" />
+
     <x-ui.dialog id="logout-dialog" title="Se déconnecter ?" description="Vous devrez vous reconnecter pour revenir au back-office.">
         <form method="post" action="{{ route('logout') }}">
             @csrf

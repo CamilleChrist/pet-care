@@ -13,7 +13,8 @@ test('an admin sees the breeds with how many pets use them', function () {
     $this->actingAs($this->admin)
         ->get(route('admin.breeds.index'))
         ->assertOk()
-        ->assertSee('Berger australien');
+        ->assertSee('Berger australien')
+        ->assertSee(route('admin.breeds.edit', $breed));
 });
 
 test('an admin can create a breed', function () {

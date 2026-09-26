@@ -16,10 +16,12 @@
         </x-ui.empty-state>
     @else
         <x-ui.card>
-            <x-admin.table :headers="['Nom', 'Espèce', 'Animaux', 'Actions']">
+            <x-admin.table class="admin-table--breeds" :headers="['Nom', 'Espèce', 'Animaux', 'Actions']">
                 @foreach ($breeds as $breed)
                     <tr>
-                        <th scope="row">{{ $breed->name }}</th>
+                        <th scope="row">
+                            <a href="{{ route('admin.breeds.edit', $breed) }}">{{ $breed->name }}</a>
+                        </th>
                         <td><x-ui.badge :tone="$breed->species">{{ $breed->speciesLabel() }}</x-ui.badge></td>
                         <td>{{ $breed->pets_count }}</td>
                         <td class="admin-table__actions">

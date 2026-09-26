@@ -7,12 +7,13 @@ use App\Models\Vaccine;
 beforeEach(fn () => $this->admin = User::factory()->admin()->create());
 
 test('an admin sees the vaccines', function () {
-    Vaccine::factory()->create(['name' => 'Rage', 'species' => 'dog']);
+    $vaccine = Vaccine::factory()->create(['name' => 'Rage', 'species' => 'dog']);
 
     $this->actingAs($this->admin)
         ->get(route('admin.vaccines.index'))
         ->assertOk()
-        ->assertSee('Rage');
+        ->assertSee('Rage')
+        ->assertSee(route('admin.vaccines.edit', $vaccine));
 });
 
 test('an admin can create a vaccine', function () {
