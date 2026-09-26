@@ -35,12 +35,15 @@
             <x-admin.table :headers="['Nom', 'Race', 'Dernier poids', 'Vaccinations', 'Actions']">
                 @foreach ($pets as $pet)
                     <tr>
-                        <th scope="row">{{ $pet->name }}</th>
+                        <th scope="row">
+                            <a href="{{ route('admin.pets.show', $pet) }}">{{ $pet->name }}</a>
+                        </th>
                         <td>{{ $pet->breed?->name ?? '—' }}</td>
                         <td>{{ $pet->latestWeightRecord?->formatted_weight ?? '—' }}</td>
                         <td>{{ $pet->vaccinationRecords->count() }}</td>
                         <td class="admin-table__actions">
-                            <x-admin.row-actions :edit="route('admin.pets.edit', $pet)"
+                            <x-admin.row-actions :show="route('admin.pets.show', $pet)"
+                                                 :edit="route('admin.pets.edit', $pet)"
                                                  :destroy="route('admin.pets.destroy', $pet)"
                                                  :label="$pet->name"
                                                  dialog="delete-pet-{{ $pet->id }}"

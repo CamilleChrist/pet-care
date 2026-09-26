@@ -51,6 +51,19 @@ class PetController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function show(Pet $pet)
+    {
+        $pet->load(['user', 'breed']);
+
+        $vaccinationRecords = $pet->vaccinationRecords()->with('vaccine')->latest('administered_at')->get();
+        $weightRecords = $pet->weightRecords;
+
+        return view('admin.pets.show', compact('pet', 'vaccinationRecords', 'weightRecords'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(Pet $pet)

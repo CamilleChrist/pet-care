@@ -16,7 +16,7 @@
             'label' => 'Animaux',
             'icon' => 'paw-print',
             'href' => route('admin.pets.index'),
-            'active' => request()->routeIs('admin.pets.*'),
+            'active' => request()->routeIs('admin.pets.*', 'admin.vaccination-records.*', 'admin.weight-records.*'),
         ],
         [
             'label' => 'Races',

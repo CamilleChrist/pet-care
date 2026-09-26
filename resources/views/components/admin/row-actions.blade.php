@@ -1,6 +1,13 @@
-@props(['edit', 'destroy', 'label', 'dialog', 'title', 'description' => null])
+@props(['edit', 'destroy', 'label', 'dialog', 'title', 'description' => null, 'show' => null])
 
 <div class="admin-table__buttons">
+    @if ($show)
+        <a href="{{ $show }}" class="btn btn--ghost btn--round">
+            <x-ui.icon name="eye" class="btn__icon"/>
+            <span class="sr-only">Voir {{ $label }}</span>
+        </a>
+    @endif
+
     <a href="{{ $edit }}" class="btn btn--ghost btn--round">
         <x-ui.icon name="pencil" class="btn__icon"/>
         <span class="sr-only">Modifier {{ $label }}</span>

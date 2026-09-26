@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\BreedController as AdminBreedController;
 use App\Http\Controllers\Admin\PetController as AdminPetController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\VaccinationRecordController as AdminVaccinationRecordController;
 use App\Http\Controllers\Admin\VaccineController as AdminVaccineController;
+use App\Http\Controllers\Admin\WeightRecordController as AdminWeightRecordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
@@ -104,7 +106,9 @@ Route::delete('/vaccination-records/{vaccinationRecord}', [VaccinationRecordCont
 Route::prefix('/admin-pet-care')->name('admin.')->middleware(['auth', 'can:admin'])->group(function () {
     Route::get('/', fn () => redirect()->route('admin.users.index'))->name('home');
     Route::resource('users', AdminUserController::class)->except('create', 'store');
-    Route::resource('pets', AdminPetController::class)->except('show');
+    Route::resource('pets', AdminPetController::class);
     Route::resource('breeds', AdminBreedController::class)->except('show');
     Route::resource('vaccines', AdminVaccineController::class)->except('show');
+    Route::resource('vaccination-records', AdminVaccinationRecordController::class)->except('index', 'show');
+    Route::resource('weight-records', AdminWeightRecordController::class)->except('index', 'show');
 });

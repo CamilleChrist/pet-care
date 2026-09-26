@@ -26,7 +26,9 @@
             <x-admin.table :headers="['Nom', 'Propriétaire', 'Espèce', 'Race', 'Naissance', 'Actions']">
                 @foreach ($pets as $pet)
                     <tr>
-                        <th scope="row">{{ $pet->name }}</th>
+                        <th scope="row">
+                            <a href="{{ route('admin.pets.show', $pet) }}">{{ $pet->name }}</a>
+                        </th>
                         <td>
                             <a href="{{ route('admin.users.show', $pet->user) }}">{{ $pet->user->name }}</a>
                         </td>
@@ -38,7 +40,8 @@
                         <td>{{ $pet->breed?->name ?? '—' }}</td>
                         <td>{{ \Illuminate\Support\Carbon::parse($pet->birth_date)->isoFormat('LL') }}</td>
                         <td class="admin-table__actions">
-                            <x-admin.row-actions :edit="route('admin.pets.edit', $pet)"
+                            <x-admin.row-actions :show="route('admin.pets.show', $pet)"
+                                                 :edit="route('admin.pets.edit', $pet)"
                                                  :destroy="route('admin.pets.destroy', $pet)"
                                                  :label="$pet->name"
                                                  dialog="delete-pet-{{ $pet->id }}"

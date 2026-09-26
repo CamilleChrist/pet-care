@@ -43,6 +43,8 @@ dataset('admin routes', [
     'breeds create' => ['admin.breeds.create'],
     'vaccines index' => ['admin.vaccines.index'],
     'vaccines create' => ['admin.vaccines.create'],
+    'vaccination records create' => ['admin.vaccination-records.create'],
+    'weight records create' => ['admin.weight-records.create'],
 ]);
 
 test('a listing offers delete for every row but the admin own account', function () {
@@ -60,6 +62,7 @@ test('every row action carries an accessible name', function () {
 
     $this->actingAs(User::factory()->admin()->create())
         ->get(route('admin.pets.index'))
+        ->assertSee('Voir Moustache')
         ->assertSee('Modifier Moustache')
         ->assertSee('Supprimer Moustache');
 });
