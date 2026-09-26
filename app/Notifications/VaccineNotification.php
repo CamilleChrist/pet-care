@@ -23,13 +23,13 @@ class VaccineNotification extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * Push is skipped by the channel itself when the user has no subscribed device.
+     * Mail follows the profile preference; push is skipped by the channel itself when the user has no subscribed device.
      *
      * @return array<int, string>
      */
     public function via(User $notifiable): array
     {
-        return ['mail', WebPushChannel::class];
+        return $notifiable->mail_notifications ? ['mail', WebPushChannel::class] : [WebPushChannel::class];
     }
 
     /**

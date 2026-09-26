@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePushSubscriptionRequest;
+use App\Http\Requests\UpdateNotificationsRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
@@ -45,6 +46,16 @@ class ProfileController extends Controller
         $request->user()->update($request->safe()->only('password'));
 
         return redirect()->route('profile.edit')->with('success', 'Votre mot de passe a été modifié !');
+    }
+
+    /**
+     * Save whether the reminders are also sent by e-mail, called by auto-submit.js (push is per device, see storePushSubscription).
+     */
+    public function updateNotifications(UpdateNotificationsRequest $request)
+    {
+        $request->user()->update(['mail_notifications' => $request->boolean('mail_notifications')]);
+
+        return response()->noContent();
     }
 
     /**

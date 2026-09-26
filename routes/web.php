@@ -53,6 +53,7 @@ Route::prefix('/profile')->controller(ProfileController::class)->middleware('aut
     Route::get('/password', 'editPassword')->name('profile.password.edit');
     Route::patch('/password', 'updatePassword')->name('profile.password.update');
 
+    Route::patch('/notifications', 'updateNotifications')->name('profile.notifications.update');
     Route::post('/push-subscription', 'storePushSubscription')->name('profile.push-subscription.store');
 });
 
