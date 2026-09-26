@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
 
@@ -14,6 +15,18 @@ test('a user can register', function () {
     $response->assertRedirect(route('dashboard'));
     $this->assertAuthenticated();
     $this->assertDatabaseHas('users', ['email' => 'camille@example.com']);
+});
+
+test('registering cannot grant the admin role', function () {
+    $this->post('/register', [
+        'name' => 'Camille',
+        'email' => 'camille@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'role' => UserRole::Admin->value,
+    ]);
+
+    expect(User::firstWhere('email', 'camille@example.com')->role)->toBe(UserRole::User);
 });
 
 test('registration fails with invalid fields', function () {

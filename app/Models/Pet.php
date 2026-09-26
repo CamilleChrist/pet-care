@@ -42,6 +42,11 @@ class Pet extends Model
         );
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function breed(): BelongsTo
     {
         return $this->belongsTo(Breed::class);

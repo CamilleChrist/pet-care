@@ -1,62 +1,55 @@
 @props([
     'title' => '',
     'description' => '',
-    'noBreadcrumb' => false,
     'back' => null, // URL du bouton retour, affiché sous md uniquement (topbar mobile)
 ])
 
 @php
-    $pets = auth()->user()->pets;
     $navItems = [
         [
-            'label' => 'Accueil',
-            'icon' => 'house',
-            'href' => route('dashboard'),
-            'active' => request()->routeIs('dashboard')
+            'label' => 'Utilisateurs',
+            'icon' => 'user',
+            'href' => route('admin.users.index'),
+            'active' => request()->routeIs('admin.users.*'),
         ],
         [
             'label' => 'Animaux',
             'icon' => 'paw-print',
-            'count' => $pets->count(),
-            'href' => route('pets.index'),
-            'active' => request()->routeIs('pets.index', 'pets.create')
+            'href' => route('admin.pets.index'),
+            'active' => request()->routeIs('admin.pets.*', 'admin.vaccination-records.*', 'admin.weight-records.*'),
         ],
         [
-            'label' => 'Profil',
-            'icon' => 'user',
-            'href' => route('profile.edit'),
-            'active' => request()->routeIs('profile.*')
+            'label' => 'Races',
+            'icon' => 'dog',
+            'href' => route('admin.breeds.index'),
+            'active' => request()->routeIs('admin.breeds.*'),
+        ],
+        [
+            'label' => 'Vaccins',
+            'icon' => 'syringe',
+            'href' => route('admin.vaccines.index'),
+            'active' => request()->routeIs('admin.vaccines.*'),
+        ],
+        [
+            'label' => "Retour à l'app",
+            'icon' => 'arrow-left',
+            'href' => route('dashboard'),
+            'active' => false,
         ],
     ];
-
-    if (auth()->user()->isAdmin()) {
-        $navItems[] = [
-            'label' => 'Admin',
-            'icon' => 'lock',
-            'href' => route('admin.users.index'),
-            'active' => false,
-        ];
-    }
 @endphp
 
-<x-layouts.base :title="$title" class="app">
+<x-layouts.base :title="'Admin - '.$title" class="app">
 
-        <x-layouts.nav.sidebar :items="$navItems" :pets="$pets" />
+    <x-layouts.nav.sidebar :items="$navItems" :pets="collect()" />
 
-    <main>
-        @if(!$noBreadcrumb)
-            <x-nav.breadcrumb />
-        @endif
-
+    <main class="admin-main">
         <header class="page-header">
             @if ($back)
                 <a href="{{ $back }}" class="page-header__back hidden-md-up" aria-label="Retour">
                     <x-ui.icon name="arrow-left"/>
                 </a>
             @endif
-            @isset($avatar)
-                {{ $avatar }}
-            @endisset
             <div class="page-header__heading">
                 <h1 class="page-header__title">{{ $title }}</h1>
                 @if ($description)
@@ -83,10 +76,9 @@
         {{ $slot }}
     </main>
 
-    <x-layouts.nav.bottom-nav :items="$navItems" />
+    <x-layouts.nav.bottom-nav :items="$navItems" class="bottom-nav--scroll" />
 
-    {{-- Hors de la sidebar : elle est masquée sous md, le dialog doit rester ouvrable partout. --}}
-    <x-ui.dialog id="logout-dialog" title="Se déconnecter ?" description="Vous devrez vous reconnecter pour retrouver vos animaux.">
+    <x-ui.dialog id="logout-dialog" title="Se déconnecter ?" description="Vous devrez vous reconnecter pour revenir au back-office.">
         <form method="post" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="btn btn--danger btn--block">Se déconnecter</button>

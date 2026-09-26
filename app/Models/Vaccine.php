@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /***
  * @method static Builder<static> forPet(Pet $pet)
@@ -21,6 +22,11 @@ class Vaccine extends Model
         'species',
         'description',
     ];
+
+    public function vaccinationRecords(): HasMany
+    {
+        return $this->hasMany(VaccinationRecord::class);
+    }
 
     /** Get only the vaccines for the pet breed */
     #[Scope]

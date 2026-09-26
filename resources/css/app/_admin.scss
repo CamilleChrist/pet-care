@@ -1,0 +1,46 @@
+@use "../abstracts/mixins" as *;
+
+.admin-main {
+    .card + .card {
+        margin-top: var(--space-4);
+    }
+
+    .page-header__actions {
+        @include flex(row, flex-start, center, var(--space-2), var(--space-2));
+
+        @include breakpoint-down($breakpoint-md) {
+            width: 100%;
+
+            .btn {
+                flex: 1;
+            }
+        }
+    }
+}
+
+.admin-toolbar {
+    @include flex(row, space-between, center, var(--space-4), var(--space-3));
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+}
+
+.admin-details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-4) var(--space-8);
+
+    dt {
+        font-size: var(--font-size-xs);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--color-neutral-600);
+        margin-bottom: var(--space-1);
+    }
+}
+
+.admin-empty {
+    color: var(--color-neutral-600);
+    font-size: var(--font-size-sm);
+}

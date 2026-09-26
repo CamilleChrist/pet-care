@@ -4,6 +4,7 @@ Before planning or editing, find the row whose globs match the file's path and r
 
 | Applies to | Rule file |
 | --- | --- |
+| resources/css/components/admin/**, resources/views/admin/** | .ai/rules/admin.md |
 | resources/css/components/** | .ai/rules/components.md |
 | app/Http/Controllers/** | .ai/rules/controllers.md |
 | resources/css/** | .ai/rules/css.md |

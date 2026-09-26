@@ -12,6 +12,7 @@ class VaccinationRecord extends Model
     use HasFactory;
 
     protected $fillable = [
+        'pet_id',
         'vaccine_id',
         'custom_name',
         'administered_at',
