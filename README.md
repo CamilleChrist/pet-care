@@ -1,97 +1,47 @@
 # Pet Care
 
+[![tests](https://github.com/CamilleChrist/pet-care/actions/workflows/tests.yml/badge.svg)](https://github.com/CamilleChrist/pet-care/actions/workflows/tests.yml)
+
 Application de suivi de la santé des animaux de compagnie.
 
 Chaque utilisateur crée un compte, y enregistre ses animaux (chien ou chat) et suit
-dans le temps leur poids, leurs vaccins, leurs notes de santé et leurs visites
-chez le vétérinaire.
+dans le temps leur poids, leurs vaccins ainsi que leurs notes de santé.
 
-> **État du projet :** v1 presque terminée. L'authentification, la gestion des
-> fiches animaux, le suivi du poids et le suivi des vaccins sont fonctionnels, de
-> même que le tableau de bord récapitulatif, la mise en avant des rappels de vaccin
-> à venir/dépassés, le poids le plus récent sur la fiche animal, l'édition du
-> profil, l'espace d'administration, la traduction en français, l'usage confortable
-> sur mobile et l'intégration des maquettes. Reste une finition : les données de
-> démonstration, aujourd'hui inexistantes — `composer setup` ne sème rien et
-> `php artisan db:seed` ne crée que deux comptes, sans race ni vaccin.
+## Fonctionnalités
 
-## Fonctionnalités de la v1
-
-### Compte utilisateur
-
-- Inscription : nom, prénom, e-mail, mot de passe
-- Connexion / déconnexion
-- Réinitialisation du mot de passe par e-mail
-
-### Animaux
-
-Chaque animal appartient à un utilisateur et comporte :
-
-- Nom
-- Espèce : chien ou chat
-- Race
-- Date de naissance
-- Sexe
-- Poids actuel (issu de la dernière pesée enregistrée)
-- Photo
-- Vaccins
-- Notes de santé
-- Date de la dernière visite chez le vétérinaire
-
-### Historiques
-
-- Historique du poids de chaque animal
-- Historique des vaccins de chaque animal
-
-### Espace d'administration
-
-Réservé aux comptes dont le rôle est `admin`, sur `/admin-pet-care`. Il ouvre
-directement sur la liste des inscrits ; il n'y a pas de tableau de bord.
-
-- Utilisateurs : liste, fiche avec ses animaux, modification du nom, de l'e-mail
-  et du rôle, suppression du compte (un admin ne peut pas supprimer le sien)
-- Animaux : liste filtrable par propriétaire, fiche regroupant ses vaccinations
-  et ses pesées, création, modification, suppression
-- Races et vaccins : gestion des deux référentiels, qui n'étaient jusque-là
-  modifiables qu'en éditant un seeder
-- Vaccinations et pesées : ajoutées et corrigées depuis la fiche de l'animal,
-  elles n'ont pas de liste à part
-
-Un admin reste lui-même : le back-office a ses propres écrans et ne passe pas
-par les comptes des utilisateurs.
-
-## Modèle de données (cible v1)
-
-| Table | Clés | Contenu | Relations |
-| --- | --- | --- | --- |
-| `users` | `id` | `name`, `email`, `password`, `role` (`user`/`admin`) | possède plusieurs `pets` |
-| `pets` | `id`, `user_id`, `breed_id` | `name`, `gender`, `birth_date`, `photo_path`, `health_notes`, `last_vet_visit_at` | appartient à un `user` et à une `breed` |
-| `weight_records` | `id`, `pet_id` | `weight`, `recorded_at` | appartient à un `pet` |
-| `breeds` | `id` | `name`, `species` (`dog`/`cat`) | référencée par les `pets` |
-| `vaccines` | `id` | `name`, `species`, `description` | catalogue par espèce, référencé par les `vaccination_records` |
-| `vaccination_records` | `id`, `pet_id`, `vaccine_id` | `custom_name`, `administered_at`, `next_due_at`, `veterinarian_name`, `clinic_name`, `lot_number`, `notes` | appartient à un `pet`, référence une `vaccine` du catalogue (ou `custom_name` si absente) |
-
-Le poids actuel de l'animal n'est pas stocké sur sa fiche : c'est toujours l'entrée
-la plus récente de son historique de poids.
+- **Compte utilisateur** — inscription, connexion, réinitialisation du mot de
+  passe par e-mail, édition du profil
+- **Fiches animaux** — nom, espèce, race, date de naissance, sexe, photo, notes
+  de santé et date de la dernière visite chez le vétérinaire
+- **Suivi du poids** — une pesée à la fois, historique complet, et le poids le
+  plus récent repris sur la fiche de l'animal
+- **Suivi des vaccins** — date d'administration et date de rappel, avec les
+  échéances proches et dépassées mises en avant sur le tableau de bord
+- **Espace d'administration** — sur `/admin-pet-care`, réservé aux comptes dont
+  le rôle est `admin` : gestion des inscrits, de leurs animaux et des
+  référentiels races et vaccins
+- **Interface** — entièrement en français, utilisable sur mobile
 
 ## Stack technique
 
 - **Backend :** PHP 8.3+, Laravel 13
 - **Vues :** Blade
-- **CSS :** Sass + BEM, compilé par Vite (migration depuis Tailwind CSS 4 terminée, Tailwind n'est plus chargé)
-- **Base de données :** SQLite (par défaut, en local)
+- **CSS :** Sass + BEM, compilé par Vite
 - **Tests :** Pest
 - **Style de code :** Laravel Pint
 
-### Évolution envisagée
-
-À plus long terme, l'application pourra être empaquetée en application de bureau
-et mobile avec [NativePHP](https://nativephp.com). Ce n'est pas au programme de la
-v1 : pour l'instant, il s'agit d'une application web exécutée en local.
-
 ## Installation
 
-Prérequis : PHP 8.3+, Composer et Node.js.
+### 1. Prérequis
+
+- PHP 8.3 ou plus récent, avec Composer
+- Node.js
+
+Aucun serveur de base de données à installer : le projet utilise SQLite par
+défaut, c'est-à-dire un simple fichier, `database/database.sqlite`, créé
+automatiquement à l'étape suivante.
+
+### 2. Cloner et installer
 
 ```bash
 git clone <url-du-depot> pet-care
@@ -99,8 +49,49 @@ cd pet-care
 composer setup
 ```
 
-Le script `composer setup` installe les dépendances PHP et JS, crée le fichier
-`.env`, génère la clé d'application, joue les migrations et compile les assets.
+### 3. Créer le lien vers les images
+
+```bash
+php artisan storage:link
+```
+
+Les photos des animaux sont enregistrées dans `storage/app/public`, un dossier
+situé hors de la racine web et donc invisible depuis un navigateur. Cette
+commande crée un raccourci vers lui depuis `public/storage` ; sans elle, les
+photos s'affichent en erreur 404. Une seule fois par clone du dépôt : le lien
+est ignoré par Git.
+
+### 4. Vérifier le `.env`
+
+L'application fonctionne sans y toucher. Néanmoins, vous pouvez changer
+certains paramètres ici (notamment les accès à la base de données).
+- `DB_CONNECTION=sqlite` — pour utiliser MySQL ou PostgreSQL, renseigner à la
+  place `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME` et `DB_PASSWORD`,
+  commentés juste en dessous. Aucun code n'est spécifique à SQLite.
+
+> [!IMPORTANT]
+> `composer setup` crée le `.env` **et** joue les migrations dans la foulée.
+> Pour partir sur autre chose que SQLite, copier `.env.example` en `.env` et le
+> modifier **avant** de lancer `composer setup`.
+
+### Réinitialiser la base
+
+`php artisan db:seed` ne se rejoue pas sur une base déjà remplie : la table
+`breeds` porte un index unique sur `[name, species]`, la seconde exécution
+échoue sur un doublon. Pour repartir d'une base propre :
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+`migrate:fresh` supprime toutes les tables, rejoue l'intégralité des migrations,
+puis `--seed` relance `DatabaseSeeder` : les races, les vaccins, les comptes de
+démonstration et leurs animaux.
+
+> [!WARNING]
+> Tout le contenu de la base est perdu, y compris les comptes et les animaux
+> créés à la main. Les photos déjà envoyées restent, elles, dans
+> `storage/app/public` — la base ne les référence simplement plus.
 
 ## Lancer le projet
 
@@ -111,40 +102,47 @@ composer dev
 Cette commande démarre le serveur PHP, le worker de queue, les logs et Vite.
 L'application est disponible sur http://localhost:8000.
 
+> [!NOTE]
+> **Comptes de démonstration**, mot de passe `password` pour les deux :
+>
+> - `test@example.com` — utilisateur, avec deux animaux, leur historique de
+>   poids et leurs rappels de vaccin
+> - `admin@example.com` — administrateur, accès au back-office sur
+>   `/admin-pet-care`
+
+## Lire les e-mails en local
+
+Par défaut, `MAIL_MAILER=log` : aucun e-mail ne part sur le réseau. Laravel écrit
+le message complet — en-têtes, version texte et version HTML — dans
+`storage/logs/laravel.log`. 
+
+> [!TIP]
+> Pour une vraie boîte de réception, avec le rendu HTML des e-mails, installer
+> [Mailpit](https://mailpit.axllent.org) (fourni avec Laravel Herd) puis passer
+> le `.env` en `MAIL_MAILER=smtp`, `MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`. Les
+> messages s'affichent sur http://localhost:8025.
+
 ## Tests
+
+Les tests sont écrits avec [Pest](https://pestphp.com) et vivent dans
+`tests/Feature`. Ils tournent sur une base SQLite en mémoire, recréée à chaque
+test (`phpunit.xml`) : la base de développement n'est jamais touchée.
 
 ```bash
 composer test
 ```
 
-## Feuille de route
+Le style du code est vérifié séparément, avec [Pint](https://laravel.com/docs/pint) :
 
-La v1 avance par étapes, chacune apportant quelque chose d'utilisable.
+```bash
+vendor/bin/pint --test   # signale les écarts
+vendor/bin/pint          # les corrige
+```
 
-- [x] **Compte utilisateur** — inscription, connexion/déconnexion, réinitialisation du mot de passe par e-mail
-- [x] **Espace personnel** — accès réservé aux personnes connectées, navigation entre les pages
-- [x] **Fiches animaux** — création (nom, espèce, race, naissance, sexe), photo, notes de santé et dernière visite, consultation, modification, suppression, cloisonnement par propriétaire
-- [x] **Suivi du poids** — enregistrement d'une pesée, historique, poids le plus récent sur la fiche
-- [x] **Suivi des vaccins** — administration et date de rappel, historique, repérage des rappels à venir et dépassés
-
-### Finitions
-
-- [x] Voir sur le tableau de bord le poids actuel et le prochain rappel de chaque animal
-- [x] Disposer d'une application entièrement en français
-- [x] Éditer son profil
-- [x] Utiliser l'application confortablement sur mobile
-- [x] Intégrer les maquettes
-- [x] Administrer les comptes, les animaux et les référentiels races/vaccins
-- [ ] Démarrer avec des données de démonstration
-
-## Au-delà de la v1
-
-Pistes à trancher une fois la v1 livrée :
+## Feuille de route évolution
 
 - [ ] Rappels par e-mail avant l'échéance d'un vaccin
-- [ ] D'autres espèces que le chien et le chat
+- [ ] Ajout des rappels de médicaments / vermifuges.
 - [ ] Documents joints : ordonnances, comptes rendus vétérinaires
 - [ ] Export PDF du carnet de santé d'un animal
-- [ ] Partage d'un animal entre plusieurs personnes (foyer, garde partagée)
-- [ ] Réinitialisation du mot de passe d'un utilisateur depuis l'espace d'administration
 - [ ] Version bureau et mobile avec NativePHP
