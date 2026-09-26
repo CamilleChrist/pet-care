@@ -6,13 +6,14 @@ Chaque utilisateur crée un compte, y enregistre ses animaux (chien ou chat) et 
 dans le temps leur poids, leurs vaccins, leurs notes de santé et leurs visites
 chez le vétérinaire.
 
-> **État du projet :** v1 en cours de développement. L'authentification, la gestion
-> des fiches animaux, le suivi du poids et le suivi des vaccins sont fonctionnels,
-> de même que le tableau de bord récapitulatif, la mise en avant des rappels de
-> vaccin à venir/dépassés, le poids le plus récent sur la fiche animal et la
-> traduction en français. Restent les finitions : l'édition du profil, des données
-> de démonstration (seuls les référentiels races et vaccins sont semés) et la fin
-> de l'intégration des maquettes.
+> **État du projet :** v1 presque terminée. L'authentification, la gestion des
+> fiches animaux, le suivi du poids et le suivi des vaccins sont fonctionnels, de
+> même que le tableau de bord récapitulatif, la mise en avant des rappels de vaccin
+> à venir/dépassés, le poids le plus récent sur la fiche animal, l'édition du
+> profil, l'espace d'administration, la traduction en français, l'usage confortable
+> sur mobile et l'intégration des maquettes. Reste une finition : les données de
+> démonstration, aujourd'hui inexistantes — `composer setup` ne sème rien et
+> `php artisan db:seed` ne crée que deux comptes, sans race ni vaccin.
 
 ## Fonctionnalités de la v1
 
@@ -42,11 +43,28 @@ Chaque animal appartient à un utilisateur et comporte :
 - Historique du poids de chaque animal
 - Historique des vaccins de chaque animal
 
+### Espace d'administration
+
+Réservé aux comptes dont le rôle est `admin`, sur `/admin-pet-care`. Il ouvre
+directement sur la liste des inscrits ; il n'y a pas de tableau de bord.
+
+- Utilisateurs : liste, fiche avec ses animaux, modification du nom, de l'e-mail
+  et du rôle, suppression du compte (un admin ne peut pas supprimer le sien)
+- Animaux : liste filtrable par propriétaire, fiche regroupant ses vaccinations
+  et ses pesées, création, modification, suppression
+- Races et vaccins : gestion des deux référentiels, qui n'étaient jusque-là
+  modifiables qu'en éditant un seeder
+- Vaccinations et pesées : ajoutées et corrigées depuis la fiche de l'animal,
+  elles n'ont pas de liste à part
+
+Un admin reste lui-même : le back-office a ses propres écrans et ne passe pas
+par les comptes des utilisateurs.
+
 ## Modèle de données (cible v1)
 
 | Table | Clés | Contenu | Relations |
 | --- | --- | --- | --- |
-| `users` | `id` | `firstname`, `lastname`, `email`, `password` | possède plusieurs `pets` |
+| `users` | `id` | `name`, `email`, `password`, `role` (`user`/`admin`) | possède plusieurs `pets` |
 | `pets` | `id`, `user_id`, `breed_id` | `name`, `gender`, `birth_date`, `photo_path`, `health_notes`, `last_vet_visit_at` | appartient à un `user` et à une `breed` |
 | `weight_records` | `id`, `pet_id` | `weight`, `recorded_at` | appartient à un `pet` |
 | `breeds` | `id` | `name`, `species` (`dog`/`cat`) | référencée par les `pets` |
@@ -113,8 +131,10 @@ La v1 avance par étapes, chacune apportant quelque chose d'utilisable.
 
 - [x] Voir sur le tableau de bord le poids actuel et le prochain rappel de chaque animal
 - [x] Disposer d'une application entièrement en français
-- [ ] Éditer son profil
-- [ ] Utiliser l'application confortablement sur mobile
+- [x] Éditer son profil
+- [x] Utiliser l'application confortablement sur mobile
+- [x] Intégrer les maquettes
+- [x] Administrer les comptes, les animaux et les référentiels races/vaccins
 - [ ] Démarrer avec des données de démonstration
 
 ## Au-delà de la v1
@@ -126,7 +146,5 @@ Pistes à trancher une fois la v1 livrée :
 - [ ] Documents joints : ordonnances, comptes rendus vétérinaires
 - [ ] Export PDF du carnet de santé d'un animal
 - [ ] Partage d'un animal entre plusieurs personnes (foyer, garde partagée)
-- [ ] Espace d'administration réservé aux comptes admin : liste des utilisateurs,
-      modification de leur fiche et réinitialisation de leur mot de passe, gestion
-      des races et vaccins
+- [ ] Réinitialisation du mot de passe d'un utilisateur depuis l'espace d'administration
 - [ ] Version bureau et mobile avec NativePHP
