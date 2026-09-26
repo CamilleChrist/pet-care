@@ -6,6 +6,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="vapid-public-key" content="{{ config('webpush.vapid.public_key') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="manifest" href="/manifest.json"> {{-- Obligatoire pour iphone  --}}
 
     <title>PetCare - {{ $title }}</title>
 

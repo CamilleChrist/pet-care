@@ -28,6 +28,15 @@
         </section>
 
         <aside>
+            <x-ui.card title="Notifications"
+                       description="Les rappels de vaccin arrivent par e-mail 7 jours avant l'échéance, puis le jour même. Activez-les aussi sur cet appareil pour les recevoir en notification.">
+                <button type="button" class="btn btn--ghost" aria-describedby="push-status"
+                        data-push-url="{{ route('profile.push-subscription.store') }}">
+                    Activer sur cet appareil
+                </button>
+                <p id="push-status" class="card__description" aria-live="polite" data-push-status></p>
+            </x-ui.card>
+
             <x-ui.card title="Compte"
                        description="La suppression du compte efface les fiches de vos animaux et tout leur historique.">
 

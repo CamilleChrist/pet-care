@@ -52,6 +52,8 @@ Route::prefix('/profile')->controller(ProfileController::class)->middleware('aut
 
     Route::get('/password', 'editPassword')->name('profile.password.edit');
     Route::patch('/password', 'updatePassword')->name('profile.password.update');
+
+    Route::post('/push-subscription', 'storePushSubscription')->name('profile.push-subscription.store');
 });
 
 // ****  PETS  **** //

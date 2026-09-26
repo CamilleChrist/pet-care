@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePushSubscriptionRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
@@ -44,6 +45,21 @@ class ProfileController extends Controller
         $request->user()->update($request->safe()->only('password'));
 
         return redirect()->route('profile.edit')->with('success', 'Votre mot de passe a été modifié !');
+    }
+
+    /**
+     * Register the push subscription of this browser, called by push-notifications.js.
+     */
+    public function storePushSubscription(StorePushSubscriptionRequest $request)
+    {
+        $request->user()->updatePushSubscription(
+            $request->validated('endpoint'),
+            $request->validated('key'),
+            $request->validated('token'),
+            $request->validated('encoding'),
+        );
+
+        return response()->noContent();
     }
 
     /**
