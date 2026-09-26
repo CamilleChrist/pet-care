@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\BreedController as AdminBreedController;
 use App\Http\Controllers\Admin\PetController as AdminPetController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\VaccineController as AdminVaccineController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
@@ -103,4 +105,6 @@ Route::prefix('/admin-pet-care')->name('admin.')->middleware(['auth', 'can:admin
     Route::get('/', fn () => redirect()->route('admin.users.index'))->name('home');
     Route::resource('users', AdminUserController::class)->except('create', 'store');
     Route::resource('pets', AdminPetController::class)->except('show');
+    Route::resource('breeds', AdminBreedController::class)->except('show');
+    Route::resource('vaccines', AdminVaccineController::class)->except('show');
 });

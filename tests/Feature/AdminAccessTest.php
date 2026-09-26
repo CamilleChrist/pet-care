@@ -39,6 +39,10 @@ dataset('admin routes', [
     'users index' => ['admin.users.index'],
     'pets index' => ['admin.pets.index'],
     'pets create' => ['admin.pets.create'],
+    'breeds index' => ['admin.breeds.index'],
+    'breeds create' => ['admin.breeds.create'],
+    'vaccines index' => ['admin.vaccines.index'],
+    'vaccines create' => ['admin.vaccines.create'],
 ]);
 
 test('a listing offers delete for every row but the admin own account', function () {

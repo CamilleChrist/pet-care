@@ -19,6 +19,18 @@
             'active' => request()->routeIs('admin.pets.*'),
         ],
         [
+            'label' => 'Races',
+            'icon' => 'dog',
+            'href' => route('admin.breeds.index'),
+            'active' => request()->routeIs('admin.breeds.*'),
+        ],
+        [
+            'label' => 'Vaccins',
+            'icon' => 'syringe',
+            'href' => route('admin.vaccines.index'),
+            'active' => request()->routeIs('admin.vaccines.*'),
+        ],
+        [
             'label' => "Retour à l'app",
             'icon' => 'arrow-left',
             'href' => route('dashboard'),
