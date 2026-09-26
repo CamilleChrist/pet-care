@@ -17,6 +17,14 @@ dans le temps leur poids, leurs vaccins ainsi que leurs notes de santé.
   plus récent repris sur la fiche de l'animal
 - **Suivi des vaccins** — date d'administration et date de rappel, avec les
   échéances proches et dépassées mises en avant sur le tableau de bord
+- **Notifications** — rappel de vaccin 7 jours avant l'échéance, puis le jour
+  même, pour penser à prendre rendez-vous chez le vétérinaire. Une semaine après
+  l'échéance, si aucune nouvelle injection n'a été saisie, un dernier message
+  demande si le rappel a été fait et invite à l'ajouter à la fiche. Les rappels
+  du jour, tous animaux confondus, sont regroupés en un seul message, envoyé par
+  e-mail et en notification push sur téléphone ou ordinateur (sur iPhone, une
+  fois l'app ajoutée à l'écran d'accueil). Depuis son profil, chacun peut
+  couper les e-mails et activer le push appareil par appareil
 - **Espace d'administration** — sur `/admin-pet-care`, réservé aux comptes dont
   le rôle est `admin` : gestion des inscrits, de leurs animaux et des
   référentiels races et vaccins
@@ -27,6 +35,8 @@ dans le temps leur poids, leurs vaccins ainsi que leurs notes de santé.
 - **Backend :** PHP 8.3+, Laravel 13
 - **Vues :** Blade
 - **CSS :** Sass + BEM, compilé par Vite
+- **Notifications :** e-mail et Web Push
+  ([laravel-notification-channels/webpush](https://github.com/laravel-notification-channels/webpush))
 - **Tests :** Pest
 - **Style de code :** Laravel Pint
 
@@ -73,6 +83,22 @@ certains paramètres ici (notamment les accès à la base de données).
 > `composer setup` crée le `.env` **et** joue les migrations dans la foulée.
 > Pour partir sur autre chose que SQLite, copier `.env.example` en `.env` et le
 > modifier **avant** de lancer `composer setup`.
+
+### 5. Générer les clés des notifications push
+
+```bash
+php artisan webpush:vapid
+```
+
+Les notifications push sont signées avec une paire de clés VAPID, propre à
+chaque installation. La commande écrit `VAPID_PUBLIC_KEY` et `VAPID_PRIVATE_KEY`
+dans le `.env`. Une seule fois par installation : si les clés changent, les
+appareils déjà abonnés ne reçoivent plus rien.
+
+> [!IMPORTANT]
+> `VAPID_SUBJECT` doit être rempli avec une adresse `mailto:` ou une URL
+> `https`, sinon l'iPhone refuse les notifications. Sans cette variable, le
+> package prend l'URL du site, et Apple refuse une URL en `http://`.
 
 ### Réinitialiser la base
 
@@ -122,6 +148,39 @@ le message complet — en-têtes, version texte et version HTML — dans
 > le `.env` en `MAIL_MAILER=smtp`, `MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`. Les
 > messages s'affichent sur http://localhost:8025.
 
+## Rappels de vaccin en local
+
+Les rappels partent d'une commande que le scheduler de Laravel lance chaque jour
+à 8 h. Elle notifie les propriétaires dont un vaccin arrive à échéance dans 7
+jours ou le jour même, et leur demande 7 jours après l'échéance si le rappel a
+été fait. Chaque propriétaire reçoit au plus un e-mail et une notification par
+jour, qui regroupent tous ses rappels. `composer dev` ne lance pas le scheduler : pour tester,
+appeler la commande directement, ou démarrer le scheduler à côté.
+
+```bash
+php artisan app:vaccine-notification   # envoie les rappels du jour, tout de suite
+php artisan schedule:work              # lance le scheduler (rappels chaque jour à 8 h)
+```
+
+Les notifications passent par la queue : le worker démarré par `composer dev`
+doit tourner. Les e-mails arrivent comme expliqué dans la section précédente.
+
+Pour recevoir les notifications push, activer « Sur cet appareil » dans la carte
+« Notifications » du profil :
+
+- **Sur ordinateur** (Chrome, Firefox, Safari), `http://localhost:8000` suffit.
+- **Sur un téléphone**, le site doit être servi en HTTPS, par exemple avec
+  `herd secure` ou un tunnel.
+- **Sur iPhone** (iOS 16.4 ou plus récent), le push n'existe que dans l'app
+  ajoutée à l'écran d'accueil. Dans Safari, Partager → « Sur l'écran
+  d'accueil » depuis une page où l'on est connecté (la page d'accueil publique
+  n'a pas de manifest), puis ouvrir PetCare depuis l'icône.
+
+> [!NOTE]
+> **En production**, il faut une tâche cron qui lance
+> `php artisan schedule:run` chaque minute, un worker de queue permanent et le
+> site en HTTPS.
+
 ## Tests
 
 Les tests sont écrits avec [Pest](https://pestphp.com) et vivent dans
@@ -141,7 +200,7 @@ vendor/bin/pint          # les corrige
 
 ## Feuille de route évolution
 
-- [ ] Rappels par e-mail avant l'échéance d'un vaccin
+- [x] Rappels par e-mail et notification push avant l'échéance d'un vaccin
 - [ ] Ajout des rappels de médicaments / vermifuges.
 - [ ] Documents joints : ordonnances, comptes rendus vétérinaires
 - [ ] Export PDF du carnet de santé d'un animal
