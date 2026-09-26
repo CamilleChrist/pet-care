@@ -6,19 +6,25 @@ use App\Models\User;
 use App\Models\VaccinationRecord;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
 
+/**
+ * The owner's daily digest: every booster to remind today, all pets together, in one mail and one push.
+ */
 class VaccineNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
+     *
+     * @param  Collection<int, VaccinationRecord>  $records
      */
-    public function __construct(public VaccinationRecord $record) {}
+    public function __construct(public Collection $records) {}
 
     /**
      * Get the notification's delivery channels.
@@ -37,14 +43,18 @@ class VaccineNotification extends Notification implements ShouldQueue
      */
     public function toMail(User $notifiable): MailMessage
     {
-        $pet = $this->record->pet;
+        $mail = (new MailMessage)
+            ->subject($this->title())
+            ->greeting("Bonjour {$notifiable->name},");
 
-        return (new MailMessage)
-            ->subject("Vaccin à renouveler pour {$pet->name}")
-            ->greeting("Bonjour {$notifiable->name},")
-            ->line("Le vaccin {$this->record->display_name} de {$pet->name} arrive à échéance le {$this->record->next_due_at->isoFormat('LL')}.")
-            ->line("Pensez à prendre rendez-vous chez votre vétérinaire pour faire le rappel, si ce n'est pas déjà fait.")
-            ->action('Voir la fiche', route('pets.show', $pet))
+        foreach ($this->byDueDate() as $record) {
+            $mail->line("- {$this->summary($record)}, échéance le {$record->next_due_at->isoFormat('LL')}");
+        }
+
+        return $mail
+            ->line('Pensez à prendre rendez-vous chez votre vétérinaire pour les rappels à faire.')
+            ->line("Un rappel déjà fait ? Ajoutez-le à la fiche de l'animal pour garder son carnet de santé à jour.")
+            ->action('Voir mes rappels', route('dashboard'))
             ->salutation("L'équipe Pet Care");
     }
 
@@ -53,11 +63,39 @@ class VaccineNotification extends Notification implements ShouldQueue
      */
     public function toWebPush(User $notifiable): WebPushMessage
     {
-        $pet = $this->record->pet;
+        $lines = $this->byDueDate()->map(fn (VaccinationRecord $record) => $this->summary($record));
 
         return (new WebPushMessage)
-            ->title("Vaccin à renouveler pour {$pet->name}")
-            ->body("{$this->record->status_label} : échéance du vaccin {$this->record->display_name}. Pensez à prendre rendez-vous chez le vétérinaire.")
-            ->data(['url' => route('pets.show', $pet)]);
+            ->title($this->title())
+            ->body($lines->push("Pensez à prendre rendez-vous chez le vétérinaire, ou ajoutez le rappel à la fiche s'il est déjà fait.")->implode("\n"))
+            ->data(['url' => route('dashboard')]);
+    }
+
+    /**
+     * « Rappel de vaccin pour Filou », « Rappels de vaccin pour Moka et Filou ».
+     */
+    private function title(): string
+    {
+        $pets = $this->byDueDate()->map(fn (VaccinationRecord $record) => $record->pet->name)->unique()->join(', ', ' et ');
+
+        return trans_choice('{1} Rappel de vaccin pour :pets|[2,*] Rappels de vaccin pour :pets', $this->records->count(), ['pets' => $pets]);
+    }
+
+    /**
+     * « Dans 7 jours : Rage de Filou », « Aujourd'hui : … », « En retard : … ».
+     */
+    private function summary(VaccinationRecord $record): string
+    {
+        return "{$record->status_label} : {$record->display_name} de {$record->pet->name}";
+    }
+
+    /**
+     * The late ones first. Sorted here rather than by the command: a queued collection comes back in id order.
+     *
+     * @return Collection<int, VaccinationRecord>
+     */
+    private function byDueDate(): Collection
+    {
+        return $this->records->sortBy('next_due_at');
     }
 }
