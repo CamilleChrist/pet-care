@@ -31,7 +31,8 @@
         border-radius: var(--radius-md);
 
         @include breakpoint-down($breakpoint-md) {
-            max-width: none;
+            width: auto;
+            max-height: 300px;
             flex: auto;
         }
     }
