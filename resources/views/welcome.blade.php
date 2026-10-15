@@ -66,8 +66,8 @@
                 <p class="hero__tagline">Sans pub. Autant d'animaux que tu veux dans un seul compte.</p>
             </div>
 
-            <img class="hero__visual" src="https://placehold.co/560x420?text=Aper%C3%A7u+du+tableau+de+bord"
-                 alt="Aperçu du tableau de bord PetCare" width="560" height="420" loading="lazy">
+            <img class="hero__visual" src="{{ asset('images/landing/vaccine-reminders.png') }}"
+                 alt="Prochains rappels de vaccins : un en retard, un dans 21 jours, trois à jour" width="900" height="950">
         </div>
     </section>
 
@@ -177,8 +177,8 @@
                     </a>
                 </div>
 
-                <img class="panel__image" src="https://placehold.co/560x420?text=Apercu" alt="Aperçu de PetCare"
-                     loading="lazy">
+                <img class="panel__image" src="{{ asset('images/landing/weight-curve.png') }}"
+                     alt="Courbe de poids d'un chien : 28,4 kg, en baisse de 0,7 kg" width="866" height="726" loading="lazy">
             </div>
         </div>
     </section>
