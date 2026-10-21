@@ -4,6 +4,14 @@
 
 Application de suivi de la santé des animaux de compagnie.
 
+> [!TIP]
+> **Démo en ligne : [pet-care.camille-christ.fr](https://pet-care.camille-christ.fr/login)**
+>
+> | Compte | E-mail | Mot de passe |
+> | --- | --- | --- |
+> | Utilisateur | `test@example.com` | `password` |
+> | Administrateur (`/admin-pet-care`) | `admin@example.com` | `password` |
+
 Chaque utilisateur crée un compte, y enregistre ses animaux (chien ou chat) et suit
 dans le temps leur poids, leurs vaccins ainsi que leurs notes de santé.
 
